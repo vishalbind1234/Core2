@@ -7,13 +7,9 @@
 
 <body>
 	  
-	<form action="product_save.php" method="post" >
+	<form action="index.php?a=save&c=Products" method="post" >
 
-		<br>
-		<button> <a href="product_add.php"> Add New </a> </button>
-		<br>
-		<br>
-	
+			
 		<table style="border:3px solid black">
 
 		<!-- <tr>
@@ -63,7 +59,7 @@
 
 		<br>
 		<button type="submit" name="submit" value="submit"> Save </button> 
-		<button > <a href='product_grid.php'> Cancel </a> </button> 
+		<button > <a href='index.php?a=grid&c=Products'> Cancel </a> </button> 
 		<br>
 			
 	</form>

@@ -2,7 +2,7 @@
 
 echo("<pre>");
 
-class Adapter{
+class Model_Core_Adapter{
 
 	private $connect = null;
 	private $config = [ 
@@ -11,15 +11,16 @@ class Adapter{
 				  		"pass" => "vishal"       	  , 
 				  		"dbname" => "php_practice_db"  ];
 
-/*    $arr = array( 'PDO::MYSQL_ATTR_FOUND_ROWS' => TRUE );
-*/
+
 	public function connect(){
 
         try{
             $this->connect = new PDO($this->config["host"] , $this->config["user"] , $this->config["pass"]  );
             $this->connect->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION);
+            $this->connect->setAttribute(PDO::MYSQL_ATTR_FOUND_ROWS ,  true );
+            
             $this->connect->exec("use " . $this->config["dbname"]);
-            echo("connection successfull \n\n");
+            
         }
         catch(Exception $e){
 
@@ -60,7 +61,7 @@ class Adapter{
        	return $this->config;
     }
 
-    public function insert($query){
+ /* public function insert($query){
     	try{
            
     		if( !$this->getConnect() ){
@@ -80,22 +81,25 @@ class Adapter{
     		echo("error in insert : \n\n" . $e->getMessage() );
     	}
     	
-    }
+    }*/
 
     public function fetch($query){
     	try{
-                                            // ASSOC , NUM , OBJ , BOTH  
+                                             // ASSOC , NUM , OBJ , BOTH  , COLUMN & col_idx
     		if( !$this->getConnect() ){
     			$this->connect();
     		}                
     		$result = $this->getConnect()->prepare($query);
             $bool = $result->execute();       //---------------------$result->execute() returns bool
+           
             if(!$bool){                  
            	    return false;
             }
 
             $records = $result->fetchAll(PDO::FETCH_ASSOC) ;  //----$result->fetchAll() returns Array[]
             return $records ;
+
+
     	}
     	catch(Exception $e){
 
@@ -104,7 +108,7 @@ class Adapter{
     	
     }
 
-    public function delete($query){
+   /* public function delete($query){
         try{
                                            
             if( !$this->getConnect() ){
@@ -123,9 +127,39 @@ class Adapter{
         }
         
     }
+*/
+
+    public function fetchOne($query , $column = 0 ,  $mode = PDO::FETCH_COLUMN  )
+    {
+        # code...
+        if( !$this->getConnect() ){
+            $this->connect();
+        }
+        $stmt = $this->getConnect()->prepare( $query );
+        $bool = $stmt->execute();
+
+        if( !$bool ){
+            return false;
+        }
+
+        $result = $stmt->fetchAll( $mode , $column );
+        return $result;
+
+
+    }
+
+
 
 
 }
+
+
+
+
+
+
+
+
 
 /*$adapter = new Adapter();
 

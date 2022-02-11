@@ -1,8 +1,8 @@
 
 <?php
                              
-require_once("../Adapter.php"); 
-$adapter = new Adapter();    
+require_once("Model/Core/Adapter.php"); 
+$adapter = new Model_Core_Adapter();    
 
 
 $current_record = $adapter->fetch("SELECT * FROM  Customers c 
@@ -29,7 +29,7 @@ $current_record = $adapter->fetch("SELECT * FROM  Customers c
 
 	<body>
 
-		<form action="Customers.php?a=saveAction" method="post">
+		<form action="index.php?a=save&c=Customers" method="post">
 
 
 			<table>
@@ -104,13 +104,13 @@ $current_record = $adapter->fetch("SELECT * FROM  Customers c
 				<tr>
 					<td><label> TYPE &nbsp </label></td>
 					<td>
-						<label> Billing &nbsp </label> <input type="checkbox" name=Address[billing] value=1
+						<label> Billing &nbsp </label> <input type="checkbox" name=Address[billing] value="1"
 						                                               <?php 
 						                                                   if($current_record[0]['billing'] == 1 ){
 						                                       		        	echo("checked");
 						                                       		        }
 						                                               ?> >
-						<label> Shipping &nbsp </label> <input type="checkbox" name=Address[shipping] value=1
+						<label> Shipping &nbsp </label> <input type="checkbox" name=Address[shipping] value="1"
 						                                               <?php 
 						                                                   if($current_record[0]['shipping'] == 1 ){
 						                                       		        	 echo("checked");
@@ -124,7 +124,7 @@ $current_record = $adapter->fetch("SELECT * FROM  Customers c
 			</table>
 
 			<button type="submit" name="submit" value="submit"> Save </button>
-			<button> <a href="Customers.php?a=gridAction"> Cancel </a> </button>
+			<button> <a href="index.php?a=grid&c=Customers"> Cancel </a> </button>
 
 		</form>
 

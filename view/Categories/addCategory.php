@@ -1,4 +1,10 @@
+<?php
 
+$adapter = new Model_Core_Adapter(); 
+$Parent = $adapter->fetch("SELECT id , name FROM Categories");
+
+
+?>
 
 <!DOCTYPE html>
 
@@ -17,7 +23,9 @@
 
 	<body>
 
-		<form action="Categories.php?a=saveCategory" method="post">
+
+
+		<form action="index.php?a=save&c=Categories" method="post">
 
 
 			<table>                            
@@ -26,10 +34,28 @@
 					<td colspan="2"><label> Category &nbsp </label></td>
 					
 				</tr>
+
+				<tr>
+					<td><label> Parent ID &nbsp </label></td>
+					<td> <select name=Category[parentId]   >
+							<option value=""  selected   >  No parent .  </option>
+							<?php foreach($Parent as $parent) : ?>
+								
+								<option value=<?php echo($parent['id']); ?>  >  <?php echo($parent['name']); ?>   </option>
+
+							<?php endforeach ; ?>	
+						</select> 
+					</td>
+				</tr>
 				
 				<tr>
 					<td><label> Category Name &nbsp </label></td>
 					<td><input type="text" name=Category[name]></td>
+				</tr>
+
+				<tr>
+					<td><label> Category Whole Path &nbsp </label></td>
+					<td><input type="text" value=""  name=Category[wholePath] readonly ></td>
 				</tr>
 
 				<tr>
@@ -54,7 +80,7 @@
 			</table>
 
 			<button type="submit" name="submit" value="submit"> Save </button>
-			<button> <a href="Categories.php?a=gridCategory"> Cancel </a> </button>
+			<button> <a href="index.php?a=grid&c=Categories"> Cancel </a> </button>
 
 		</form>
 

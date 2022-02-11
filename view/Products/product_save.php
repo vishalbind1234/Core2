@@ -2,7 +2,7 @@
 
 include_once("../Adapter.php");
 
-$adapter = new Adapter();
+$adapter = new Model_Core_Adapter();
 $adapter->connect();
 
 

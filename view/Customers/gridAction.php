@@ -1,7 +1,7 @@
 <?php
 
-require_once("../Adapter.php");
-$adapter = new Adapter();
+require_once("Model/Core/Adapter.php");
+$adapter = new Model_Core_Adapter();
 
 $query = "SELECT * FROM Customers c INNER JOIN Address a ON c.id = a.customerId" ;
 
@@ -23,7 +23,7 @@ $Customers = $adapter->fetch( $query );  //-----this fetch() is Adapter method--
 	}
 </style>
 
-<button><a href="Customers.php?a=addAction">Add New</a></button>
+<button><a href="index.php?a=add&c=Customers">Add New</a></button>
 
 <table>
 <?php if(!$Customers): ?>
@@ -70,8 +70,8 @@ $Customers = $adapter->fetch( $query );  //-----this fetch() is Adapter method--
 				<td> <?php echo($value);  ?> </td>
 
 			<?php endforeach ; ?>                     
-			<td> <a href="Customers.php?a=editAction&id=<?php echo($customer['id']);?>"> Edit  </a> </td>  <!-- $customer is inner array -->
-			<td> <a href="Customers.php?a=deleteAction&id=<?php echo($customer['id']);?>"> Delete </a> </td>  <!-- $customer is inner array -->
+			<td> <a href="index.php?a=edit&id=<?php echo($customer['id']); ?>&c=Customers" > Edit  </a> </td>  <!-- $customer is inner array -->
+			<td> <a href="index.php?a=delete&id=<?php echo($customer['id']); ?>&c=Customers" > Delete </a> </td>  <!-- $customer is inner array -->
 		</tr>
 	<?php endforeach ; ?>                     
 <?php endif ;  ?>
