@@ -1,82 +1,123 @@
 
+<?php   CCC::loadClass('Controller_Core_Action');   ?>
+
 <?php
 
-class Controller_Categories{
+class Controller_Categories extends Controller_Core_Action{
 
-	public function redirect($url)
+	public function redirect($url) /*------------------------------------------redirect()-----------------------------------------------*/
 	{
 		header('Location:' . $url );
 		exit();
 	}
 
-	public function gridCategory()
+	public function gridCategory() /*------------------------------------------gridCategory()----------------------------------------------*/
 	{
-		require_once("view/Categories/gridCategory.php");
+		global $adapter;
+
+		function wholePathName( $id )
+		{
+			global $adapter;	
+
+			$query = "SELECT * FROM Categories";
+			$idNameArray = $adapter->fetchPairs('id' , 'name' , 'Categories');
+			$idWholePathArray = $adapter->fetchPairs('id' , 'wholePath' , 'Categories');
+			
+		    $wholePathAsArray = explode( " > " , $idWholePathArray[$id] );  // note the spaces around seperator ( > ) is also a path of delimiter  //
+		    $wholePathAsString = "";
+		    foreach ($wholePathAsArray as $key => $value) {
+		    	# code...
+		     	$wholePathAsString = $wholePathAsString  . $idNameArray[$value] .  " > "  ; 
+		    }
+		    return $wholePathAsString;
+		}
+
+		$data = $adapter->fetch("SELECT * FROM Categories ORDER BY wholePath ");
+		$this->getView()->addData('Categories' , $data);
+		$this->getView()->setTemplate("view/Categories/gridCategory.php")->toHtml();
+
 		$message = ($_GET['message']) ? $_GET['message'] : " " ;
 		echo($message );	
 	}
 
-	public function addCategory()
+	public function addCategory() /*----------------------------------------addCategory()---------------------------------------------------*/
 	{
-		require_once("view/Categories/addCategory.php");
+		global $adapter;
+		$data = $adapter->fetch("SELECT id , name FROM Categories");
+		$this->getView()->addData('Categories' , $data);
+		$this->getView()->setTemplate("view/Categories/addCategory.php")->toHtml();
 	}
 
-	public function editCategory()
+	public function editCategory()  /*----------------------------------------------editCategory()------------------------------------------*/
 	{
-		require_once("view/Categories/editCategory.php");
+		global $adapter ;
+
+		function canBePlaced( $id  , $currentRecordParentId )
+		{
+			global $adapter;
+			$query = "SELECT * FROM Categories";
+			$idNameArray = $adapter->fetchPairs('id' , 'name' , 'Categories');
+			$idWholePathArray = $adapter->fetchPairs('id' , 'wholePath' , 'Categories');
+
+		    $wholePathAsArray = explode( " > " , $idWholePathArray[$id] ); 
+		    $wholePathAsArray[sizeof($wholePathAsArray) - 1] = 0;           /*-----just excluded parent from array (check) so that it appears in the list------*/
+		    if(  in_array( $currentRecordParentId , $wholePathAsArray ) )
+		    {
+		   		return false;
+		    }
+		    return true;
+		}
+
+		$Parent = $adapter->fetch("SELECT id , parentId , name FROM Categories");   /*---returns all table rows ----*/
+		$this->getView()->addData('Parent' , $Parent);
+		$data = $adapter->fetch("SELECT * FROM Categories WHERE id =" . $_GET['id'] );  /*----returns current record----*/
+		$this->getView()->addData('Categories' , $data);
+		$this->getView()->setTemplate("view/Categories/editCategory.php")->toHtml();
 	}
 
 	public function deleteCategory()/*-------------------------------------------------deleteCategory()-------------------------------------*/
 	{
-		try{
-			$adapter =  new Model_Core_Adapter();
-			$adapter->connect();
-			$del = $adapter->getConnect()->prepare("DELETE FROM Categories WHERE id = :id");
-			$del->bindValue(":id" , $_GET['id']);
-			$del->execute();
+		try
+		{
+			global $adapter ;
+			$query =  " DELETE FROM Categories WHERE id = " . $_GET['id'] ;
+			$count = $adapter->delete( $query );
         }
-        catch(Exception $e){
-
+        catch(Exception $e)
+        {
         	$this->redirect('index.php?a=grid&c=Categories&message=' . $e->getMessage() );
         }
-
-        $message = $del->rowCount() . " rows deleted" ;
+        $message = $count . " rows deleted" ;
 		$this->redirect('index.php?a=grid&c=Categories&message=' . $message );
 
 	}
 
 	public function saveCategory() /*----------------------------------------------------saveCategory()----------------------------------------*/
 	{
-		$adapter =  new Model_Core_Adapter();          
+		global $adapter ;         
 		$adapter->connect();                           
-
-		if(array_key_exists( 'id' , $_POST['Category'] ) ){    
-
-			if(!(int)$_POST['Category']['id']){
+		if(array_key_exists( 'id' , $_POST['Category'] ) )
+		{    
+			if(!(int)$_POST['Category']['id'])
+			{
         		$message = 'error : id not valid ';
         		$this->redirect("index.php?a=grid&c=Categories&message=" . $message );      
         	}
 
-
-
-        	$parentId = ( $_POST['Category']['parentId'] ) ? $_POST['Category']['parentId'] : null ;     
-
+			$parentId = ( $_POST['Category']['parentId'] ) ? $_POST['Category']['parentId'] : null ;     
         	$wholePath = "" ;
-			if($parentId == null){    
-
+			if($parentId == null)
+			{    
 				$wholePath =   $_POST['Category']['id'] ;
 			}
-			else{                               
-
+			else
+			{                               
 		        $stmt = $adapter->fetch( "SELECT wholePath FROM Categories WHERE id = " . $parentId );          
 		        $parentPath = $stmt[0]['wholePath'] ;  
 		        $wholePath =  $parentPath . " > " . $_POST['Category']['id'] ;   
-
 			}
-	       	
-
-
-			try{
+	       	try
+	       	{
 				$update = $adapter->getConnect()->prepare(" UPDATE Categories 
 															SET parentId   = :parentId ,
 															    name       = :name ,
@@ -99,25 +140,19 @@ class Controller_Categories{
 				$update->execute();
 				/*throw( new Exception('you are right') );*/
 			}
-			catch(Exception $e){
-
+			catch(Exception $e)
+			{
 				$this->redirect('index.php?a=grid&c=Categories&message=' . $e->getMessage() );
 			}	
 
 			$message = $update->rowCount() . " row updated " ;
 			$this->redirect('index.php?a=grid&c=Categories&message=' . $message );
-
-
 		}	
-		else{  
-
-			try{ 
-		       
-
+		else
+		{  
+			try
+			{ 
 				$parentId = ( $_POST['Category']['parentId'] ) ? $_POST['Category']['parentId'] : null ;
-
-			
-
 				$insert = $adapter->getConnect()->prepare(" INSERT INTO Categories( parentId , name, wholePath , status, createdAt) 
 															VALUES ( :parentId , :name , :wholePath , :status , :createdAt) ");
 
@@ -126,66 +161,37 @@ class Controller_Categories{
 				$insert->bindValue( ":name"      ,  $_POST['Category']['name']      );
 				$insert->bindValue( ":status"    ,  $_POST['Category']['status']    );
 				$insert->bindValue( ":createdAt" ,  $_POST['Category']['createdAt'] );
-									  					
 				$insert->execute();
-
 
 				$stmt = $adapter->fetch( "SELECT id FROM Categories ORDER BY id DESC LIMIT 1 ") ;
 				$id = $stmt[0]['id'] ;
-
 				$wholePath  ;
-
-				if($parentId == null){
-
+				if($parentId == null)
+				{
 					$wholePath =  $id ;
 				}
-				else{ 
-
+				else
+				{ 
 					$stmt = $adapter->fetch( "SELECT wholePath FROM Categories WHERE id = " . $parentId );          
 			        $parentPath = $stmt[0]['wholePath'] ; 
 			        $wholePath =  $parentPath . " > " . $id ; 
 				}
-		       		
-		       	
 		        $stmt = $adapter->getConnect()->prepare( " UPDATE Categories SET wholePath = :wholePath  WHERE id = :id " ); 
 		        $stmt->bindValue( ":wholePath" ,  $wholePath    ); 
 		        $stmt->bindValue( ":id"        ,  $id           );
-
 		        $stmt->execute();
-
-
-
-
-
-
 			}
 			catch(Exception $e){
 
 				$this->redirect('index.php?a=grid&c=Categories&message=' . $e->getMessage() );
 			}
-
 			$message = $insert->rowCount() . " row inserted " ;
 			$this->redirect('index.php?a=grid&c=Categories&message=' . $message );
-
-			
 		}
 
 	}
 
-	public function fetchOne( $column )
-	{
-
-        $adapter = new Model_Core_Adapter();
-		
-		$query = "SELECT * FROM Categories " ;
-		$mode =  PDO::FETCH_COLUMN  ;
-		$result = $adapter->fetchOne($query  , $mode  , $column);
-		print_r( $result );
-		require_once("view/Admin/gridAdmin.php");
-	}
-
-
-	public function errorAction()
+	public function errorAction() /*----------------------------------------------------------errorAction()-------------------------------------------------*/
 	{
 		echo("error occured in url");
 		exit();		

@@ -1,10 +1,4 @@
-<?php
 
-$adapter = new Model_Core_Adapter(); 
-$Parent = $adapter->fetch("SELECT id , name FROM Categories");
-
-
-?>
 
 <!DOCTYPE html>
 
@@ -39,9 +33,9 @@ $Parent = $adapter->fetch("SELECT id , name FROM Categories");
 					<td><label> Parent ID &nbsp </label></td>
 					<td> <select name=Category[parentId]   >
 							<option value=""  selected   >  No parent .  </option>
-							<?php foreach($Parent as $parent) : ?>
+							<?php foreach($data['Categories'] as $row) : ?>
 								
-								<option value=<?php echo($parent['id']); ?>  >  <?php echo($parent['name']); ?>   </option>
+								<option value=<?php echo($row['id']); ?>  >  <?php echo($row['name']); ?>   </option>
 
 							<?php endforeach ; ?>	
 						</select> 

@@ -1,7 +1,9 @@
 
+<?php  CCC::loadClass('Controller_Core_Action');   ?>
+
 <?php
 
-class Controller_Products{
+class Controller_Products extends Controller_Core_Action{
 
 	public function redirect( $url )
 	{
@@ -11,33 +13,34 @@ class Controller_Products{
 
 	public function addProduct( )
 	{
-		require_once('view/Products/product_add.php');
+		global $adapter;
+		$this->getView()->setTemplate('view/Products/product_add.php')->toHtml();
 	}
 
 	public function editProduct( )
 	{
-		require_once('view/Products/product_edit.php');
+		global $adapter;
+		$data = $adapter->fetch("SELECT * FROM Products WHERE id = " . $_GET['id'] );
+		$this->getView()->setData($data);
+		date_default_timezone_set('Asia/Kolkata'); 
+		$this->getView()->setTemplate('view/Products/product_edit.php')->toHtml();
 	}
 
 	public function saveProduct( ) /*-----------------------------------------save function------------------------------------------------------------------*/
 	{
-		$adapter = new Model_Core_Adapter();
+		global $adapter ;
 		if( !$adapter->getConnect() ){
-
 			$adapter->connect();	
 		}
-		
-
-
 		if( array_key_exists( 'p_id' , $_POST ) ){
 
-			if( !(int)$_POST['p_id'] ){
+			if( !(int)$_POST['p_id'] )
+			{
 				$message = ' invalid id ' ;
 				$this->redirect("index.php?a=grid&c=Products&message=" . $message );
 			}
 
 			try{
-
 				$stmt = $adapter->getConnect()->prepare( "update Products set name = :name , price =  :price ,quantity = :quantity , status = :status , createdAt = :createdAt , updatedAt = :updatedAt where id = " . $_POST["p_id"] ) ;
 
 				$stmt->bindValue(":name"      , $_POST["p_name"]           ); 
@@ -46,16 +49,14 @@ class Controller_Products{
 				$stmt->bindValue(":status"    , (int)$_POST["p_status"]    );
 				$stmt->bindValue(":createdAt" , $_POST["p_createdAt"]      );
 				$stmt->bindValue(":updatedAt" , $_POST["p_updatedAt"]      );
-
 				$stmt->execute();
 
 				echo( " row updated successfully " );
 				
 			}
-			catch(Exception $e){
-
+			catch(Exception $e)
+			{
 				$this->redirect("index.php?a=grid&c=Products&message=" . $e->getMessage() );
-				
 			}
 			
 		}
@@ -70,11 +71,8 @@ class Controller_Products{
 				$stmt->bindValue(":quantity"  , $_POST["p_quantity"]    );
 				$stmt->bindValue(":status"    , $_POST["p_status"]      );
 				$stmt->bindValue(":createdAt" , $_POST["p_createdAt"]   );
-		        /*  $stmt->bindValue(":updatedAt" , $_POST["p_updatedAt"]   ); */
 				$stmt->execute();
-
 				echo( " data inserted successfully " );
-
 			}
 			catch(Exception $e){
 
@@ -90,24 +88,19 @@ class Controller_Products{
 
 	public function deleteProduct( ) /*------------------------------------------------delete function----------------------------------------------*/
 	{
-		$adapter = new Model_Core_Adapter();
-		if( !$adapter->getConnect() ){
-
-			$adapter->connect();	
-		}   
-
-		$del = $adapter->getConnect()->prepare("delete from Products where id = " . $_GET['id'] );    echo('hiiiiiiii');
-		$del->execute();
-
-		$message = $del->rowCount() . " row deleted " ;                                
+		global $adapter ;
+		$count = $adapter->delete("DELETE FROM Products WHERE id = " . $_GET['id'] );   
+		$message = $count . " row deleted " ;                                
 		$this->redirect("index.php?a=grid&c=Products&message=" . $message );           
-
 	}
 
 	public function gridProduct( )
-	{
-		require_once('view/Products/product_grid.php');
-		echo( $_GET['message'] );
+	{	
+		global $adapter;
+		$query = "SELECT * FROM Products" ;
+		$data = $adapter->fetch($query);
+		$this->getView()->setData($data);
+		$this->getView()->setTemplate("view/Products/product_grid.php")->toHtml();
 	}
 
 	public function errorAction( )

@@ -1,13 +1,4 @@
-<?php
 
-require_once("Model/Core/Adapter.php");
-$adapter = new Model_Core_Adapter();
-
-$query = "SELECT * FROM Customers c INNER JOIN Address a ON c.id = a.customerId" ;
-
-$Customers = $adapter->fetch( $query );  //-----this fetch() is Adapter method-----
-
-?>
 
 <style>
 	table , tr , th ,td {
@@ -26,7 +17,7 @@ $Customers = $adapter->fetch( $query );  //-----this fetch() is Adapter method--
 <button><a href="index.php?a=add&c=Customers">Add New</a></button>
 
 <table>
-<?php if(!$Customers): ?>
+<?php if(!$data): ?>
 
 	<tr>
 		<th>ID          </th>
@@ -53,7 +44,7 @@ $Customers = $adapter->fetch( $query );  //-----this fetch() is Adapter method--
 	
 <?php else :  ?>
 
-	<?php $Keys = array_keys($Customers['0']); ?>
+	<?php $Keys = array_keys($data['0']); ?>
 
 	<tr>
 	<?php foreach($Keys as $key) : ?>           <!-------------------- for table keys-------------- -->
@@ -63,7 +54,7 @@ $Customers = $adapter->fetch( $query );  //-----this fetch() is Adapter method--
 	<?php endforeach ; ?>
 	</tr>
 
-	<?php foreach($Customers as $customer) : ?>  <!-- -----------------for table data------------- -->
+	<?php foreach($data as $customer) : ?>  <!-- -----------------for table data------------- -->
 		<tr>
 			<?php foreach($customer as $key => $value) : ?>
 

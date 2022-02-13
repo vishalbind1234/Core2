@@ -1,13 +1,9 @@
 
-<?php  
-
-	require_once("Model/Core/Adapter.php"); 
-
- ?>
+<?php   CCC::loadClass('Controller_Core_Action');   ?>
 
 <?php 
 
-class Controller_Admin{
+class Controller_Admin extends Controller_Core_Action{
 
 	/*public $adapter = new Model_Core_Adapter();*/
 
@@ -21,40 +17,34 @@ class Controller_Admin{
 
 	public function addAdmin()
 	{
-		require_once("view/Admin/addAdmin.php");
+		global $adapter;
+		$this->getView()->setTemplate("view/Admin/addAdmin.php")->toHtml();
 	}
 
 	public function editAdmin()
 	{
-		
-		require_once("view/Admin/editAdmin.php");
-		
+		global $adapter;
+		$data = $adapter->fetch("SELECT * FROM Admin WHERE id = " . $_GET['id'] );
+		$this->getView()->setData($data);
+		$this->getView()->setTemplate("view/Admin/editAdmin.php")->toHtml();
+				
 	}
 
 	public function deleteAdmin()  /*--------------------------------------deleteAdmin()----------------------------------------------*/  
 	{
 		try{  
             
-          	$adapter = new Model_Core_Adapter();
-
-            if( !$adapter->getConnect() ){
-                $adapter->connect();
-            }  
-          
-            $del = $adapter->getConnect()->prepare( "DELETE  FROM Admin where id = :id" );  
-
-            $del->bindValue(":id" , $_GET['id'] );  
-            $del->execute();                          /*-----$del->execute() returns boolean value-------$del->rowCount()----Return no of rows----*/
-            	 
+          	global $adapter ;
+            $count = $adapter->delete( "DELETE  FROM Admin where id = " . $_GET['id'] );  
+			$message = $count . ' row deleted ' ;
+        	$this->redirect("index.php?a=grid&c=Admin&message=" . $message );
         }
         catch(Exception $e){
 
-        	$this->redirect("index.php?a=grid&c=Admin&message=" . $err = $e->getMessage() );
+        	$this->redirect("index.php?a=grid&c=Admin&message=" . $e->getMessage() );
         }	
 		
-		$message = $del->rowCount() . '  row deleted' ;
 
-        $this->redirect("index.php?a=grid&c=Admin&message=" . $message );
 	
 	}
 
@@ -74,10 +64,7 @@ class Controller_Admin{
         		$message = 'error : id not valid ';
         		$this->redirect("index.php?a=grid&c=Admin&message=" . $message);      
         	}
-
 			try{  
-
-
 				$update = $adapter->getConnect()->prepare( "UPDATE Admin 
 														  SET firstName =  :firstName , 
 													          lastName  =  :lastName  ,
@@ -95,27 +82,19 @@ class Controller_Admin{
 				$update->bindValue(":status"       , $_POST['Admin']["status"]         );
 				$update->bindValue(":createdAt"    , $_POST['Admin']["createdAt"]      );
 				$update->bindValue(":updatedAt"    , $_POST['Admin']["updatedAt"]      );
-
 				$update->execute();
-
-				
 
 				$message =  $update->rowCount() . " row updated " ;
 				$this->redirect("index.php?a=grid&c=Admin&message=" . $message );
-
 			}
-			catch(Exception $e){
-
+			catch(Exception $e)
+			{
 				$this->redirect("index.php?a=grid&c=Admin&message=" . $err = $e->getMessage() );
 			}
 
 		}    
 		else{                       
-			
 			try{           
-
-/*				$commit = $adapter->getConnect()->exec("COMMIT");
-*/
 				$insert = $adapter->getConnect()->prepare( "INSERT INTO 
 							Admin(firstName , lastName , email , password , status ,  createdAt  ) 
 					    	VALUES( :firstName , :lastName , :email , :password  , :status  , :createdAt  )" );    /* no need of updateAt during insert Add New */
@@ -126,8 +105,6 @@ class Controller_Admin{
 				$insert->bindValue(":password"     , $_POST['Admin']["password"]       );
 				$insert->bindValue(":status"       , $_POST['Admin']["status"]         );
 				$insert->bindValue(":createdAt"    , $_POST['Admin']["createdAt"]      );
-				/*$insert->bindValue(":updatedAt"    , $_POST['Admin']["updatedAt"]      );*/
-		
 				$insert->execute();
 				
 
@@ -136,10 +113,9 @@ class Controller_Admin{
 				$this->redirect("index.php?a=grid&c=Admin&message=" . $message );
 			
 			}
-			catch(Exception $e){
-
-/*				$adapter->getConnect()->exec("ROLLBACK");
-*/				$this->redirect("index.php?a=grid&c=Admin&message=" . $err = $e->getMessage() );
+			catch(Exception $e)
+			{
+				$this->redirect("index.php?a=grid&c=Admin&message=" . $err = $e->getMessage() );
 			}
 
 		}
@@ -148,26 +124,20 @@ class Controller_Admin{
 
 	public function gridAdmin() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
 	{
-		require_once("view/Admin/gridAdmin.php");
+		global $adapter;
+		$data = $adapter->fetch("SELECT * FROM Admin");
+		$this->getView()->setData($data);
+		$this->getView()->setTemplate("view/Admin/gridAdmin.php")->toHtml();
 		$message = ( !empty( $_GET['message']) ) ? $_GET['message'] : " " ;
 		echo($message );
 	}
 
 	public function fetchOneAdmin()
 	{
-
-		/*if( !$this->adapter->getConnect() ){
-            $this->adapter->connect();         
-        } */ 
-
         $adapter = new Model_Core_Adapter();
-		
 		$query = "SELECT * FROM Admin" ;
-		/*$mode =  PDO::FETCH_COLUMN  ;*/
-		/*$column = 1;*/
 		$result = $adapter->fetchOne($query  ,  1  );
 		print_r( $result );
-		require_once("view/Admin/gridAdmin.php");
 	}
 	
 	public function errorAction()
@@ -178,13 +148,7 @@ class Controller_Admin{
 
 }
 
-/*echo('hello');
 
-$Admin = new Controller_Admin();
-
-$method = ( !empty($_GET['a']) )  ? $_GET['a'] . 'Admin'  : 'errorAdmin' ;  
-
-$Admin->$method();*/
 
 
 

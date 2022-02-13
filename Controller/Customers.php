@@ -1,13 +1,9 @@
 
-<?php  
-
-	require_once("Model/Core/Adapter.php"); 
-
- ?>
+<?php  CCC::loadClass('Controller_Core_Action');   ?>
 
 <?php 
 
-class Controller_Customers{
+class Controller_Customers extends Controller_Core_Action{
 
 	public function redirect($url)
 	{
@@ -18,13 +14,17 @@ class Controller_Customers{
 
 	public function addAction()
 	{
-		require_once("view/Customers/addAction.php");
+		global $adapter;
+		$this->getView()->setTemplate("view/Customers/addAction.php")->toHtml();
 	}
 
 	public function editAction()
 	{
-		
-		require_once("view/Customers/editAction.php");
+		global $adapter;
+		$query = "SELECT * FROM Customers c INNER JOIN Address a ON c.id = a.customerId" ;
+        $Customers = $adapter->fetch( $query ); 
+        $this->getView()->setData($Customers);
+		$this->getView()->setTemplate("view/Customers/editAction.php")->toHtml();
 		
 	}
 
@@ -129,11 +129,7 @@ class Controller_Customers{
 
 		}    
 		else{                       
-			
-			try{           
-
-/*				$commit = $adapter->getConnect()->exec("COMMIT");
-*/
+			try{       
 				$insert = $adapter->getConnect()->prepare( "INSERT INTO 
 							Customers(firstName , lastName , email , mobile , createdAt  ) 
 					    	VALUES( :firstName , :lastName , :email , :mobile , :createdAt  )" );    /* no need of updateAt during insert Add New */
@@ -143,11 +139,8 @@ class Controller_Customers{
 				$insert->bindValue(":email"        , $_POST['Person']["email"]          );
 				$insert->bindValue(":mobile"       , $_POST['Person']["mobile"]         );
 				$insert->bindValue(":createdAt"    , $_POST['Person']["createdAt"]      );
-				/*$insert->bindValue(":updatedAt"    , $_POST['Person']["updatedAt"]      );*/
-		
 				$insert->execute();
 				
-
 				$insert = $adapter->getConnect()->prepare("SELECT * FROM Customers ORDER BY id DESC LIMIT 1");
 				$insert->execute();
 				$result = $insert->fetchAll(PDO::FETCH_ASSOC);
@@ -160,25 +153,23 @@ class Controller_Customers{
 					    	Address(customerId  , address , pincode , city , state , country , billing , shipping )
 					    	VALUES(:customerId  , :address , :pincode , :city , :state , :country , :billing , :shipping )" );
 
-						$insert->bindValue(":customerId" , $customerId                      ); 
-						$insert->bindValue(":address"    , $_POST['Address']["address"]     ); 
-						$insert->bindValue(":pincode"    , $_POST['Address']["pincode"]     ); 
-						$insert->bindValue(":city"       , $_POST['Address']["city"]        ); 
-						$insert->bindValue(":state"      , $_POST['Address']["state"]       ); 
-						$insert->bindValue(":country"    , $_POST['Address']["country"]      ); 
-						$insert->bindValue(":billing"    , $billing      ); 
-						$insert->bindValue(":shipping"   , $shipping     ); 
-				
+				$insert->bindValue(":customerId" , $customerId                      ); 
+				$insert->bindValue(":address"    , $_POST['Address']["address"]     ); 
+				$insert->bindValue(":pincode"    , $_POST['Address']["pincode"]     ); 
+				$insert->bindValue(":city"       , $_POST['Address']["city"]        ); 
+				$insert->bindValue(":state"      , $_POST['Address']["state"]       ); 
+				$insert->bindValue(":country"    , $_POST['Address']["country"]      ); 
+				$insert->bindValue(":billing"    , $billing      ); 
+				$insert->bindValue(":shipping"   , $shipping     ); 
 				$insert->execute();  
 
 				$message =  $insert->rowCount() . " row inserted " ;
 				$this->redirect("index.php?a=grid&c=Customers&message=" . $message );
 			
 			}
-			catch(Exception $e){
-
-/*				$adapter->getConnect()->exec("ROLLBACK");
-*/				$this->redirect("index.php?a=grid&c=Customers&message=" . $err = $e->getMessage() );
+			catch(Exception $e)
+			{
+   				$this->redirect("index.php?a=grid&c=Customers&message=" . $err = $e->getMessage() );
 			}
 
 		}
@@ -187,7 +178,11 @@ class Controller_Customers{
 
 	public function gridAction() /*---------------------------------------------------------gridAction()-----------------------------------------*/
 	{
-		require_once("view/Customers/gridAction.php");
+		global $adapter;
+		$query = "SELECT * FROM Customers c INNER JOIN Address a ON c.id = a.customerId ORDER BY a.customerId" ;
+        $Customers = $adapter->fetch( $query ); 
+        $this->getView()->setData($Customers);
+		$this->getView()->setTemplate("view/Customers/gridAction.php")->toHtml();
 		$message = ( !empty( $_GET['message']) ) ? $_GET['message'] : " " ;
 		echo($message );
 	}
@@ -200,13 +195,6 @@ class Controller_Customers{
 
 }
 
-echo('hello');
-
-$customer = new Controller_Customers();
-
-$action = ( !empty($_GET['a']) )  ? $_GET['a'] . 'Action'  : 'errorAction' ;  
-
-$customer->$action();
 
 
 

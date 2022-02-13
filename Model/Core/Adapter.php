@@ -18,7 +18,6 @@ class Model_Core_Adapter{
             $this->connect = new PDO($this->config["host"] , $this->config["user"] , $this->config["pass"]  );
             $this->connect->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION);
             $this->connect->setAttribute(PDO::MYSQL_ATTR_FOUND_ROWS ,  true );
-            
             $this->connect->exec("use " . $this->config["dbname"]);
             
         }
@@ -27,9 +26,6 @@ class Model_Core_Adapter{
             echo("error in connection : \n\n" . $e->getMessage() );
         }  
 
-		/*$connect = new PDO($this->config["host"] , $this->config["user"] ,
-                             $this->config["pass"]  );
-		$this->setConnect($connect);*/
 	}
 
 	public function setConnect($connect){
@@ -61,31 +57,8 @@ class Model_Core_Adapter{
        	return $this->config;
     }
 
- /* public function insert($query){
-    	try{
-           
-    		if( !$this->getConnect() ){
-    			$this->connect();
-    		}
-
-    		$result = $this->getConnect()->prepare($query); 
-            $bool = $result->execute() ; 
-            if(!$bool){
-                return false;
-            }
-    		
-            return $result->rowCount();  //---no of rows affected----
-    	}
-    	catch(Exception $e){
-
-    		echo("error in insert : \n\n" . $e->getMessage() );
-    	}
-    	
-    }*/
-
     public function fetch($query){
     	try{
-                                             // ASSOC , NUM , OBJ , BOTH  , COLUMN & col_idx
     		if( !$this->getConnect() ){
     			$this->connect();
     		}                
@@ -96,10 +69,8 @@ class Model_Core_Adapter{
            	    return false;
             }
 
-            $records = $result->fetchAll(PDO::FETCH_ASSOC) ;  //----$result->fetchAll() returns Array[]
-            return $records ;
-
-
+            $records = $result->fetchAll(PDO::FETCH_ASSOC) ;  //----$result->fetchAll() returns Array[][]
+            return $records ;                                 // ASSOC , NUM , OBJ , BOTH  , COLUMN & col_idx
     	}
     	catch(Exception $e){
 
@@ -108,9 +79,8 @@ class Model_Core_Adapter{
     	
     }
 
-   /* public function delete($query){
+    public function delete($query){
         try{
-                                           
             if( !$this->getConnect() ){
                 $this->connect();
             }                
@@ -127,8 +97,8 @@ class Model_Core_Adapter{
         }
         
     }
-*/
 
+/*
     public function fetchOne($query , $column = 0 ,  $mode = PDO::FETCH_COLUMN  )
     {
         # code...
@@ -147,43 +117,37 @@ class Model_Core_Adapter{
 
 
     }
+*/
 
+    public function fetchPairs( $firstColumn ,  $secondColumn , $tableName  )
+    {
+        # code...
+        if( !$this->getConnect() ){
+            $this->connect();
+        }
+        $query = " SELECT  {$firstColumn} , {$secondColumn} FROM {$tableName} " ;  
+        $stmt = $this->getConnect()->prepare( $query );
+        $bool = $stmt->execute();
+        $firstArray = $stmt->fetchAll(PDO::FETCH_COLUMN , 0);        
+        $bool = $stmt->execute();
+        $secondArray = $stmt->fetchAll(PDO::FETCH_COLUMN , 1);         
+        if(!$firstArray)
+        {
+        	return null ;
+        }
+        if(!$secondArray)
+        {
+        	$secondArray = array_fill(0, sizeof($firstArray) , 0) ;
+        }
+        $pairArray = array_combine($firstArray, $secondArray);
+        return $pairArray;
+    }
 
 
 
 }
 
 
-
-
-
-
-
-
-
-/*$adapter = new Adapter();
-
-print_r( get_class_methods("PDO"  )   );*/
-
-
-/*$config_array = [
-				  "host" => "mysql:localhost"    , 
-				  "user" => "vishalbind"   , 
-				  "pass" => "vishal"       , 
-				  "dbname" => "php_practice_db"	
-				];
-
-print_r($adapter->getConfig());
-
-$connect = $adapter->setConfig($config_array);
-
-print_r($adapter->getConfig());
-*/
-
-/*print_r( $adapter->fetch("select * from ProductGrid") );
-*/
-/*$adapter->connect();
-*/
 
 
 

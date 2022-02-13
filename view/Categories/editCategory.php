@@ -1,73 +1,4 @@
 
-
-<?php
-
-require_once("Model/Core/Adapter.php");
-$adapter = new Model_Core_Adapter();
-
-$currentRecord = $adapter->fetch("select * from Categories where id =" . $_GET['id'] );
-$Parent = $adapter->fetch("SELECT id , parentId , name FROM Categories");
-
-/*$path = higherCategory( $_GET['id']  , $adapter);
-
-function higherCategory( $self_id  , $adapter ){
-
-	static $path = "" ;
-
-	$higherCategory = $adapter->fetch("SELECT parentId , name  FROM Categories where id =" . $self_id ); 
-	$name = $higherCategory[0]['name'] ;
-
-	$parent_id = $higherCategory[0]['parentId'] ;
-
-	if($parent_id == null){
-		return $name ;
-	}
-	else{
-
-		$path =  higherCategory($parent_id , $adapter)  . "=>" .  $name ;
-	}
-
-	return $path ;
-
-}
-
-echo($path);*/
-
-
-
-function canBePlaced( $id  , $currentRecordParentId )
-{
-	
-
-	$adapter2 = new Model_Core_Adapter() ;
-
-	$query = "select * from Categories";
-	/*$names = $adapter2->fetchOne( $query , 2 );*/
-	$idSet = $adapter2->fetchOne( $query , 0 );
-
-    /*$id_name_arr = array_combine($idSet, $names );*/
-
-    $paths = $adapter2->fetchOne( $query , 3 );
-
-    $idPathArray = array_combine($idSet, $paths );
-
-    $pathAsArray = explode( " > " , $idPathArray[$id] ); 
-
-    $pathAsArray[sizeof($pathAsArray) - 1] = 0;
-     
-    if(  in_array( $currentRecordParentId , $pathAsArray ) ){
-
-    		return false;
-    }
-
-    return true;
- 	
-}
-
-
- 
-?>
-
 <!DOCTYPE html>
 
 <html>
@@ -98,20 +29,19 @@ function canBePlaced( $id  , $currentRecordParentId )
 
 				<tr>
 					<td><label> ID &nbsp </label></td>                                        <!-- readonly , hidden , disable -->
-					<td><input type="number" name=Category[id] value=<?php echo( $currentRecord[0]['id']); ?>  readonly ></td>
+					<td><input type="number" name=Category[id] value=<?php echo( $data['Categories'][0]['id']); ?>  readonly ></td>
 				</tr>
 
 				<tr>
 					<td><label> Parent ID &nbsp </label></td>
 					<td> <select name=Category[parentId]   >
 							<option value="" >  No parent .  </option>
-							<?php foreach($Parent as $parent) : ?>
+							<?php foreach($data['Parent'] as $rowInDropDown) : ?>
 								
- 								<?php if(  canBePlaced( $parent['id']   , $currentRecord[0]['parentId']  ) ) : ?>
+ 								<?php if( canBePlaced($rowInDropDown['id'] , $data['Categories'][0]['parentId']) ) : ?>
 								
-									<option value=<?php echo($parent['id']); ?>
-									              <?php if( $parent['id'] == $currentRecord[0]['parentId'] ){ echo(' selected'); } ?>   >  
-									              <?php echo($parent['name']); ?>   
+									<option value=<?php echo($rowInDropDown['id']); ?> <?php if( $rowInDropDown['id'] == $data['Categories'][0]['parentId'] ){ echo(' selected'); } ?>   >  
+									    <?php echo($rowInDropDown['name']); ?>   
 									</option>
 
  								<?php endif ; ?>	
@@ -123,12 +53,12 @@ function canBePlaced( $id  , $currentRecordParentId )
 
 				<tr>
 					<td><label> Name &nbsp </label></td>
-					<td><input type="text" name=Category[name] value=<?php echo( $currentRecord[0]['name']); ?>   ></td>
+					<td><input type="text" name=Category[name] value=<?php echo( $data['Categories'][0]['name']); ?>   ></td>
 				</tr>
 
 				<tr>
 					<td><label> Category Whole Path &nbsp </label></td>
-					<td><input type="text" value=""  name=Category[wholePath]  value=<?php echo( $currentRecord[0]['wholePath']); ?>  ></td>
+					<td><input type="text" value=""  name=Category[wholePath]  value=<?php echo( $data['Categories'][0]['wholePath']); ?>  ></td>
 				</tr>
 				
 				<tr>
@@ -142,7 +72,7 @@ function canBePlaced( $id  , $currentRecordParentId )
 				
 				<tr>
 					<td><label> CreatedAt &nbsp </label></td>
-					<td><input type="date" name=Category[createdAt]  value=<?php echo( $currentRecord[0]['createdAt']); ?>   ></td>
+					<td><input type="date" name=Category[createdAt]  value=<?php echo( $data['Categories'][0]['createdAt']); ?>   ></td>
 				</tr>
 				<tr>
 					<td><label> UpdatedAt &nbsp </label></td>

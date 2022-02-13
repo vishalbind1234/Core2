@@ -18,7 +18,8 @@
 </html>
 
 
-<?php require_once("Model/Core/Adapter.php"); ?>
+<?php require_once("Model/Core/Adapter.php"); 
+       $adapter = new Model_Core_Adapter();      ?>
 
 <?php
 
@@ -26,16 +27,20 @@
 class CCC {
 
 
+
+
 	public static function loadFile( $url )
-	{	
-		require_once( $url ); 
+	{	                                       
+		require_once( $url );    
 	}
 
-	public static function loadClass( $fileName )
+	public static function loadClass( $className )
 	{
-		$controllerClassPath = 'Controller/' . $fileName . '.php' ; 
+		$controllerClassPath = str_replace( "_", "/" , $className ) ;    
+
+		$controllerClassFile = $controllerClassPath . ".php" ;      
 		
-		CCC::loadFile( $controllerClassPath );  
+		CCC::loadFile( $controllerClassFile );  
 
 	}
 	
@@ -60,9 +65,9 @@ class CCC {
 
 		$controllerName = ucfirst( $_GET['c'] ) ;         /*-----------here we have got controller class File name -----------------*/
 		
-		CCC::loadClass( $controllerName ); 
-
 		$controllerClassName = 'Controller_' . $controllerName ;    /*--------------------actual name of controller class------------------*/
+
+		CCC::loadClass( $controllerClassName ); 
 
 		$obj = new $controllerClassName(); 
 		$obj->$method() ; 

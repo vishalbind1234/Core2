@@ -10,20 +10,11 @@
 	}
 </style>
 
-<?php
-
-$adapter = new Model_Core_Adapter();
-$query = "SELECT * FROM Products" ;
-
-$Products = $adapter->fetch( $query );  //-----this fetch() is Adapter method-----
-
-?>
-
 <button><a href="index.php?a=add&c=Products">Add New</a></button>
 
 <table>
 
-<?php if(!$Products): ?>
+<?php if(!$data): ?>
 
 	<tr>
 		<th>ID           </th>
@@ -41,7 +32,7 @@ $Products = $adapter->fetch( $query );  //-----this fetch() is Adapter method---
 	
 <?php else :  ?>
 
-	<?php $Keys = array_keys($Products['0']); ?>
+	<?php $Keys = array_keys($data['0']); ?>
 
 	<tr>
 	<?php foreach($Keys as $key) : ?>           <!-------------------- for table keys-------------- -->
@@ -51,7 +42,7 @@ $Products = $adapter->fetch( $query );  //-----this fetch() is Adapter method---
 	<?php endforeach ; ?>
 	</tr>
 
-	<?php foreach($Products as $product) : ?>  <!-- -----------------for table data------------- -->
+	<?php foreach($data as $product) : ?>  <!-- -----------------for table data------------- -->
 		<tr>
 			<?php foreach($product as $key => $value) : ?>
 
