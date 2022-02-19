@@ -52,7 +52,7 @@ class Model_Core_View{
 		if(array_key_exists($key, $data)){
 			return $this->data[$key];
 		}
-		return null; /**/
+		return null; 
 	}
 	
 

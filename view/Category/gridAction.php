@@ -1,5 +1,5 @@
 
-
+<?php  $categories =  $this->getCategory()     ?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -17,11 +17,12 @@
 		
 	</head>
 	<body>
-		<BUTTON> <a href="index.php?a=add&c=Categories"> Add New </a> </BUTTON> 
+
+		<BUTTON> <a href="index.php?a=add&c=Category"> Add New </a> </BUTTON> 
 
 		<table>
 
-			<?php if(!$data['Categories']) : ?>
+			<?php if(!$categories) : ?>
 				<tr>
 					<th> <label> ID </label> </th>
 					<th> <label> Parent ID </label> </th>
@@ -36,7 +37,7 @@
 				</tr>
 			<?php else : ?>
 
-				<?php $Keys = array_keys($data['Categories']['0']); ?>   <!-- ----------------getting arrayKeys----------------------- -->
+				<?php $Keys = array_keys($categories['0']); ?>   <!-- ----------------getting arrayKeys----------------------- -->
 
 				<tr>
 				<?php foreach($Keys as $key) : ?>  <!-- -----------------------printing array keys --------------------------- -->
@@ -47,13 +48,13 @@
 				</tr>
 
 
-				<?php foreach( $data['Categories'] as $category ) : ?> <!-- ------------------------printing array data---------------- -->
+				<?php foreach( $categories as $category ) : ?> <!-- ------------------------printing array data---------------- -->
 					<tr>
 						<?php foreach( $category as $key => $value ) : ?>
 
 							<?php  if( $key == "wholePath" ) :  ?>
 
-								<td> <?php echo( wholePathName( $category['id'] ) ); ?>   </td>
+								<td> <?php echo( $this->wholePathName( $category['id'] ) ); ?>   </td>
 
 							<?php  else :  ?>
 
@@ -62,8 +63,8 @@
 							<?php  endif  ; ?>
 
 						<?php endforeach ;  ?>
-						<td> <a href="index.php?a=edit&c=Categories&id=<?php echo($category['id']); ?>"  > Edit </a> </td>
-						<td> <a href="index.php?a=delete&c=Categories&id=<?php echo($category['id']); ?>"  > Delete </a> </td>
+						<td> <a href="index.php?a=edit&c=Category&id=<?php echo($category['id']); ?>"  > Edit </a> </td>
+						<td> <a href="index.php?a=delete&c=Category&id=<?php echo($category['id']); ?>"  > Delete </a> </td>
 					</tr>
 				<?php endforeach ;  ?>
 			<?php endif ;  ?>
@@ -86,7 +87,7 @@
 /*	$wholePathName = "" ; 
 
 	$adapter = new Model_Core_Adapter() ;
-	$pathAsString = $adapter->fetch("SELECT wholePath  from Categories WHERE  id = " . $id );
+	$pathAsString = $adapter->fetchAll("SELECT wholePath  from Category WHERE  id = " . $id );
 
 	$array = explode( ' > ' ,  $pathAsString[0]['wholePath'] ) ;
 	
@@ -98,7 +99,7 @@
 	
 
 	
-	$pathAsarray = $adapter->fetch( "SELECT name  from Categories WHERE  id  IN  $idSet  " );
+	$pathAsarray = $adapter->fetchAll( "SELECT name  from Category WHERE  id  IN  $idSet  " );
 
 	$stringToReturn = "";
 	foreach ($pathAsarray as $key => $value) {
@@ -112,10 +113,10 @@
 /*
 	global $adapter;	
 
-	$query = "SELECT * FROM Categories";
-	$names = $adapter->fetchOne( $query , 2 );
-	$idSet = $adapter->fetchOne( $query , 0 );
-    $paths = $adapter->fetchOne( $query , 3 );
+	$query = "SELECT * FROM Category";
+	$names = $adapter->fetchAllOne( $query , 2 );
+	$idSet = $adapter->fetchAllOne( $query , 0 );
+    $paths = $adapter->fetchAllOne( $query , 3 );
 
     $idNameArray = array_combine($idSet, $names );
     $idPathArray = array_combine($idSet, $paths );

@@ -50,21 +50,7 @@ class Controller_Category extends Controller_Core_Action{
 
 	public function editAction()  /*----------------------------------------------editCategory()------------------------------------------*/
 	{
-		
-
-		function possibleOptions( $currentWholePath  , $currentParentId )
-		{
-			global $adapter;
-			$wholePath = explode(" > ", $currentWholePath );
-			$wholePath[sizeof($wholePath) - 1] = "" ;
-			$wholePathString = implode(" > ", $wholePath );
-			$wholePathString = "'".$wholePathString."%'";
-			$result = $adapter->fetchAll(" SELECT * FROM Category WHERE wholePath NOT LIKE {$wholePathString} ");
-			return $result;
-			
-		}
-
-
+	
 		$categoriesEdit = CCC::getBlock('Category_Edit');
 		$categoriesEdit->toHtml();
 	}
@@ -168,23 +154,7 @@ class Controller_Category extends Controller_Core_Action{
 	}
 
 
-	public static function wholePathName( $id )
-	{
-		global $adapter;	
-
-		$query = "SELECT * FROM Category";
-		$idNameArray = $adapter->fetchPairs('id' , 'name' , 'Category');
-		$idWholePathArray = $adapter->fetchPairs('id' , 'wholePath' , 'Category');
-		
-	    $wholePathAsArray = explode( " > " , $idWholePathArray[$id] );  // note the spaces around seperator ( > ) is also a path of delimiter  //
-	    $wholePathAsString = "";
-	    foreach ($wholePathAsArray as $key => $value) {
-	    	# code...
-	     	$wholePathAsString = $wholePathAsString  . $idNameArray[$value] .  " > "  ; 
-	    }
-	    return $wholePathAsString;
-	}
-
+	
 	public function errorAction() /*----------------------------------------------------------errorAction()-------------------------------------------------*/
 	{
 		echo("error occured in url");
@@ -194,21 +164,6 @@ class Controller_Category extends Controller_Core_Action{
 
 }
 
-	/*	function canBePlaced( $id  , $currentRecordParentId )
-		{
-			global $adapter;
-			$query = "SELECT * FROM Category";
-			$idNameArray = $adapter->fetchPairs('id' , 'name' , 'Category');
-			$idWholePathArray = $adapter->fetchPairs('id' , 'wholePath' , 'Category');
-
-		    $wholePathAsArray = explode( " > " , $idWholePathArray[$id] ); 
-		    $wholePathAsArray[sizeof($wholePathAsArray) - 1] = 0;           //-----just excluded parent from array (check) so that it appears in the list------
-		    if(  in_array( $currentRecordParentId , $wholePathAsArray ) )
-		    {
-		   		return false;
-		    }
-		    return true;
-		}*/
 
 
 

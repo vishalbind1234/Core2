@@ -17,7 +17,7 @@
 
 	<body>
 
-		<form action="index.php?a=save&c=Customers" method="post">
+		<form action="index.php?a=save&c=Customer" method="post">
 
 
 			<table>                            
@@ -87,8 +87,8 @@
 				
 			</table>
 
-			<button type="submit" name="submit" value="submit"> Save </button>
-			<button> <a href="index.php?a=grid&c=Customers"> Cancel </a> </button>
+			<button type="submit"> Save </button>
+			<button> <a href="index.php?a=grid&c=Customer"> Cancel </a> </button>
 
 		</form>
 

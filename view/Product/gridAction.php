@@ -1,3 +1,5 @@
+
+<?php    $products = $this->getProduct();       ?>
 <style>
 	table , tr , th ,td {
 		border:2px solid red;
@@ -10,11 +12,11 @@
 	}
 </style>
 
-<button><a href="index.php?a=add&c=Products">Add New</a></button>
+<button><a href="index.php?a=add&c=Product">Add New</a></button>
 
 <table>
 
-<?php if(!$data): ?>
+<?php if(!$products): ?>
 
 	<tr>
 		<th>ID           </th>
@@ -32,7 +34,7 @@
 	
 <?php else :  ?>
 
-	<?php $Keys = array_keys($data['0']); ?>
+	<?php $Keys = array_keys($products[0]); ?>
 
 	<tr>
 	<?php foreach($Keys as $key) : ?>           <!-------------------- for table keys-------------- -->
@@ -42,15 +44,15 @@
 	<?php endforeach ; ?>
 	</tr>
 
-	<?php foreach($data as $product) : ?>  <!-- -----------------for table data------------- -->
+	<?php foreach($products as $product) : ?>  <!-- -----------------for table data------------- -->
 		<tr>
 			<?php foreach($product as $key => $value) : ?>
 
 				<td> <?php echo($value);  ?> </td>
 
 			<?php endforeach ; ?>                     
-			<td> <a href="index.php?a=edit&id=<?php echo($product['id']); ?>&c=Products" > Edit  </a> </td>  <!-- $product is inner array -->
-			<td> <a href="index.php?a=delete&id=<?php echo($product['id']); ?>&c=Products" > Delete </a> </td>  <!-- $product is inner array -->
+			<td> <a href="index.php?a=edit&id=<?php echo($product['id']); ?>&c=Product" > Edit  </a> </td>  <!-- $product is inner array -->
+			<td> <a href="index.php?a=delete&id=<?php echo($product['id']); ?>&c=Product" > Delete </a> </td>  <!-- $product is inner array -->
 		</tr>
 	<?php endforeach ; ?>                     
 <?php endif ;  ?>

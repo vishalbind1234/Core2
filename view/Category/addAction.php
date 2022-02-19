@@ -1,4 +1,4 @@
-
+<?php  $categories =  $this->getCategory()  ;   ?>
 
 <!DOCTYPE html>
 
@@ -16,24 +16,17 @@
 	</head>
 
 	<body>
-
-
-
-		<form action="index.php?a=save&c=Categories" method="post">
-
-
+		<form action="index.php?a=save&c=Category" method="post">
 			<table>                            
-
 				<tr>
 					<td colspan="2"><label> Category &nbsp </label></td>
-					
 				</tr>
 
 				<tr>
 					<td><label> Parent ID &nbsp </label></td>
 					<td> <select name=Category[parentId]   >
 							<option value=""  selected   >  No parent .  </option>
-							<?php foreach($data['Categories'] as $row) : ?>
+							<?php foreach($categories as $row) : ?>
 								
 								<option value=<?php echo($row['id']); ?>  >  <?php echo($row['name']); ?>   </option>
 
@@ -74,7 +67,7 @@
 			</table>
 
 			<button type="submit" name="submit" value="submit"> Save </button>
-			<button> <a href="index.php?a=grid&c=Categories"> Cancel </a> </button>
+			<button> <a href="index.php?a=grid&c=Category"> Cancel </a> </button>
 
 		</form>
 

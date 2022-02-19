@@ -1,4 +1,6 @@
 
+<?php   $customers = $this->getCurrentCustomer();   ?>
+
 <!DOCTYPE html>
 
 <html>
@@ -16,7 +18,7 @@
 
 	<body>
 
-		<form action="index.php?a=save&c=Customers" method="post">
+		<form action="index.php?a=save&c=Customer" method="post">
 
 
 			<table>
@@ -28,27 +30,27 @@
 
 				<tr>
 					<td><label> ID &nbsp </label></td>                                        <!-- readonly , hidden , disable -->
-					<td><input type="number" name=Person[id] value=<?php echo( $data[0]['id']); ?>  readonly ></td>
+					<td><input type="number" name=Person[id] value=<?php echo( $customers['id']); ?>  readonly ></td>
 				</tr>
 				<tr>
 					<td><label> First Name &nbsp </label></td>
-					<td><input type="text" name=Person[firstName]  value=<?php echo( $data[0]['firstName']); ?>   ></td>
+					<td><input type="text" name=Person[firstName]  value=<?php echo( $customers['firstName']); ?>   ></td>
 				</tr>
 				<tr>
 					<td><label> Last Name &nbsp </label></td>
-					<td><input type="text" name=Person[lastName]  value=<?php echo( $data[0]['lastName']); ?>   ></td>
+					<td><input type="text" name=Person[lastName]  value=<?php echo( $customers['lastName']); ?>   ></td>
 				</tr>
 				<tr>
 					<td><label> Email &nbsp </label></td>
-					<td><input type="text" name=Person[email]  value=<?php echo( $data[0]['email']); ?>   ></td>
+					<td><input type="text" name=Person[email]  value=<?php echo( $customers['email']); ?>   ></td>
 				</tr>
 				<tr>
 					<td><label> Mobile &nbsp </label></td>
-					<td><input type="number" name=Person[mobile]  value=<?php echo( $data[0]['mobile']); ?>   ></td>
+					<td><input type="number" name=Person[mobile]  value=<?php echo( $customers['mobile']); ?>   ></td>
 				</tr>
 				<tr>
 					<td><label> CreatedAt &nbsp </label></td>
-					<td><input type="date" name=Person[createdAt]  value=<?php echo( $data[0]['createdAt']); ?>   ></td>
+					<td><input type="date" name=Person[createdAt]  value=<?php echo( $customers['createdAt']); ?>   ></td>
 				</tr>
 				<tr>
 					<td><label> UpdatedAt &nbsp </label></td>
@@ -62,44 +64,44 @@
 				</tr>
 				<tr>
 					<td><label > A_ID &nbsp </label></td>
-					<td><input type="number" name=Address[aId] value=<?php echo( $data[0]['aId']); ?>  readonly ></td>
+					<td><input type="number" name=Address[aId] value=<?php echo( $customers['aId']); ?>  readonly ></td>
 				</tr>
 				<tr>
 					<td><label > Customer ID &nbsp </label></td>
-					<td><input type="number" name=Address[customerId] value=<?php echo( $data[0]['customerId']); ?> readonly ></td>
+					<td><input type="number" name=Address[customerId] value=<?php echo( $customers['customerId']); ?> readonly ></td>
 				</tr>
 				<tr>
 					<td><label> Address &nbsp </label></td>
-					<td><input type="text" name=Address[address] value=<?php echo( $data[0]['address']); ?> ></td>
+					<td><input type="text" name=Address[address] value=<?php echo( $customers['address']); ?> ></td>
 				</tr>
 				<tr>
 					<td><label> Pincode &nbsp </label></td>
-					<td><input type="number" name=Address[pincode] value=<?php echo( $data[0]['pincode']); ?> ></td>
+					<td><input type="number" name=Address[pincode] value=<?php echo( $customers['pincode']); ?> ></td>
 				</tr>
 				<tr>
 					<td><label> City &nbsp </label></td>
-					<td><input type="text" name=Address[city] value=<?php echo( $data[0]['city']); ?> ></td>
+					<td><input type="text" name=Address[city] value=<?php echo( $customers['city']); ?> ></td>
 				</tr>
 				<tr>
 					<td><label> State &nbsp </label></td>
-					<td><input type="text" name=Address[state] value=<?php echo( $data[0]['state']); ?> ></td>
+					<td><input type="text" name=Address[state] value=<?php echo( $customers['state']); ?> ></td>
 				</tr>
 				<tr>
 					<td><label> Country &nbsp </label></td>
-					<td><input type="text" name=Address[country]  value=<?php echo( $data[0]['country']); ?>  ></td>
+					<td><input type="text" name=Address[country]  value=<?php echo( $customers['country']); ?>  ></td>
 				</tr>
 				<tr>
 					<td><label> TYPE &nbsp </label></td>
 					<td>
 						<label> Billing &nbsp </label> <input type="checkbox" name=Address[billing] value="1"
 						                                               <?php 
-						                                                   if($data[0]['billing'] == 1 ){
+						                                                   if($customers['billing'] == 1 ){
 						                                       		        	echo("checked");
 						                                       		        }
 						                                               ?> >
 						<label> Shipping &nbsp </label> <input type="checkbox" name=Address[shipping] value="1"
 						                                               <?php 
-						                                                   if($data[0]['shipping'] == 1 ){
+						                                                   if($customers['shipping'] == 1 ){
 						                                       		        	 echo("checked");
 						                                       		        }
 						                                               ?> > 
@@ -110,8 +112,8 @@
 				
 			</table>
 
-			<button type="submit" name="submit" value="submit"> Save </button>
-			<button> <a href="index.php?a=grid&c=Customers"> Cancel </a> </button>
+			<button type="submit"> Save </button>
+			<button> <a href="index.php?a=grid&c=Customer"> Cancel </a> </button>
 
 		</form>
 

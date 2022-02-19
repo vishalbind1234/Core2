@@ -7,6 +7,14 @@ class Controller_Admin extends Controller_Core_Action{
 
 	/*public $adapter = new Model_Core_Adapter();*/
 
+	public function testAction()
+	{
+		# code...
+		$adminModel = CCC::getModel('Admin');
+		$admin = $adminModel->getTableName();
+		echo($admin);
+		exit();
+	}
 
 	public function redirect($url)
 	{
@@ -15,131 +23,107 @@ class Controller_Admin extends Controller_Core_Action{
 	    
 	}
 
-	public function addAdmin()
+	public function gridAction() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
 	{
-		global $adapter;
-		$this->getView()->setTemplate("view/Admin/addAdmin.php")->toHtml();
+		$adminGrid = CCC::getBlock('Admin_Grid');    
+		$adminGrid->toHtml();
+
+		$message = ( $this->getRequest()->getRequest('message') ) ? $this->getRequest()->getRequest('message') : " 123 " ;
+		echo($message );
 	}
 
-	public function editAdmin()
+	public function addAction()
 	{
-		global $adapter;
-		$data = $adapter->fetch("SELECT * FROM Admin WHERE id = " . $_GET['id'] );
-		$this->getView()->setData($data);
-		$this->getView()->setTemplate("view/Admin/editAdmin.php")->toHtml();
-				
+		$adminAdd = CCC::getBlock('Admin_Add');
+		$adminAdd->toHtml();
+		
 	}
 
-	public function deleteAdmin()  /*--------------------------------------deleteAdmin()----------------------------------------------*/  
+	public function editAction()
+	{
+		$adminEdit = CCC::getBlock('Admin_Edit');
+		$adminEdit->toHtml();
+
+	}
+
+	public function deleteAction()  /*--------------------------------------deleteAdmin()----------------------------------------------*/  
 	{
 		try{  
-            
-          	global $adapter ;
-            $count = $adapter->delete( "DELETE  FROM Admin where id = " . $_GET['id'] );  
-			$message = $count . ' row deleted ' ;
-        	$this->redirect("index.php?a=grid&c=Admin&message=" . $message );
-        }
-        catch(Exception $e){
+            $modelAdmin = CCC::getModel('Admin');   		 		
+            $id = $this->getRequest()->getRequest('id');  					
 
-        	$this->redirect("index.php?a=grid&c=Admin&message=" . $e->getMessage() );
-        }	
-		
+            $deletedId = $modelAdmin->delete( ['id' => $id] );        
+            
+			$param['message'] = " id " . $deletedId . " row deleted " ;
+			$url = $this->getUrl('grid' , 'Admin' , $param );
+        	$this->redirect($url);
+        }
+        catch(Exception $e)
+        {
+			$param['message'] = $e ;
+			$url = $this->getUrl('grid' , 'Admin' , $param );
+        	$this->redirect($url);
+		}
 
 	
 	}
 
-	public function saveAdmin() /*-----------------------------------------saveAdmin()-------------------------------------------------------------*/
+	public function saveAction() //-----------------------------------------saveAdmin()-------------------------------------------------------------
 	{     
-
-		$adapter = new Model_Core_Adapter();
-		if( !$adapter->getConnect() ){
-            $adapter->connect();         
-        }  
-
-        var_dump( array_key_exists( 'id' , $_POST['Admin'] ) );
-
-        if(array_key_exists( 'id' , $_POST['Admin'] )) {    /* update if key exist */ 
-
-        	if(!(int)$_POST['Admin']['id']){
-        		$message = 'error : id not valid ';
-        		$this->redirect("index.php?a=grid&c=Admin&message=" . $message);      
+		global $adapter;    
+				
+        if(array_key_exists( 'id' , $this->getRequest()->getPost('Admin') )) 					
+        {     																			
+        	if(!(int)$this->getRequest()->getPost('Admin')['id'] )
+        	{
+        		$message = 'error : id not valid ';         
+        		$param = [];
+        		$param['message'] = $message;
+        		$url = $this->getUrl('grid' , 'Admin' , $param);
+        		$this->redirect($url);      
         	}
 			try{  
-				$update = $adapter->getConnect()->prepare( "UPDATE Admin 
-														  SET firstName =  :firstName , 
-													          lastName  =  :lastName  ,
-														      email     =  :email     ,
-														      password  =  :password  ,
-															  status    =  :status    ,
-															  createdAt =  :createdAt ,
-															  updatedAt =  :updatedAt 
-														  WHERE id = " .  $_POST['Admin']['id'] );  
-															  
-				$update->bindValue(":firstName"    , $_POST['Admin']["firstName"]      ); 
-				$update->bindValue(":lastName"     , $_POST['Admin']["lastName"]       );
-				$update->bindValue(":email"        , $_POST['Admin']["email"]          );
-				$update->bindValue(":password"     , $_POST['Admin']["password"]       );
-				$update->bindValue(":status"       , $_POST['Admin']["status"]         );
-				$update->bindValue(":createdAt"    , $_POST['Admin']["createdAt"]      );
-				$update->bindValue(":updatedAt"    , $_POST['Admin']["updatedAt"]      );
-				$update->execute();
 
-				$message =  $update->rowCount() . " row updated " ;
-				$this->redirect("index.php?a=grid&c=Admin&message=" . $message );
+				$modelAdmin = CCC::getModel('Admin');
+				$rowId = $modelAdmin->update( $this->getRequest()->getPost('Admin') , [ 'id' => $this->getRequest()->getPost('Admin')['id'] ] );
+												
+				$param['message'] = " id " . $rowId . " row updated ";
+        		$url = $this->getUrl('grid' , 'Admin' , $param);    	
+        		$this->redirect($url);  
+
 			}
 			catch(Exception $e)
 			{
-				$this->redirect("index.php?a=grid&c=Admin&message=" . $err = $e->getMessage() );
+				$param['message'] = $e->getMessage() ;
+				$url = $this->getUrl('grid' , 'Admin' , $param);    	
+				$this->redirect($url);  
 			}
 
 		}    
 		else{                       
-			try{           
-				$insert = $adapter->getConnect()->prepare( "INSERT INTO 
-							Admin(firstName , lastName , email , password , status ,  createdAt  ) 
-					    	VALUES( :firstName , :lastName , :email , :password  , :status  , :createdAt  )" );    /* no need of updateAt during insert Add New */
+			try{        
 
-				$insert->bindValue(":firstName"    , $_POST['Admin']["firstName"]      ); 
-				$insert->bindValue(":lastName"     , $_POST['Admin']["lastName"]       );
-				$insert->bindValue(":email"        , $_POST['Admin']["email"]          );
-				$insert->bindValue(":password"     , $_POST['Admin']["password"]       );
-				$insert->bindValue(":status"       , $_POST['Admin']["status"]         );
-				$insert->bindValue(":createdAt"    , $_POST['Admin']["createdAt"]      );
-				$insert->execute();
-				
-
-
-				$message =  $insert->rowCount() . " row inserted " ;
-				$this->redirect("index.php?a=grid&c=Admin&message=" . $message );
-			
+				$modelAdmin = CCC::getModel('Admin');
+				$rowId = $modelAdmin->insert($this->getRequest()->getPost('Admin'));  
+		
 			}
 			catch(Exception $e)
 			{
-				$this->redirect("index.php?a=grid&c=Admin&message=" . $err = $e->getMessage() );
+				$param['message'] = $e->getMessage() ;
+				$url = $this->getUrl('grid' , 'Admin' , $param);    	
+				$this->redirect($url); 			
 			}
 
 		}
 
+		$param['message'] = " id " . $rowId . " row updated/inserted ";
+		$url = $this->getUrl('grid' , 'Admin' , $param);    	
+		$this->redirect($url);  
+
 	}
 
-	public function gridAdmin() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
-	{
-		global $adapter;
-		$data = $adapter->fetch("SELECT * FROM Admin");
-		$this->getView()->setData($data);
-		$this->getView()->setTemplate("view/Admin/gridAdmin.php")->toHtml();
-		$message = ( !empty( $_GET['message']) ) ? $_GET['message'] : " " ;
-		echo($message );
-	}
-
-	public function fetchOneAdmin()
-	{
-        $adapter = new Model_Core_Adapter();
-		$query = "SELECT * FROM Admin" ;
-		$result = $adapter->fetchOne($query  ,  1  );
-		print_r( $result );
-	}
 	
+
 	public function errorAction()
 	{
 

@@ -7,9 +7,9 @@
 
 	<body>
 		
-		 <button> <a href="index.php?a=grid&c=Categories"> Categories  </a>  </button>     
-		 <button> <a href="index.php?a=grid&c=Customers"> Customers  </a>  </button>  
-		 <button> <a href="index.php?a=grid&c=Products"> Products  </a>  </button>  
+		 <button> <a href="index.php?a=grid&c=Category&message=tableLLL"> Category  </a>  </button>     
+		 <button> <a href="index.php?a=grid&c=Customer"> Customer  </a>  </button>  
+		 <button> <a href="index.php?a=grid&c=Product"> Product  </a>  </button>  
 		 <button> <a href="index.php?a=grid&c=Admin"> Admin    </a>  </button> 
 		 <button> <a href="index.php?a=fetchOne&c=Admin"> Admin Fetch One   </a>  </button> 
 
@@ -18,16 +18,35 @@
 </html>
 
 
-<?php require_once("Model/Core/Adapter.php"); 
-       $adapter = new Model_Core_Adapter();      ?>
+<?php 	CCC::loadClass('Model_Core_Adapter');
+        $adapter = new Model_Core_Adapter();      ?>
 
-<?php
+<?php 		
 
+CCC::loadClass('Controller_Core_Front') ;     
 
 class CCC {
 
 
+	public static $front = null;                                      
 
+	public static  function getFront()
+	{				
+		# code...
+		if(!self::$front)
+		{
+			$front =   new Controller_Core_Front() ;      
+			self::setFront($front);
+		}      
+		return self::$front;
+	}
+
+	public static function setFront($front)
+	{
+		# code...
+		self::$front = $front;
+		/*return $this;*/
+	}
 
 	public static function loadFile( $url )
 	{	                                       
@@ -40,38 +59,32 @@ class CCC {
 
 		$controllerClassFile = $controllerClassPath . ".php" ;      
 		
-		CCC::loadFile( $controllerClassFile );  
+		self::loadFile( $controllerClassFile );  
 
 	}
 	
-	public static function init( )
+	public static function getModel($modelName)
 	{
-		if( ucfirst($_GET['c']) == 'Categories'){
+		# code...
+		$modelName = "Model_" . $modelName;
+		self::loadClass($modelName);
+		return new $modelName();
 
-			$method =  (!empty($_GET['a']) ) ? $_GET['a'] . 'Category' : 'errorAction' ; 
-		}
-		elseif( ucfirst($_GET['c']) == 'Products' ){
+	}
+	
+	public static function getBlock($blockName)
+	{
+		# code...
+		$blockName = "Block_" . $blockName;
+		self::loadClass($blockName);
+		return new $blockName();
 
-			$method =  (!empty($_GET['a']) ) ? $_GET['a'] . 'Product' : 'errorAction' ;            /*--------------here we have got method name------------*/
-		}
-		elseif( ucfirst($_GET['c']) == 'Admin' ){
+	}
 
-			$method =  (!empty($_GET['a']) ) ? $_GET['a'] . 'Admin' : 'errorAction' ;            /*--------------here we have got method name------------*/
-		}
-		else{
-
-			$method =  (!empty($_GET['a']) ) ? $_GET['a'] . 'Action' : 'errorAction' ;            /*--------------here we have got method name------------*/
-		}
-
-		$controllerName = ucfirst( $_GET['c'] ) ;         /*-----------here we have got controller class File name -----------------*/
+	public static function init()
+	{
 		
-		$controllerClassName = 'Controller_' . $controllerName ;    /*--------------------actual name of controller class------------------*/
-
-		CCC::loadClass( $controllerClassName ); 
-
-		$obj = new $controllerClassName(); 
-		$obj->$method() ; 
-
+		self::getFront()->init();      
 
 	}
 
@@ -80,6 +93,11 @@ class CCC {
 }
 
 CCC::init();
+
+/*$Ccc = new CCC();
+$Ccc->init();*/
+
+/*CCC::init();*/
 
 
 
