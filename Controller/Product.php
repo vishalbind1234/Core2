@@ -1,5 +1,5 @@
 
-<?php  CCC::loadClass('Controller_Core_Action');   ?>
+<?php  Ccc::loadClass('Controller_Core_Action');   ?>
 
 <?php
 
@@ -13,7 +13,7 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function gridAction( )
 	{														
-		$productsGrid = CCC::getBlock('Product_Grid');     
+		$productsGrid = Ccc::getBlock('Product_Grid');     
 		$productsGrid->toHtml();
 
 		$message = $this->getRequest()->getRequest('message') ;
@@ -24,21 +24,21 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function addAction( )
 	{
-		$productsAdd = CCC::getBlock('Product_Add');     
+		$productsAdd = Ccc::getBlock('Product_Add');     
 		$productsAdd->toHtml();
 
 	}
 
 	public function editAction( )
 	{
-		$productsEdit = CCC::getBlock('Product_Edit');     
+		$productsEdit = Ccc::getBlock('Product_Edit');     
 		$productsEdit->toHtml();
 
 	}
 
 	public function deleteAction( ) /*------------------------------------------------delete function----------------------------------------------*/
 	{
-		$modelProduct = CCC::getModel('Product');
+		$modelProduct = Ccc::getModel('Product');
 		$id = $this->getRequest()->getRequest('id');
 		$deletedRowId = $modelProduct->delete(['id' => $id]);
 
@@ -63,7 +63,7 @@ class Controller_Product extends Controller_Core_Action{
 
 			try{
 
-				$modelProduct = CCC::getModel('Product');
+				$modelProduct = Ccc::getModel('Product');
 				$rowId = $modelProduct->update( $this->getRequest()->getPost('Product') , ['id' => $this->getRequest()->getPost('Product')['id'] ] );
 				
 			}
@@ -79,7 +79,7 @@ class Controller_Product extends Controller_Core_Action{
 
 			try{
 
-				$modelProduct = CCC::getModel('Product');
+				$modelProduct = Ccc::getModel('Product');
 				$rowId = $modelProduct->insert( $this->getRequest()->getPost('Product') );
 
 			}

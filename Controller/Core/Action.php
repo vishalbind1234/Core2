@@ -1,6 +1,6 @@
 
-<?php  CCC::loadClass('Model_Core_View');   ?>
-<?php  CCC::loadClass('Model_Core_Request');   ?>
+<?php  Ccc::loadClass('Model_Core_View');   ?>
+<?php  Ccc::loadClass('Model_Core_Request');   ?>
 
 <?php
 

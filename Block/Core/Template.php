@@ -1,4 +1,4 @@
-<?php  CCC::loadClass('Model_Core_View'); ?>
+<?php  Ccc::loadClass('Model_Core_View'); ?>
 
 <?php
 

@@ -1,6 +1,6 @@
 <?php
 
-CCC::loadClass('Model_Core_Table');
+Ccc::loadClass('Model_Core_Table');
 
 class Model_Customer extends Model_Core_Table {
 

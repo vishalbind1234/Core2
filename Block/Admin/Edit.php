@@ -1,4 +1,4 @@
-<?php  CCC::loadClass('Block_Core_Template'); ?>
+<?php  Ccc::loadClass('Block_Core_Template'); ?>
 
 <?php
 
@@ -13,8 +13,8 @@ class Block_Admin_Edit extends Block_Core_Template{
 	public function getCurrentAdmin()
 	{
 		# code...
-		$modelAdmin = CCC::getModel('Admin');
-		$id = CCC::getFront()->getRequest()->getRequest('id');
+		$modelAdmin = Ccc::getModel('Admin');
+		$id = Ccc::getFront()->getRequest()->getRequest('id');
 		$admin = $modelAdmin->fetch("SELECT * FROM Admin Where id = {$id} ");
 		return $admin;
 
@@ -23,7 +23,7 @@ class Block_Admin_Edit extends Block_Core_Template{
 	public function getAdmin()
 	{
 		# code...
-		$modelAdmin = CCC::getModel('Admin');
+		$modelAdmin = Ccc::getModel('Admin');
 		$admin = $modelAdmin->fetchAll("SELECT * FROM Admin ORDER BY wholePath ");
 		return $admin;
 	}

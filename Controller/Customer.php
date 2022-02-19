@@ -1,5 +1,5 @@
 
-<?php  CCC::loadClass('Controller_Core_Action');   ?>
+<?php  Ccc::loadClass('Controller_Core_Action');   ?>
 
 <?php 
 
@@ -14,7 +14,7 @@ class Controller_Customer extends Controller_Core_Action{
 
 	public function gridAction() /*---------------------------------------------------------gridAction()-----------------------------------------*/
 	{																
-		$customersGrid = CCC::getBlock('Customer_Grid');   
+		$customersGrid = Ccc::getBlock('Customer_Grid');   
 		$customersGrid->toHtml();
 
 		$message = $this->getRequest()->getRequest('message');
@@ -24,7 +24,7 @@ class Controller_Customer extends Controller_Core_Action{
 
 	public function addAction()
 	{
-		$customersAdd = CCC::getBlock('Customer_Add'); 
+		$customersAdd = Ccc::getBlock('Customer_Add'); 
 		$customersAdd->toHtml(); 
 
 	}
@@ -32,7 +32,7 @@ class Controller_Customer extends Controller_Core_Action{
 	public function editAction()
 	{
 
-		$customersEdit = CCC::getBlock('Customer_Edit'); 
+		$customersEdit = Ccc::getBlock('Customer_Edit'); 
 		$customersEdit->toHtml(); 
 		
 	}
@@ -41,7 +41,7 @@ class Controller_Customer extends Controller_Core_Action{
 	{
 		try{
             
-            $modelProduct = CCC::getModel('Customer');
+            $modelProduct = Ccc::getModel('Customer');
             $deletedRowId = $modelProduct->delete([ 'id' => $this->getRequest()->getRequest('id') ] );
     
         }
@@ -80,7 +80,7 @@ class Controller_Customer extends Controller_Core_Action{
         	}
 			try{  																					
 
-				$customersModel = CCC::getModel('Customer');
+				$customersModel = Ccc::getModel('Customer');
 				$rowId = $customersModel->update($person , ['id' => $person['id'] ]);						
 
 
@@ -88,7 +88,7 @@ class Controller_Customer extends Controller_Core_Action{
 				$address['shipping'] = ($this->getRequest()->getPost('Address')["shipping"] == "1" ) ? 1 : 0 ;
 				$address['billing'] = ($this->getRequest()->getPost('Address')["billing"] == "1" ) ? 1 : 0 ;
 
-				$customersAddressModel = CCC::getModel('Customer_Address');     
+				$customersAddressModel = Ccc::getModel('Customer_Address');     
 				$customersAddressModel->update($address , ['id' => $address['aId'] ]); 								
 
 
@@ -108,14 +108,14 @@ class Controller_Customer extends Controller_Core_Action{
 			try
 			{  
 
-				$customersModel = CCC::getModel('Customer');
+				$customersModel = Ccc::getModel('Customer');
 				$rowId = $customersModel->insert($person);
 
 				$address['customerId'] = $rowId ;
 				$address['shipping'] = ($this->getRequest()->getPost('Address')["shipping"] == "1" ) ? 1 : 0 ;
 				$address['billing'] = ($this->getRequest()->getPost('Address')["billing"] == "1" ) ? 1 : 0 ;
 
-				$customersAddressModel = CCC::getModel('Customer_Address');
+				$customersAddressModel = Ccc::getModel('Customer_Address');
 				$customersAddressModel->insert($address);
 
 			}

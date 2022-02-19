@@ -1,4 +1,4 @@
-<?php  CCC::loadClass('Block_Core_Template'); ?>
+<?php  Ccc::loadClass('Block_Core_Template'); ?>
 
 <?php
 
@@ -13,7 +13,7 @@ class Block_Admin_Grid extends Block_Core_Template{
 	public function getAdmin()
 	{
 		# code...
-		$modelAdmin = CCC::getModel('Admin');
+		$modelAdmin = Ccc::getModel('Admin');
 		$admin = $modelAdmin->fetchAll(" SELECT * FROM Admin ");
 		return $admin;
 	}

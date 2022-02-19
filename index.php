@@ -18,14 +18,14 @@
 </html>
 
 
-<?php 	CCC::loadClass('Model_Core_Adapter');
+<?php 	Ccc::loadClass('Model_Core_Adapter');
         $adapter = new Model_Core_Adapter();      ?>
 
 <?php 		
 
-CCC::loadClass('Controller_Core_Front') ;     
+Ccc::loadClass('Controller_Core_Front') ;     
 
-class CCC {
+class Ccc {
 
 
 	public static $front = null;                                      
@@ -92,12 +92,12 @@ class CCC {
 
 }
 
-CCC::init();
+Ccc::init();
 
-/*$Ccc = new CCC();
+/*$Ccc = new Ccc();
 $Ccc->init();*/
 
-/*CCC::init();*/
+/*Ccc::init();*/
 
 
 

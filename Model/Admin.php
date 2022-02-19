@@ -1,6 +1,6 @@
 <?php
 
-CCC::loadClass('Model_Core_Table');
+Ccc::loadClass('Model_Core_Table');
 
 class Model_Admin extends Model_Core_Table {
 

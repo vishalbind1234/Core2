@@ -1,5 +1,5 @@
 
-<?php  CCC::loadClass('Block_Core_Template'); ?>
+<?php  Ccc::loadClass('Block_Core_Template'); ?>
 
 <?php
 
@@ -14,8 +14,8 @@ class Block_Category_Edit extends Block_Core_Template{
 	public function getCurrentCategory()
 	{
 		# code...
-		$modelCategory = CCC::getModel('Category');
-		$id = CCC::getFront()->getRequest()->getRequest('id');
+		$modelCategory = Ccc::getModel('Category');
+		$id = Ccc::getFront()->getRequest()->getRequest('id');
 		$category = $modelCategory->fetch("SELECT * FROM Category Where id = {$id} ");
 		return $category;
 	}
@@ -23,7 +23,7 @@ class Block_Category_Edit extends Block_Core_Template{
 	public function getCategory()
 	{
 		# code...
-		$modelCategory = CCC::getModel('Category');
+		$modelCategory = Ccc::getModel('Category');
 		$categories = $modelCategory->fetchAll("SELECT * FROM Category ORDER BY wholePath ");
 		return $categories;
 	}

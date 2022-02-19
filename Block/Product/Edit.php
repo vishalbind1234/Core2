@@ -1,4 +1,4 @@
-<?php  CCC::loadClass('Block_Core_Template'); ?>
+<?php  Ccc::loadClass('Block_Core_Template'); ?>
 
 <?php
 
@@ -13,8 +13,8 @@ class Block_Product_Edit extends Block_Core_Template{
 	public function getCurrentProduct()
 	{
 		# code...
-		$modelProduct = CCC::getModel('Product');
-		$id = CCC::getFront()->getRequest()->getRequest('id');
+		$modelProduct = Ccc::getModel('Product');
+		$id = Ccc::getFront()->getRequest()->getRequest('id');
 		$products = $modelProduct->fetch("SELECT * FROM Product Where id = {$id} ");
 		return $products;
 
@@ -23,7 +23,7 @@ class Block_Product_Edit extends Block_Core_Template{
 	public function getProduct()
 	{
 		# code...
-		$modelProduct = CCC::getModel('Product');
+		$modelProduct = Ccc::getModel('Product');
 		$products = $modelProduct->fetchAll("SELECT * FROM Product");
 		return $products;
 	}

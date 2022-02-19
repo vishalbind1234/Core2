@@ -1,6 +1,6 @@
 
-<?php   CCC::loadClass('Controller_Core_Action');  ?>
-<?php   CCC::loadClass('Model_Category');        ?>
+<?php   Ccc::loadClass('Controller_Core_Action');  ?>
+<?php   Ccc::loadClass('Model_Category');        ?>
 
 <?php
 
@@ -11,7 +11,7 @@ class Controller_Category extends Controller_Core_Action{
 	public function testAction()
 	{																										
 		# code...
-		$model = CCC::getModel('Category');
+		$model = Ccc::getModel('Category');
 		$model->getTableName() ; 
 		
 		
@@ -29,7 +29,7 @@ class Controller_Category extends Controller_Core_Action{
 	{
 	
 		try{
-			$categoriesGrid = CCC::getBlock('Category_Grid');
+			$categoriesGrid = Ccc::getBlock('Category_Grid');
 			$categoriesGrid->toHtml();
 			$message = ($this->getRequest()->getRequest('message')) ? $this->getRequest()->getRequest('message') : " 123 " ;      
 			echo($message );
@@ -44,7 +44,7 @@ class Controller_Category extends Controller_Core_Action{
 	public function addAction()   /*----------------------------------------addCategory()---------------------------------------------------*/
 	{
 	
-		$categoriesAdd = CCC::getBlock('Category_Add');
+		$categoriesAdd = Ccc::getBlock('Category_Add');
 		$categoriesAdd->toHtml();
 	}
 
@@ -65,7 +65,7 @@ class Controller_Category extends Controller_Core_Action{
 		}
 
 
-		$categoriesEdit = CCC::getBlock('Category_Edit');
+		$categoriesEdit = Ccc::getBlock('Category_Edit');
 		$categoriesEdit->toHtml();
 	}
 
@@ -74,7 +74,7 @@ class Controller_Category extends Controller_Core_Action{
 		try
 		{
 			global $adapter ;
-			$model = CCC::getModel('Category');			
+			$model = Ccc::getModel('Category');			
 			$deletedRow = $model->delete( ['id' => $this->getRequest()->getRequest('id')] ) ;
 			
       	}
@@ -126,7 +126,7 @@ class Controller_Category extends Controller_Core_Action{
 	       		$array = $this->getRequest()->getPost('Category');
 	       		$array['wholePath'] = $wholePath;
 	       		$array['parentId'] = $parentId;
-	       	    $model = CCC::getModel('Category');
+	       	    $model = Ccc::getModel('Category');
 	       	    $returnRowId = $model->update($array , ['id' => $this->getRequest()->getRequest('Category')['id']  ]);
 			
 			}
@@ -146,7 +146,7 @@ class Controller_Category extends Controller_Core_Action{
 				$parentId = (  $this->getRequest()->getPost('Category')['parentId'] ) ?  $this->getRequest()->getPost('Category')['parentId'] : null ;
 				$array = $this->getRequest()->getPost('Category');
 				$array['parentId'] = $parentId;
-				$model = CCC::getModel('Category');				
+				$model = Ccc::getModel('Category');				
 				$returnRowId = $model->insert($array);
 				
 			}

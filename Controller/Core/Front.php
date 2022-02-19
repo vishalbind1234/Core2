@@ -2,7 +2,7 @@
 
 <?php
 		
-CCC::loadClass('Model_Core_Request');
+Ccc::loadClass('Model_Core_Request');
 
 
 class Controller_Core_Front{
@@ -37,7 +37,7 @@ class Controller_Core_Front{
 		$controllerClassName = 'Controller_' . $controllerName ;                    
 		$controllerClassName = $this->prepareClassName($controllerClassName);        /*--------------------actual name of controller class------------------*/
 	
-		CCC::loadClass( $controllerClassName ); 
+		Ccc::loadClass( $controllerClassName ); 
 		$obj = new $controllerClassName(); 
 		$obj->$method() ; 
 	}

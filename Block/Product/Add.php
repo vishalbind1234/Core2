@@ -1,4 +1,4 @@
-<?php  CCC::loadClass('Block_Core_Template'); ?>
+<?php  Ccc::loadClass('Block_Core_Template'); ?>
 
 <?php
 
@@ -13,7 +13,7 @@ class Block_Product_Add extends Block_Core_Template{
 	public function getProduct()
 	{
 		
-		$modelProduct = CCC::getModel('Product');
+		$modelProduct = Ccc::getModel('Product');
 		$products = $modelProduct->fetchAll("SELECT * FROM Product");
 		return $products;
 	}

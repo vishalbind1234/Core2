@@ -1,5 +1,5 @@
 
-<?php   CCC::loadClass('Controller_Core_Action');   ?>
+<?php   Ccc::loadClass('Controller_Core_Action');   ?>
 
 <?php 
 
@@ -10,7 +10,7 @@ class Controller_Admin extends Controller_Core_Action{
 	public function testAction()
 	{
 		# code...
-		$adminModel = CCC::getModel('Admin');
+		$adminModel = Ccc::getModel('Admin');
 		$admin = $adminModel->getTableName();
 		echo($admin);
 		exit();
@@ -25,7 +25,7 @@ class Controller_Admin extends Controller_Core_Action{
 
 	public function gridAction() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
 	{
-		$adminGrid = CCC::getBlock('Admin_Grid');    
+		$adminGrid = Ccc::getBlock('Admin_Grid');    
 		$adminGrid->toHtml();
 
 		$message = ( $this->getRequest()->getRequest('message') ) ? $this->getRequest()->getRequest('message') : " 123 " ;
@@ -34,14 +34,14 @@ class Controller_Admin extends Controller_Core_Action{
 
 	public function addAction()
 	{
-		$adminAdd = CCC::getBlock('Admin_Add');
+		$adminAdd = Ccc::getBlock('Admin_Add');
 		$adminAdd->toHtml();
 		
 	}
 
 	public function editAction()
 	{
-		$adminEdit = CCC::getBlock('Admin_Edit');
+		$adminEdit = Ccc::getBlock('Admin_Edit');
 		$adminEdit->toHtml();
 
 	}
@@ -49,7 +49,7 @@ class Controller_Admin extends Controller_Core_Action{
 	public function deleteAction()  /*--------------------------------------deleteAdmin()----------------------------------------------*/  
 	{
 		try{  
-            $modelAdmin = CCC::getModel('Admin');   		 		
+            $modelAdmin = Ccc::getModel('Admin');   		 		
             $id = $this->getRequest()->getRequest('id');  					
 
             $deletedId = $modelAdmin->delete( ['id' => $id] );        
@@ -84,7 +84,7 @@ class Controller_Admin extends Controller_Core_Action{
         	}
 			try{  
 
-				$modelAdmin = CCC::getModel('Admin');
+				$modelAdmin = Ccc::getModel('Admin');
 				$rowId = $modelAdmin->update( $this->getRequest()->getPost('Admin') , [ 'id' => $this->getRequest()->getPost('Admin')['id'] ] );
 												
 				$param['message'] = " id " . $rowId . " row updated ";
@@ -103,7 +103,7 @@ class Controller_Admin extends Controller_Core_Action{
 		else{                       
 			try{        
 
-				$modelAdmin = CCC::getModel('Admin');
+				$modelAdmin = Ccc::getModel('Admin');
 				$rowId = $modelAdmin->insert($this->getRequest()->getPost('Admin'));  
 		
 			}
