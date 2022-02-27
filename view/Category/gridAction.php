@@ -1,5 +1,5 @@
 
-<?php  $categories =  $this->getCategory()     ?>
+<?php  $categories =  $this->getCategory(); /* print_r($categories);  exit();*/  ?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -18,11 +18,10 @@
 	</head>
 	<body>
 
-		<BUTTON> <a href="index.php?a=add&c=Category"> Add New </a> </BUTTON> 
+		<BUTTON> <a href="<?php echo($this->getUrl('edit' , 'Category' , [] , true)); ?>"> Add New </a> </BUTTON> 
 
 		<table>
 
-			<?php if(!$categories) : ?>
 				<tr>
 					<th> <label> ID </label> </th>
 					<th> <label> Parent ID </label> </th>
@@ -32,29 +31,21 @@
 					<th> <label> CreatedAt </label> </th>
 					<th> <label> UpdatedAt </label> </th>
 				</tr>
+
+			<?php if(!$categories) : ?>
 				<tr>
 					<td colspan="6"> <label>No Data Found.</label> </td>
 				</tr>
 			<?php else : ?>
 
-				<?php $Keys = array_keys($categories['0']); ?>   <!-- ----------------getting arrayKeys----------------------- -->
-
-				<tr>
-				<?php foreach($Keys as $key) : ?>  <!-- -----------------------printing array keys --------------------------- -->
-
-					<th> <?php echo($key); ?> </th>
-
-				<?php endforeach ; ?>
-				</tr>
-
-
-				<?php foreach( $categories as $category ) : ?> <!-- ------------------------printing array data---------------- -->
+				<?php foreach( $categories as $key => $category ) : ?> <!-- ------------------------printing array data---------------- -->
 					<tr>
-						<?php foreach( $category as $key => $value ) : ?>
+						
+						<?php foreach( $category->getData() as $key => $value ) : ?>
 
 							<?php  if( $key == "wholePath" ) :  ?>
 
-								<td> <?php echo( $this->wholePathName( $category['id'] ) ); ?>   </td>
+								<td> <?php echo( $this->wholePathName( $category->id ) ); ?>   </td>
 
 							<?php  else :  ?>
 
@@ -63,10 +54,13 @@
 							<?php  endif  ; ?>
 
 						<?php endforeach ;  ?>
-						<td> <a href="index.php?a=edit&c=Category&id=<?php echo($category['id']); ?>"  > Edit </a> </td>
-						<td> <a href="index.php?a=delete&c=Category&id=<?php echo($category['id']); ?>"  > Delete </a> </td>
+
+						<td> <a href="<?php echo( $this->getUrl('edit' , 'Category' , ['id' => $category->id] ) ); ?>"  > Edit </a> </td>
+						<td> <a href="<?php echo( $this->getUrl('delete' , 'Category' , ['id' => $category->id] ) ); ?>"  > Delete </a> </td>
+						<td> <a href="<?php echo( $this->getUrl('media' , 'Category_Media' , ['id' => $category->id] ) ); ?>"  > Media </a> </td>
 					</tr>
 				<?php endforeach ;  ?>
+
 			<?php endif ;  ?>
 
 

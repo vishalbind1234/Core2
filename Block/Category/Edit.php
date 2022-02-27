@@ -6,9 +6,9 @@
 class Block_Category_Edit extends Block_Core_Template{
 
 	public function __construct()
-	{
-		# code...
-		$this->setTemplate('view/Category/editAction.php');
+	{																					
+		# code...							
+		$this->setTemplate('view/Category/editAction.php');   
 	}
 
 	public function getCurrentCategory()
@@ -16,7 +16,11 @@ class Block_Category_Edit extends Block_Core_Template{
 		# code...
 		$modelCategory = Ccc::getModel('Category');
 		$id = Ccc::getFront()->getRequest()->getRequest('id');
-		$category = $modelCategory->fetch("SELECT * FROM Category Where id = {$id} ");
+		if( !isset($id) )
+		{
+			return null;
+		}
+		$category = $modelCategory->load($id);
 		return $category;
 	}
 
@@ -28,9 +32,14 @@ class Block_Category_Edit extends Block_Core_Template{
 		return $categories;
 	}
 
-	public function wholePathName( $id )
+	public function wholePathName( $id  = null)
 	{
-		global $adapter;	
+		$adapter =  $this->getAdapter() ; 
+
+		if($id == null)
+		{
+			return null;
+		}	
 
 		$idNameArray = $adapter->fetchPairs('id' , 'name' , 'Category');
 		$idWholePathArray = $adapter->fetchPairs('id' , 'wholePath' , 'Category');
@@ -44,9 +53,15 @@ class Block_Category_Edit extends Block_Core_Template{
 	    return $wholePathAsString;
 	}
 
-	function possibleOptions( $currentWholePath  , $currentParentId )
+	function possibleOptions( $currentWholePath = null  , $currentParentId = null )
 	{
-		global $adapter;
+		$adapter  = $this->getAdapter() ; 
+		if($currentWholePath == null  && $currentParentId == null)
+		{
+			$categories = $adapter->fetchAll("SELECT * FROM Category");
+			return $categories;
+		}
+
 		$wholePath = explode(" > ", $currentWholePath );
 		$wholePath[sizeof($wholePath) - 1] = "" ;
 		$wholePathString = implode(" > ", $wholePath );

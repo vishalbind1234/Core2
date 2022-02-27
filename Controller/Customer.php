@@ -14,26 +14,26 @@ class Controller_Customer extends Controller_Core_Action{
 
 	public function gridAction() /*---------------------------------------------------------gridAction()-----------------------------------------*/
 	{																
-		$customersGrid = Ccc::getBlock('Customer_Grid');   
-		$customersGrid->toHtml();
+		$customerGrid = Ccc::getBlock('Customer_Grid');   
+		$customerGrid->toHtml();
 
 		$message = $this->getRequest()->getRequest('message');
 		$message = ($message) ? $this->getRequest()->getRequest('message') : '123' ;
 		echo($message);
 	}
 
-	public function addAction()
+/*	public function addAction()
 	{
-		$customersAdd = Ccc::getBlock('Customer_Add'); 
-		$customersAdd->toHtml(); 
+		$customerAdd = Ccc::getBlock('Customer_Add'); 
+		$customerAdd->toHtml(); 
 
-	}
+	}*/
 
 	public function editAction()
 	{
 
-		$customersEdit = Ccc::getBlock('Customer_Edit'); 
-		$customersEdit->toHtml(); 
+		$customerEdit = Ccc::getBlock('Customer_Edit');    
+		$customerEdit->toHtml(); 							
 		
 	}
 
@@ -42,7 +42,10 @@ class Controller_Customer extends Controller_Core_Action{
 		try{
             
             $modelProduct = Ccc::getModel('Customer');
-            $deletedRowId = $modelProduct->delete([ 'id' => $this->getRequest()->getRequest('id') ] );
+            //$deletedRowId = $modelProduct->delete( $this->getRequest()->getRequest('id')  );
+            //$customer = $modelProduct->getRow();
+            $id = $this->getRequest()->getRequest('id');
+            $deletedRowId = $modelProduct->delete($id);
     
         }
         catch(Exception $e){
@@ -64,32 +67,47 @@ class Controller_Customer extends Controller_Core_Action{
 	public function saveAction() /*-----------------------------------------saveAction()-------------------------------------------------------------*/
 	{     
 
+		$person = $this->getRequest()->getPost('Person');		
+		$address = $this->getRequest()->getPost('Address');		
 
-        $person = $this->getRequest()->getPost('Person');  			print_r($person);
-        $address = $this->getRequest()->getPost('Address');				print_r($address);
-       
-
-        if(array_key_exists( 'id' , $person )) {    /* update if key exist */ 
+        if(array_key_exists( 'id' , $person )  &&   $person['id'] != null) {    /* update if key exist */ 		
 
         	if(!(int)$person['id'])
         	{
         		$message = " invalid id. " ;
-				$param['message'] = $message;
+        		$param['message'] = $message;
 				$url = $this->getUrl( 'grid' , 'Customer' , $param );
 				$this->redirect( $url );     
         	}
-			try{  																					
+			try{  																				
 
-				$customersModel = Ccc::getModel('Customer');
-				$rowId = $customersModel->update($person , ['id' => $person['id'] ]);						
+				$customerModel = Ccc::getModel('Customer');
+				//$customerModel = $customerModel->getRow();
+				$customerData = $customerModel->load($person['id']);
+				
+
+				foreach ($person as $key => $value) 
+				{
+					$customerModel->$key = $value;
+				}
+				$customerModel->updatedAt = date('Y-m-d');
+				$rowId = $customerModel->save();		
 
 
 				$address['customerId'] = $rowId ;
-				$address['shipping'] = ($this->getRequest()->getPost('Address')["shipping"] == "1" ) ? 1 : 0 ;
-				$address['billing'] = ($this->getRequest()->getPost('Address')["billing"] == "1" ) ? 1 : 0 ;
+				$address['shipping'] = ($address["shipping"] == "1" ) ? 1 : 0 ;
+				$address['billing'] = ($address["billing"] == "1" ) ? 1 : 0 ;		
 
-				$customersAddressModel = Ccc::getModel('Customer_Address');     
-				$customersAddressModel->update($address , ['id' => $address['aId'] ]); 								
+				$customerAddressModel = Ccc::getModel('Customer_Address'); 		
+				//$addressRow =  $customerAddressModel->getRow() ;  					
+
+				foreach ($address as $key => $value) 
+				{
+					$customerAddressModel->$key = $value;
+				}																				
+				$addressId = $customerAddressModel->save();    
+				
+				//$customerAddressModel->update($address ,$address['aId'] ); 								
 
 
 			}
@@ -106,17 +124,31 @@ class Controller_Customer extends Controller_Core_Action{
 		{ 
 
 			try
-			{  
+			{   
+				unset($person['updatedAt']);						              			
+				$customerModel = Ccc::getModel('Customer');			  	
+				/*$rowId = $customerModel->insert($person);*/
+				//$customerModel = $customerModel->getRow();
+				foreach ($person as $key => $value) 
+				{
+					$customerModel->$key = $value;
+				}
+				$rowId = $customerModel->save();
 
-				$customersModel = Ccc::getModel('Customer');
-				$rowId = $customersModel->insert($person);
 
-				$address['customerId'] = $rowId ;
-				$address['shipping'] = ($this->getRequest()->getPost('Address')["shipping"] == "1" ) ? 1 : 0 ;
-				$address['billing'] = ($this->getRequest()->getPost('Address')["billing"] == "1" ) ? 1 : 0 ;
+				$address['customerId'] = $rowId ;			
+				$address['shipping'] = ($address["shipping"] == "1" ) ? 1 : 0 ;
+				$address['billing'] = ($address["billing"] == "1" ) ? 1 : 0 ;
 
-				$customersAddressModel = Ccc::getModel('Customer_Address');
-				$customersAddressModel->insert($address);
+				$customerAddressModel = Ccc::getModel('Customer_Address'); 
+				/*$customerAddressModel->insert($address);*/
+				//$addressRow =  $customerAddressModel->getRow()  ; 
+
+				foreach ($address as $key => $value) 
+				{
+					$customerAddressModel->$key = $value;
+				}
+				$addressId = $customerAddressModel->save();
 
 			}
 			catch(Exception $e)

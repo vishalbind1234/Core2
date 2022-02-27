@@ -1,3 +1,4 @@
+
 <?php  $Admin =  $this->getAdmin();      ?>
 <style>
 	table , tr , th ,td {
@@ -13,10 +14,9 @@
 	}
 </style>
 
-<button><a href="index.php?a=add&c=Admin">Add New</a></button>
+<button><a href="<?php echo($this->getUrl('edit' , 'Admin' , [] , true)); ?>">Add New</a></button>
 
 <table>
-<?php if(!$Admin): ?>
 
 	<tr>
 		<th>ID          </th>
@@ -29,32 +29,25 @@
 		<th>UpdatedAt   </th>
 
 	</tr>
+
+<?php if(!$Admin): ?>
 	<tr>
 		<td colspan="8"><label> No Records Found . </label></td>
 	</tr>
 	
 <?php else :  ?>
 
-	<?php $Keys = array_keys($Admin['0']); ?>
-
-	<tr>
-	<?php foreach($Keys as $key) : ?>           <!-------------------- for table keys-------------- -->
-			
-			<th> <?php echo($key); ?> </th>
-	
-	<?php endforeach ; ?>
 	</tr>
 
 	<?php foreach($Admin as $admin) : ?>  <!-- -----------------for table data------------- -->
 		<tr>
-			<?php foreach($admin as $key => $value) : ?>
+			<?php foreach($admin->getData() as $key => $value) : ?>
 
 				<td> <?php echo($value);  ?> </td>
 
 			<?php endforeach ; ?>
-			<?php  $id = $admin['id']  ;   ?>                     
-			<td> <a href="index.php?a=edit&id=<?php echo($id); ?>&c=Admin" > Edit  </a></td>  <!-- $admin is inner array -->
-			<td> <a href="index.php?a=delete&id=<?php echo($id); ?>&c=Admin" > Delete </a> </td>  <!-- $admin is inner array -->
+			<td> <a href="<?php echo($this->getUrl('edit' , 'Admin' , ['id' => $admin->id ] )); ?>" > Edit  </a></td> 
+			<td> <a href="<?php echo($this->getUrl('delete' , 'Admin' , ['id' => $admin->id ] )); ?>" > Delete </a> </td> 
 		</tr>
 	<?php endforeach ; ?>                     
 <?php endif ;  ?>

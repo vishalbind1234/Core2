@@ -1,57 +1,22 @@
 <?php
 
-Ccc::loadClass('Model_Core_Table');
+Ccc::loadClass('Model_Core_Row');
 
-class Model_Category extends Model_Core_Table {
+class Model_Category extends Model_Core_Row {
 
 	public function __construct()
 	{
-		$this->setTableName('Category')->setPrimaryId('id');
+		$this->setResourceName('Category_Resource');
+		//$this->setTableName('Category')->setPrimaryId('id')->setRowClassName('Category_Resource');
 
 	}
 
-	public function delete($id)
+	public function hello()
 	{
 		# code...
-		$deletedRowId = parent::delete($id);
-		return $deletedRowId;
-	}
-	
-	public function update($array , $id)
-	{
-		# code...
-		$updatedRowId = parent::update($array , $id);
-		return $updatedRowId;
+		return 'My_Name_is_Anonymous';
 	}
 
-	public function insert($array)
-	{
-		# code...
-		global $adapter;
-		unset($array['updatedAt']);
-
-		$id = parent::insert($array);
-
-		
-		$wholePath = "" ;
-		if( $array['parentId']  == null)
-		{
-			$wholePath =  $id ;  
-		}
-		else
-		{ 
-			$parentId = $array['parentId'];
-			$query = "SELECT wholePath FROM {$this->tableName} WHERE id = {$parentId} " ;       
-			$stmt = $adapter->fetch( $query );         
-	        $parentPath = $stmt['wholePath'] ; 
-	        $wholePath =  $parentPath . " > " . $id ;  
-		}
-
-	
-		$this->update(['wholePath' => $wholePath] , ['id' => $id]);
-		
-		return $id;
-	}
 
 
 

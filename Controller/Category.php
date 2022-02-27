@@ -2,7 +2,7 @@
 <?php   Ccc::loadClass('Controller_Core_Action');  ?>
 <?php   Ccc::loadClass('Model_Category');        ?>
 
-<?php
+<?php   
 
 
 
@@ -26,12 +26,13 @@ class Controller_Category extends Controller_Core_Action{
 	}
 
 	public function gridAction() /*------------------------------------------gridCategory()----------------------------------------------*/
-	{
+	{										
 	
-		try{
-			$categoriesGrid = Ccc::getBlock('Category_Grid');
-			$categoriesGrid->toHtml();
-			$message = ($this->getRequest()->getRequest('message')) ? $this->getRequest()->getRequest('message') : " 123 " ;      
+		try
+		{		
+			$categoriesGrid = Ccc::getBlock('Category_Grid'); 
+			$categoriesGrid->toHtml();							
+			$message = ($this->getRequest()->getRequest('message')) ? $this->getRequest()->getRequest('message') : "123" ;      
 			echo($message );
 		}
 		catch(Exception $e)
@@ -41,17 +42,11 @@ class Controller_Category extends Controller_Core_Action{
 		}	
 	}
 
-	public function addAction()   /*----------------------------------------addCategory()---------------------------------------------------*/
-	{
-	
-		$categoriesAdd = Ccc::getBlock('Category_Add');
-		$categoriesAdd->toHtml();
-	}
 
 	public function editAction()  /*----------------------------------------------editCategory()------------------------------------------*/
 	{
-	
-		$categoriesEdit = Ccc::getBlock('Category_Edit');
+																				
+		$categoriesEdit = Ccc::getBlock('Category_Edit');      
 		$categoriesEdit->toHtml();
 	}
 
@@ -59,10 +54,11 @@ class Controller_Category extends Controller_Core_Action{
 	{
 		try
 		{
-			global $adapter ;
-			$model = Ccc::getModel('Category');			
-			$deletedRow = $model->delete( ['id' => $this->getRequest()->getRequest('id')] ) ;
 			
+			$modelCategory = Ccc::getModel('Category');
+			$id = $this->getRequest()->getRequest('id');			
+			$deletedRow =  $modelCategory->delete($id);
+				
       	}
         catch(Exception $e)
         {
@@ -81,12 +77,16 @@ class Controller_Category extends Controller_Core_Action{
 
 	public function saveAction() /*----------------------------------------------------saveCategory()----------------------------------------*/
 	{
-		global $adapter ; 
-		                         
-		if(array_key_exists( 'id' , $this->getRequest()->getPost('Category') ) )
-		{    
+																		
+		$adapter = $this->getAdapter();									
+		$array = $this->getRequest()->getPost('Category');
+		$categoryModel = Ccc::getModel('Category');	
 
-			if(!(int)$this->getRequest()->getPost('Category')['id'] )
+
+
+		if(array_key_exists( 'id' , $array )  && $array['id'] != null )
+		{    
+			if(!(int)$array['id'] )
 			{
 				$errorMessage = 'Error - id not valid' ;
 				$param['message'] = $errorMessage ;
@@ -94,27 +94,30 @@ class Controller_Category extends Controller_Core_Action{
         		$this->redirect( $url );      
         	}
 
-			$parentId = ( $this->getRequest()->getPost('Category')['parentId'] ) ? $this->getRequest()->getPost('Category')['parentId'] : null ;     
+			$parentId = ( isset($array['parentId']) ) ? $array['parentId'] : null ;    
         	$wholePath = "" ;
 			if($parentId == null)
 			{    
-				$wholePath =   $this->getRequest()->getPost('Category')['id'] ;
+				$wholePath =   $array['id'] ;
 			}
 			else
 			{                               
-		        $stmt = $adapter->fetchAll( "SELECT wholePath FROM Category WHERE id = " . $parentId );          
-		        $parentPath = $stmt[0]['wholePath'] ;  
-		        $wholePath =  $parentPath . " > " . $this->getRequest()->getPost('Category')['id'] ;   
+		        $row = $categoryModel->load($parentId);          
+		        //$stmt = $adapter->fetchRow( "SELECT wholePath FROM Category WHERE id = {$parentId} " );          
+		        $parentPath = $row->wholePath ;  						
+		        $wholePath =  $parentPath . " > " . $array['id'] ;   
 			}
 	       	try
 	       	{
-
-	       		$array = $this->getRequest()->getPost('Category');
 	       		$array['wholePath'] = $wholePath;
 	       		$array['parentId'] = $parentId;
-	       	    $model = Ccc::getModel('Category');
-	       	    $returnRowId = $model->update($array , ['id' => $this->getRequest()->getRequest('Category')['id']  ]);
-			
+	       		$array['updatedAt'] = date('Y-m-d');
+
+	       	    foreach ($array as $key => $value) 
+	       	    {
+	       	    	$categoryModel->$key = $value;
+	       	    }
+	       	    $returnRowId = $categoryModel->save();
 			}
 			catch(Exception $e)
 			{
@@ -129,12 +132,37 @@ class Controller_Category extends Controller_Core_Action{
 		{  
 			try
 			{ 
-				$parentId = (  $this->getRequest()->getPost('Category')['parentId'] ) ?  $this->getRequest()->getPost('Category')['parentId'] : null ;
-				$array = $this->getRequest()->getPost('Category');
+				$parentId = (  isset($array['parentId']) ) ?  $array['parentId'] : null ;        
 				$array['parentId'] = $parentId;
-				$model = Ccc::getModel('Category');				
-				$returnRowId = $model->insert($array);
-				
+				$array['wholePath'] = null;
+			
+	       	    foreach ($array as $key => $value) 
+	       	    {
+	       	    	$categoryModel->$key = $value;
+	       	    }										//print_r($category);  var_dump($category);  exit();
+	       	    $returnRowId = $categoryModel->save();  
+
+				$wholePath = "";
+				if($parentId == null)
+				{
+					$wholePath = $returnRowId;
+				}			
+				else
+				{
+					$stmt = $categoryModel->load($parentId); 
+					$parentPath = $stmt->wholePath;
+					$wholePath = $parentPath . " > " . $returnRowId; 	
+				}
+
+				$array['wholePath'] = $wholePath;
+				$array['id'] = $returnRowId;
+				foreach ($array as $key => $value) 
+	       	    {
+	       	    	$categoryModel->$key = $value;
+	       	    }
+				$categoryModel->wholePath = $wholePath;       //print_r($categoryModel);  exit();
+				$returnRowId =  $categoryModel->save();
+
 			}
 			catch(Exception $e)
 			{

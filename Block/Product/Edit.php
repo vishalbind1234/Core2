@@ -1,3 +1,4 @@
+
 <?php  Ccc::loadClass('Block_Core_Template'); ?>
 
 <?php
@@ -14,8 +15,13 @@ class Block_Product_Edit extends Block_Core_Template{
 	{
 		# code...
 		$modelProduct = Ccc::getModel('Product');
-		$id = Ccc::getFront()->getRequest()->getRequest('id');
-		$products = $modelProduct->fetch("SELECT * FROM Product Where id = {$id} ");
+		$id = Ccc::getFront()->getRequest()->getRequest('id') ;
+		if(!isset($id))
+		{
+			return null;
+		}
+
+		$products = $modelProduct->fetchRow("SELECT * FROM Product Where id = {$id} ");
 		return $products;
 
 	}

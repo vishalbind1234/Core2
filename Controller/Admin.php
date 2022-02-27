@@ -5,16 +5,6 @@
 
 class Controller_Admin extends Controller_Core_Action{
 
-	/*public $adapter = new Model_Core_Adapter();*/
-
-	public function testAction()
-	{
-		# code...
-		$adminModel = Ccc::getModel('Admin');
-		$admin = $adminModel->getTableName();
-		echo($admin);
-		exit();
-	}
 
 	public function redirect($url)
 	{
@@ -25,6 +15,7 @@ class Controller_Admin extends Controller_Core_Action{
 
 	public function gridAction() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
 	{
+
 		$adminGrid = Ccc::getBlock('Admin_Grid');    
 		$adminGrid->toHtml();
 
@@ -32,12 +23,12 @@ class Controller_Admin extends Controller_Core_Action{
 		echo($message );
 	}
 
-	public function addAction()
+	/*public function addAction()
 	{
 		$adminAdd = Ccc::getBlock('Admin_Add');
 		$adminAdd->toHtml();
 		
-	}
+	}*/
 
 	public function editAction()
 	{
@@ -51,9 +42,8 @@ class Controller_Admin extends Controller_Core_Action{
 		try{  
             $modelAdmin = Ccc::getModel('Admin');   		 		
             $id = $this->getRequest()->getRequest('id');  					
-
-            $deletedId = $modelAdmin->delete( ['id' => $id] );        
-            
+            $deletedId = $modelAdmin->delete($id);
+                               
 			$param['message'] = " id " . $deletedId . " row deleted " ;
 			$url = $this->getUrl('grid' , 'Admin' , $param );
         	$this->redirect($url);
@@ -70,14 +60,14 @@ class Controller_Admin extends Controller_Core_Action{
 
 	public function saveAction() //-----------------------------------------saveAdmin()-------------------------------------------------------------
 	{     
-		global $adapter;    
-				
-        if(array_key_exists( 'id' , $this->getRequest()->getPost('Admin') )) 					
+		
+		$array =  $this->getRequest()->getPost('Admin');
+
+        if(array_key_exists('id' , $array)  &&  $array['id'] != null) 					
         {     																			
-        	if(!(int)$this->getRequest()->getPost('Admin')['id'] )
+        	if(!(int)$array['id'] )
         	{
         		$message = 'error : id not valid ';         
-        		$param = [];
         		$param['message'] = $message;
         		$url = $this->getUrl('grid' , 'Admin' , $param);
         		$this->redirect($url);      
@@ -85,9 +75,15 @@ class Controller_Admin extends Controller_Core_Action{
 			try{  
 
 				$modelAdmin = Ccc::getModel('Admin');
-				$rowId = $modelAdmin->update( $this->getRequest()->getPost('Admin') , [ 'id' => $this->getRequest()->getPost('Admin')['id'] ] );
+
+				foreach ($array as $key => $value) 
+				{
+					$modelAdmin->$key = $value;
+				}
+				$modelAdmin->updatedAt = date('Y-m-d');
+			    $rowId = $modelAdmin->save(); 
 												
-				$param['message'] = " id " . $rowId . " row updated ";
+				$param['message'] = "row id " . $rowId . "  updated ";
         		$url = $this->getUrl('grid' , 'Admin' , $param);    	
         		$this->redirect($url);  
 
@@ -103,8 +99,15 @@ class Controller_Admin extends Controller_Core_Action{
 		else{                       
 			try{        
 
+				//unset($array['updatedAt']);
 				$modelAdmin = Ccc::getModel('Admin');
-				$rowId = $modelAdmin->insert($this->getRequest()->getPost('Admin'));  
+
+				foreach ($array as $key => $value) 
+				{
+					$modelAdmin->$key = $value;
+				}
+
+				$rowId = $modelAdmin->save();
 		
 			}
 			catch(Exception $e)
@@ -116,7 +119,7 @@ class Controller_Admin extends Controller_Core_Action{
 
 		}
 
-		$param['message'] = " id " . $rowId . " row updated/inserted ";
+		$param['message'] = "row id " . $rowId . "  updated/inserted ";
 		$url = $this->getUrl('grid' , 'Admin' , $param);    	
 		$this->redirect($url);  
 
@@ -128,6 +131,7 @@ class Controller_Admin extends Controller_Core_Action{
 	{
 
 		echo(" some error occured ");
+		exit();
 	}
 
 }

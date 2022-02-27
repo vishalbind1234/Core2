@@ -66,7 +66,7 @@ class Model_Core_Adapter{
     	
     }
 
-    public function fetch($query){
+    public function fetchRow($query){
     	try{
     		               
     		$result = $this->getConnect()->prepare($query);

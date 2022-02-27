@@ -34,11 +34,11 @@ class Controller_Core_Front{
 		$method =  (!empty($this->getRequest()->getAction() )) ? $this->getRequest()->getAction() . 'Action' : 'errorAction' ;  echo($method);
 		
 		$controllerName =  $this->getRequest()->getController()  ; 
-		$controllerClassName = 'Controller_' . $controllerName ;                    
-		$controllerClassName = $this->prepareClassName($controllerClassName);        /*--------------------actual name of controller class------------------*/
+		$controllerClassName = 'Controller_' . $controllerName ;                   
+		$controllerClassName = $this->prepareClassName($controllerClassName);   echo($controllerClassName);      /*---------actual name of controller class-------*/
 	
-		Ccc::loadClass( $controllerClassName ); 
-		$obj = new $controllerClassName(); 
+		Ccc::loadClass( $controllerClassName ); 	
+		$obj = new $controllerClassName();          
 		$obj->$method() ; 
 	}
 

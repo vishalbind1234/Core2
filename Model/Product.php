@@ -1,37 +1,30 @@
 <?php
 
-Ccc::loadClass('Model_Core_Table');
+Ccc::loadClass('Model_Core_Row');
 
-class Model_Product extends Model_Core_Table {
+class Model_Product extends Model_Core_Row {
 
 	public function __construct()
 	{
-		$this->setTableName('Product')->setPrimaryId('id');
+		$this->setResourceName('Product_Resource');					
+
 
 	}
 
-	public function delete($id)
-	{
-		# code...
-		$deletedRowId = parent::delete($id);
-		return $deletedRowId;
-	}
-	
-	public function update($array , $id)
-	{
-		# code...
-		$updatedRowId = parent::update($array , $id);
-		return $updatedRowId;
-	}
+	const ENABLE = 1;
+	const ENABLE_LBL = 'ENABLE';
+	const DISABLE = 2;
+	const DISABLE_LBL = 'DISABLE';
 
-	public function insert($array)
+	public function getStatus()
 	{
 		# code...
-		global $adapter;
-		unset($array['updatedAt']);
-		$id = parent::insert($array);
-		
-		return $id;
+		$status = [ 
+			self::ENABLE => self::ENABLE_LBL ,
+			self::DISABLE => self::DISABLE_LBL
+		];
+
+		return $status;
 	}
 
 

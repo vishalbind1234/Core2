@@ -1,5 +1,5 @@
 
-<?php    $products = $this->getProduct();       ?>
+<?php    $products = $this->getProduct();  /*print_r($products);  exit(); */  ?>
 <style>
 	table , tr , th ,td {
 		border:2px solid red;
@@ -10,9 +10,14 @@
 		
 		width:90%;
 	}
+	.img{
+		width: 30%;
+		height: 30%;
+	}
+
 </style>
 
-<button><a href="index.php?a=add&c=Product">Add New</a></button>
+<button><a href="<?php  echo($this->getUrl('edit' , 'Product' , [] , true )); ?>" >  Add New  </a></button>
 
 <table>
 
@@ -34,7 +39,7 @@
 	
 <?php else :  ?>
 
-	<?php $Keys = array_keys($products[0]); ?>
+	<?php $Keys = array_keys($products[0]->getData()); ?>
 
 	<tr>
 	<?php foreach($Keys as $key) : ?>           <!-------------------- for table keys-------------- -->
@@ -46,13 +51,22 @@
 
 	<?php foreach($products as $product) : ?>  <!-- -----------------for table data------------- -->
 		<tr>
-			<?php foreach($product as $key => $value) : ?>
-
-				<td> <?php echo($value);  ?> </td>
-
-			<?php endforeach ; ?>                     
-			<td> <a href="index.php?a=edit&id=<?php echo($product['id']); ?>&c=Product" > Edit  </a> </td>  <!-- $product is inner array -->
-			<td> <a href="index.php?a=delete&id=<?php echo($product['id']); ?>&c=Product" > Delete </a> </td>  <!-- $product is inner array -->
+			                    
+			<td> <?php echo($product->id ); ?> </td>  
+			<td> <?php echo($product->name ); ?> </td>  
+			<td> <?php echo($product->price ); ?> </td>  
+			<td> <?php echo($product->quantity ); ?> </td>  
+			<td> <?php echo($product->status ); ?> </td>  
+			<td> <?php echo($product->createdAt ); ?> </td>  
+			<td> <?php echo($product->updatedAt ); ?> </td>  
+			
+			<td>  <image class="img" src="<?php echo($product->baseImage); ?>" >  </td>  
+			<td>  <image class="img" src="<?php echo($product->thumImage); ?>" >  </td>  
+			<td>  <image class="img" src="<?php echo($product->smallImage); ?>" >  </td>  
+			
+			<td> <a href="<?php  echo($this->getUrl('edit' , 'Product' , ['id' => $product->id ])); ?>" > Edit  </a> </td>  
+			<td> <a href="<?php  echo($this->getUrl('delete' , 'Product' , ['id' => $product->id ])); ?>" > Delete  </a> </td>  
+			<td> <a href="<?php  echo($this->getUrl('media' , 'Product_Media' , ['id' => $product->id ])); ?>" > Media  </a> </td>  
 		</tr>
 	<?php endforeach ; ?>                     
 <?php endif ;  ?>

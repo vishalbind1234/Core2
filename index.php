@@ -7,11 +7,11 @@
 
 	<body>
 		
-		 <button> <a href="index.php?a=grid&c=Category&message=tableLLL"> Category  </a>  </button>     
+		 <button> <a href="index.php?a=grid&c=Category"> Category  </a>  </button>     
 		 <button> <a href="index.php?a=grid&c=Customer"> Customer  </a>  </button>  
-		 <button> <a href="index.php?a=grid&c=Product"> Product  </a>  </button>  
-		 <button> <a href="index.php?a=grid&c=Admin"> Admin    </a>  </button> 
-		 <button> <a href="index.php?a=fetchOne&c=Admin"> Admin Fetch One   </a>  </button> 
+		 <button> <a href="index.php?a=grid&c=Product">  Product   </a>  </button>  
+		 <button> <a href="index.php?a=grid&c=Admin">    Admin     </a>  </button> 
+		 <button> <a href="index.php?a=grid&c=Config">   Config    </a>  </button> 
 
 
 	</body>
@@ -58,9 +58,7 @@ class Ccc {
 		$controllerClassPath = str_replace( "_", "/" , $className ) ;    
 
 		$controllerClassFile = $controllerClassPath . ".php" ;      
-		
-		self::loadFile( $controllerClassFile );  
-
+		self::loadFile( $controllerClassFile );  								 
 	}
 	
 	public static function getModel($modelName)

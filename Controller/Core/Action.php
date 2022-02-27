@@ -8,6 +8,19 @@ class Controller_Core_Action{
 
 	public $view = null;
 	public $request = null;
+	/*public global $adapter;*/
+
+	public function redirect($url)
+	{
+		# code...
+		header('Location:' . $url );
+	}
+
+	public function getAdapter()
+	{
+		global $adapter;
+		return $adapter;
+	}
 
 	public function getView( )
 	{
@@ -55,7 +68,8 @@ class Controller_Core_Action{
 		unset($_GET['c']);
 		$param = array_merge($_GET , $param);
 		
-		$url = "index.php?c={$c}&a={$a}" ;
+		$url = "";
+		$url = $url . $this->baseUrl() . "index.php?a={$a}&c={$c}" ;
 		foreach ($param as $key => $value) {
 			# code...
 			if($value)
@@ -65,6 +79,12 @@ class Controller_Core_Action{
 		}
 		
 		return $url;
+	}
+
+	public function baseUrl()
+	{
+		# code...
+		return "http://localhost/Cybercome/Core/" ;
 	}
 
 

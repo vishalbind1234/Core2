@@ -8,24 +8,23 @@ class Model_Core_View{
 
 	public $template = null;
 
-	public function getTemplate( )
+	public function getTemplate()
 	{
 		# code...
 		return $this->template ;
 	}
 
 	public function setTemplate( $template )
-	{
+	{														
 		# code...
 		$this->template = $template;
 		return $this;
 	}
 
-	public function toHtml( )
-	{
+	public function toHtml()
+	{																				
 		# code...
-		$data = $this->data; /*----------------here we set array-data to local variable($data) inside function-------------*/
-		require_once( $this->getTemplate() );
+		require_once( $this->getTemplate() );									
 		return $this;             
 	}
 
@@ -43,7 +42,7 @@ class Model_Core_View{
 		return $this;
 	}
 
-	public function getData($key = 0)
+	public function getData($key = null)
 	{
 		# code...
 		if(!$key){
@@ -54,6 +53,44 @@ class Model_Core_View{
 		}
 		return null; 
 	}
+
+	public function getUrl( $a = null , $c = null , $param = [] , $reset = false  )
+	{
+		# code...
+		
+		//print_r($param); exit();
+
+		$a = ($a) ? $a : $_GET['a'] ;
+		$c = ($c) ? $c : $_GET['c'] ;
+		if($reset)
+		{
+			$_GET = [];
+		}
+		unset($_GET['a']);
+		unset($_GET['c']);
+		$param = array_merge($_GET , $param);
+		
+		$url = "";
+		$url = $url . $this->baseUrl() . "index.php?a={$a}&c={$c}" ;
+		foreach ($param as $key => $value) {
+			# code...
+			if($value)
+			{
+				$url = $url . "&{$key}={$value}";
+			}
+		}
+		
+		return $url;
+	}
+
+	public function baseUrl()
+	{
+		# code...
+		return "http://localhost/Cybercome/Core/" ;
+	}
+
+
+
 	
 
 

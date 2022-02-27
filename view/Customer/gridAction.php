@@ -1,4 +1,4 @@
-<?php   $customers = $this->getCustomer();   ?>
+<?php   $customers = $this->getCustomer();    /*print_r($customers);   exit();*/  ?>
 
 <style>
 	table , tr , th ,td {
@@ -14,10 +14,9 @@
 	}
 </style>
 
-<button><a href="index.php?a=add&c=Customer">Add New</a></button>
+<button><a href="<?php echo($this->getUrl('edit'  , 'Customer' , [] , true)); ?>"> Add New </a></button>
 
 <table>
-<?php if(!$customers): ?>
 
 	<tr>
 		<th>ID          </th>
@@ -38,31 +37,24 @@
 		<th>Billing     </th>
 		<th>Shipping    </th>
 	</tr>
+
+<?php if(!$customers): ?>
 	<tr>
 		<td colspan="16"><label> No Records Found . </label></td>
 	</tr>
 	
 <?php else :  ?>
-
-	<?php $Keys = array_keys($customers['0']); ?>
-
-	<tr>
-	<?php foreach($Keys as $key) : ?>           <!-------------------- for table keys-------------- -->
-			
-			<th> <?php echo($key); ?> </th>
 	
-	<?php endforeach ; ?>
-	</tr>
-
 	<?php foreach($customers as $customer) : ?>  <!-- -----------------for table data------------- -->
 		<tr>
-			<?php foreach($customer as $key => $value) : ?>
+			<?php foreach($customer->getData() as $key => $value) : ?>
 
 				<td> <?php echo($value);  ?> </td>
 
-			<?php endforeach ; ?>                     
-			<td> <a href="index.php?a=edit&id=<?php echo($customer['id']); ?>&c=Customer" > Edit  </a> </td>  <!-- $customer is inner array -->
-			<td> <a href="index.php?a=delete&id=<?php echo($customer['id']); ?>&c=Customer" > Delete </a> </td>  <!-- $customer is inner array -->
+			<?php endforeach ; ?>        
+
+			<td> <a href="<?php echo($this->getUrl('edit' , 'Customer' , ['id' => $customer->id ])); ?>" > Edit  </a> </td>  
+			<td> <a href="<?php echo($this->getUrl('delete' , 'Customer' , ['id' => $customer->id ])); ?>" > Delete </a> </td>  
 		</tr>
 	<?php endforeach ; ?>                     
 <?php endif ;  ?>
