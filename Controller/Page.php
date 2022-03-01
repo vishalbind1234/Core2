@@ -8,16 +8,27 @@ class Controller_Page extends Controller_Core_Action{
 	public function gridAction()
 	{																
 		# code...
-		$blockPage = Ccc::getBlock('Page_Grid');
-		$blockPage->toHtml();
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$pageGrid = Ccc::getBlock('Page_Grid');
+		$this->getLayout()->getContent()->setChild($pageGrid);
+		$this->renderLayout();	
+		
+		//$blockPage->toHtml();
 	}
 
 	public function editAction()
 	{																	
 		# code...
 		$id = $this->getRequest()->getRequest('id');
-		$blockPage = Ccc::getBlock('Page_Edit')->setData(['id' => $id]);					
-		$blockPage->toHtml();
+		
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$pageEdit = Ccc::getBlock('Page_Edit')->setData(['id' => $id]);					
+		
+		$this->getLayout()->getContent()->setChild($pageEdit);
+		$this->renderLayout();	
+		//$blockPage->toHtml();
 
 	}
 

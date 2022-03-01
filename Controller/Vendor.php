@@ -9,16 +9,24 @@ class Controller_Vendor extends Controller_Core_Action{
 	{
 		# code...
 		
-		$blockVendor = Ccc::getBlock('Vendor_Grid');       
-		$blockVendor->toHtml();
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$vendorGrid = Ccc::getBlock('Vendor_Grid');
+		$this->getLayout()->getContent()->setChild($vendorGrid);
+		$this->renderLayout();
+		//$blockVendor->toHtml();
 
 	}
 
 	public function editAction()
 	{
 		$id = $this->getRequest()->getRequest('id');
-		$blockVendor = Ccc::getBlock('Vendor_Edit')->setData(['id' => $id]); 
-		$blockVendor->toHtml();
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$vendorEdit = Ccc::getBlock('Vendor_Edit')->setData(['id' => $id]); 
+		$this->getLayout()->getContent()->setChild($vendorEdit);
+		$this->renderLayout();
+		//$blockVendor->toHtml();
 	
 	}
 
@@ -27,8 +35,6 @@ class Controller_Vendor extends Controller_Core_Action{
 		try{
             
             $modelVendor = Ccc::getModel('Vendor');
-            //$deletedRowId = $modelVendor->delete( $this->getRequest()->getRequest('id')  );
-            //$customer = $modelVendor->getRow();
             $id = $this->getRequest()->getRequest('id');
             $deletedRowId = $modelVendor->delete($id);
     

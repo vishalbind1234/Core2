@@ -14,27 +14,30 @@ class Controller_Customer extends Controller_Core_Action{
 
 	public function gridAction() /*---------------------------------------------------------gridAction()-----------------------------------------*/
 	{																
-		$customerGrid = Ccc::getBlock('Customer_Grid');   
-		$customerGrid->toHtml();
+	
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
+		$this->getLayout()->getHeader()->setChild($menu);
+		$customerGrid = Ccc::getBlock('Customer_Grid');
+		$this->getLayout()->getContent()->setChild($customerGrid);
+		$this->renderLayout();	
+		//$customerGrid->toHtml();
 
 		$message = $this->getRequest()->getRequest('message');
 		$message = ($message) ? $this->getRequest()->getRequest('message') : '123' ;
 		echo($message);
 	}
 
-/*	public function addAction()
-	{
-		$customerAdd = Ccc::getBlock('Customer_Add'); 
-		$customerAdd->toHtml(); 
-
-	}*/
-
 	public function editAction()
 	{
 
 		$id = $this->getRequest()->getRequest('id');
+
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
+		$this->getLayout()->getHeader()->setChild($menu);
 		$customerEdit = Ccc::getBlock('Customer_Edit')->setData(['id' => $id]);   
-		$customerEdit->toHtml(); 							
+		$this->getLayout()->getContent()->setChild($customerEdit);
+		$this->renderLayout();	
+		//$customerEdit->toHtml(); 							
 		
 	}
 

@@ -9,16 +9,26 @@ class Controller_Salesman extends Controller_Core_Action{
 	{
 		# code...
 		
-		$blockSalesman = Ccc::getBlock('Salesman_Grid');       
-		$blockSalesman->toHtml();
+		       
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$salesmanGrid = Ccc::getBlock('Salesman_Grid');
+		$this->getLayout()->getContent()->setChild($salesmanGrid);
+		$this->renderLayout();	
+		//$blockSalesman->toHtml();
 
 	}
 
 	public function editAction()
 	{
 		$id = $this->getRequest()->getRequest('id');
-		$blockSalesman = Ccc::getBlock('Salesman_Edit')->setData(['id' => $id]); 
-		$blockSalesman->toHtml();
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$salesmanEdit = Ccc::getBlock('Salesman_Edit')->setData(['id' => $id]); 
+		
+		$this->getLayout()->getContent()->setChild($salesmanEdit);
+		$this->renderLayout();	
+		//$blockSalesman->toHtml();
 	
 	}
 
@@ -28,8 +38,6 @@ class Controller_Salesman extends Controller_Core_Action{
 		try{
             
             $modelSalesman = Ccc::getModel('Salesman');
-            //$deletedRowId = $modelSalesman->delete( $this->getRequest()->getRequest('id')  );
-            //$customer = $modelSalesman->getRow();
             $id = $this->getRequest()->getRequest('id');
             $deletedRowId = $modelSalesman->delete($id);
     

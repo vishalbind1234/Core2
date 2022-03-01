@@ -11,6 +11,8 @@ class Controller_Admin extends Controller_Core_Action{
 	{
 		
 		
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
 		$adminGrid = Ccc::getBlock('Admin_Grid');
 		$this->getLayout()->getContent()->setChild($adminGrid);
 		$this->renderLayout();
@@ -28,6 +30,8 @@ class Controller_Admin extends Controller_Core_Action{
 		//$this->getLayout()->resetChild();
 		$id = $this->getRequest()->getRequest('id');
 		$adminEdit = Ccc::getBlock('Admin_Edit')->setData(['id' => $id]);
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($adminEdit);
 		$this->renderLayout();
 

@@ -29,9 +29,17 @@ class Controller_Category extends Controller_Core_Action{
 	{										
 	
 		try
-		{		
-			$categoriesGrid = Ccc::getBlock('Category_Grid'); 
-			$categoriesGrid->toHtml();							
+		{	
+
+			$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+			$this->getLayout()->getHeader()->setChild($menu);
+			$categoryGrid = Ccc::getBlock('Category_Grid');
+			$this->getLayout()->getContent()->setChild($categoryGrid);
+			$this->renderLayout();	
+			//$categoriesGrid = Ccc::getBlock('Category_Grid'); 
+			//$categoriesGrid->toHtml();	
+
+
 			$message = ($this->getRequest()->getRequest('message')) ? $this->getRequest()->getRequest('message') : "123" ;      
 			echo($message );
 		}
@@ -45,9 +53,16 @@ class Controller_Category extends Controller_Core_Action{
 
 	public function editAction()  /*----------------------------------------------editCategory()------------------------------------------*/
 	{
+
+
 		$id = $this->getRequest()->getRequest('id');																		
-		$categoriesEdit = Ccc::getBlock('Category_Edit')->setData(['id' => $id]);     
-		$categoriesEdit->toHtml();
+
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$categoryEdit = Ccc::getBlock('Category_Edit')->setData(['id' => $id]);
+		$this->getLayout()->getContent()->setChild($categoryEdit);
+		$this->renderLayout();	     
+		//$categoriesEdit->toHtml();
 	}
 
 	public function deleteAction() /*-------------------------------------------------deleteCategory()-------------------------------------*/

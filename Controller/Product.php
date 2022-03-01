@@ -14,9 +14,15 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function gridAction( )
 	{							
-																			
-	    $productsGrid = Ccc::getBlock('Product_Grid');     					 
-		$productsGrid->toHtml();
+		
+
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');
+		$this->getLayout()->getHeader()->setChild($menu);
+		$productGrid = Ccc::getBlock('Product_Grid');
+		$this->getLayout()->getContent()->setChild($productGrid);
+		$this->renderLayout();																		
+	        					 
+		//$productsGrid->toHtml();
 
 		$message = $this->getRequest()->getRequest('message') ;
 		$message = (isset($message)) ? $this->getRequest()->getRequest('message') : " 123 " ;
@@ -28,8 +34,14 @@ class Controller_Product extends Controller_Core_Action{
 	public function editAction()
 	{
 		$id = $this->getRequest()->getRequest('id');
-		$productsEdit = Ccc::getBlock('Product_Edit')->setData(['id' => $id]);    
-		$productsEdit->toHtml();
+
+
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
+		$this->getLayout()->getHeader()->setChild($menu);
+		$productEdit = Ccc::getBlock('Product_Edit')->setData(['id' => $id]);    
+		$this->getLayout()->getContent()->setChild($productEdit);
+		$this->renderLayout();	
+		
 
 	}
 

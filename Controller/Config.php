@@ -8,16 +8,28 @@ class Controller_Config extends Controller_Core_Action{
 	public function gridAction()
 	{																
 		# code...
-		$blockConfig = Ccc::getBlock('Config_Grid');
-		$blockConfig->toHtml();
+	
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$configGrid = Ccc::getBlock('Config_Grid');
+		$this->getLayout()->getContent()->setChild($configGrid);
+		$this->renderLayout();	
+
+		//$blockConfig->toHtml();
 	}
 
 	public function editAction()
 	{																	
 		# code...
 		$id = $this->getRequest()->getRequest('id');
-		$blockConfig = Ccc::getBlock('Config_Edit')->setData(['id' => $id]);					
-		$blockConfig->toHtml();
+	
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$this->getLayout()->getHeader()->setChild($menu);
+		$configEdit = Ccc::getBlock('Config_Edit')->setData(['id' => $id]);					
+		
+		$this->getLayout()->getContent()->setChild($configEdit);
+		$this->renderLayout();	
+		//$blockConfig->toHtml();
 
 	}
 
