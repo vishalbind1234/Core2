@@ -14,7 +14,7 @@ class Block_Admin_Edit extends Block_Core_Template{
 	{
 		# code...
 		$modelAdmin = Ccc::getModel('Admin');
-		$id = Ccc::getFront()->getRequest()->getRequest('id');
+		$id = $this->getData('id');
 		if(!$id)
 		{
 			return false;
@@ -23,14 +23,6 @@ class Block_Admin_Edit extends Block_Core_Template{
 		return $admin;
 
 	}
-/*
-	public function getAdmin()
-	{
-		# code...
-		$modelAdmin = Ccc::getModel('Admin');
-		$admin = $modelAdmin->fetchAll("SELECT * FROM Admin ORDER BY wholePath ");
-		return $admin;
-	}*/
 
 
 

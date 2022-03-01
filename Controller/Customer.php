@@ -32,7 +32,8 @@ class Controller_Customer extends Controller_Core_Action{
 	public function editAction()
 	{
 
-		$customerEdit = Ccc::getBlock('Customer_Edit');    
+		$id = $this->getRequest()->getRequest('id');
+		$customerEdit = Ccc::getBlock('Customer_Edit')->setData(['id' => $id]);   
 		$customerEdit->toHtml(); 							
 		
 	}

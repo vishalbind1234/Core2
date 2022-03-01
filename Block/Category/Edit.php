@@ -15,7 +15,7 @@ class Block_Category_Edit extends Block_Core_Template{
 	{
 		# code...
 		$modelCategory = Ccc::getModel('Category');
-		$id = Ccc::getFront()->getRequest()->getRequest('id');
+		$id = $this->getData('id');
 		if( !isset($id) )
 		{
 			return null;

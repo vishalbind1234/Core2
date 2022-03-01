@@ -12,6 +12,9 @@
 		 <button> <a href="index.php?a=grid&c=Product">  Product   </a>  </button>  
 		 <button> <a href="index.php?a=grid&c=Admin">    Admin     </a>  </button> 
 		 <button> <a href="index.php?a=grid&c=Config">   Config    </a>  </button> 
+		 <button> <a href="index.php?a=grid&c=Vendor">   Vendor    </a>  </button> 
+		 <button> <a href="index.php?a=grid&c=Salesman"> SalesMan  </a>  </button> 
+		 <button> <a href="index.php?a=grid&c=Page">     Page	   </a>  </button> 
 
 
 	</body>
@@ -49,7 +52,7 @@ class Ccc {
 	}
 
 	public static function loadFile( $url )
-	{	                                       
+	{	                                   				   
 		require_once( $url );    
 	}
 

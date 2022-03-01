@@ -8,7 +8,33 @@ class Controller_Core_Action{
 
 	public $view = null;
 	public $request = null;
-	/*public global $adapter;*/
+	protected $layout = null;
+
+	public function getLayout()
+	{
+		if(!$this->layout)
+		{
+			$this->setLayout();
+		}
+		return $this->layout;
+	}
+
+	public function setLayout()
+	{
+		$this->layout = Ccc::getBlock('Core_Layout'); 					
+		return $this;
+	}
+
+	public function renderLayout()
+	{
+		if(!$this->layout)
+		{
+			echo('No Layout Selected.');
+			exit();
+		}
+		$this->layout->toHtml();
+	}
+	
 
 	public function redirect($url)
 	{
@@ -22,7 +48,7 @@ class Controller_Core_Action{
 		return $adapter;
 	}
 
-	public function getView( )
+	/*public function getView( )
 	{
 		if( !$this->view ){
 			$this->setView( new Model_Core_View() );
@@ -36,11 +62,12 @@ class Controller_Core_Action{
 		$this->view = $view;
 		return $this;
 		
-	}
+	}*/
 
-	public function getRequest( )
+	public function getRequest()
 	{
-		if( !$this->request ){
+		if( !$this->request )
+		{
 			$this->setRequest( new Model_Core_Request() );
 		}
 		return $this->request;

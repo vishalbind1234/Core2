@@ -6,16 +6,16 @@
 class Block_Config_Edit extends Block_Core_Template{
 
 	public function __construct()
-	{														echo('hiii');	
+	{														
 		# code...
-		$this->setTemplate('view/Config/editAction.php');	echo('hooo');
+		$this->setTemplate('view/Config/editAction.php');	
 	}
 
 	public function getCurrentConfig()
 	{
 		# code...
 		$modelConfig = Ccc::getModel('Config');
-		$id = Ccc::getFront()->getRequest()->getRequest('id');
+		$id = $this->getData('id');
 		if(!isset($id))
 		{
 			return false;

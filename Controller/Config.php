@@ -15,7 +15,8 @@ class Controller_Config extends Controller_Core_Action{
 	public function editAction()
 	{																	
 		# code...
-		$blockConfig = Ccc::getBlock('Config_Edit');					
+		$id = $this->getRequest()->getRequest('id');
+		$blockConfig = Ccc::getBlock('Config_Edit')->setData(['id' => $id]);					
 		$blockConfig->toHtml();
 
 	}

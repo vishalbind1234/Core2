@@ -6,40 +6,39 @@
 class Controller_Admin extends Controller_Core_Action{
 
 
-	public function redirect($url)
-	{
-		header("Location:" . $url );
-	    exit();
-	    
-	}
 
 	public function gridAction() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
 	{
+		
+		
+		$adminGrid = Ccc::getBlock('Admin_Grid');
+		$this->getLayout()->getContent()->setChild($adminGrid);
+		$this->renderLayout();
 
-		$adminGrid = Ccc::getBlock('Admin_Grid');    
-		$adminGrid->toHtml();
+		/*$adminGrid = Ccc::getBlock('Admin_Grid');    
+		$adminGrid->toHtml();*/
 
-		$message = ( $this->getRequest()->getRequest('message') ) ? $this->getRequest()->getRequest('message') : " 123 " ;
+		$message = $this->getRequest()->getRequest('message');
+		$message = ($message) ? $message : " 123 " ;
 		echo($message );
 	}
 
-	/*public function addAction()
-	{
-		$adminAdd = Ccc::getBlock('Admin_Add');
-		$adminAdd->toHtml();
-		
-	}*/
-
 	public function editAction()
 	{
-		$adminEdit = Ccc::getBlock('Admin_Edit');
-		$adminEdit->toHtml();
+		//$this->getLayout()->resetChild();
+		$id = $this->getRequest()->getRequest('id');
+		$adminEdit = Ccc::getBlock('Admin_Edit')->setData(['id' => $id]);
+		$this->getLayout()->getContent()->setChild($adminEdit);
+		$this->renderLayout();
+
+		//$adminEdit->toHtml();
 
 	}
 
 	public function deleteAction()  /*--------------------------------------deleteAdmin()----------------------------------------------*/  
 	{
-		try{  
+		try
+		{  
             $modelAdmin = Ccc::getModel('Admin');   		 		
             $id = $this->getRequest()->getRequest('id');  					
             $deletedId = $modelAdmin->delete($id);

@@ -4,9 +4,9 @@
 
 class Model_Core_View{
 
-	public $data = [];
+	protected $data = [];
 
-	public $template = null;
+	protected $template = null;
 
 	public function getTemplate()
 	{
@@ -48,11 +48,18 @@ class Model_Core_View{
 		if(!$key){
 			return $this->data;
 		}
-		if(array_key_exists($key, $data)){
+		if(array_key_exists($key, $this->data)){
 			return $this->data[$key];
 		}
 		return null; 
 	}
+
+	public function getAdapter()
+	{
+		global $adapter;
+		return $adapter;
+	}
+
 
 	public function getUrl( $a = null , $c = null , $param = [] , $reset = false  )
 	{

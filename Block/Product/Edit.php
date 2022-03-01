@@ -15,7 +15,7 @@ class Block_Product_Edit extends Block_Core_Template{
 	{
 		# code...
 		$modelProduct = Ccc::getModel('Product');
-		$id = Ccc::getFront()->getRequest()->getRequest('id') ;
+		$id = $this->getData('id');
 		if(!isset($id))
 		{
 			return null;

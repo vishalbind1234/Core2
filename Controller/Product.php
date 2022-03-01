@@ -27,7 +27,8 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function editAction()
 	{
-		$productsEdit = Ccc::getBlock('Product_Edit');     
+		$id = $this->getRequest()->getRequest('id');
+		$productsEdit = Ccc::getBlock('Product_Edit')->setData(['id' => $id]);    
 		$productsEdit->toHtml();
 
 	}

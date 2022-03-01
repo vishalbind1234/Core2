@@ -15,7 +15,7 @@ class Block_Customer_Edit extends Block_Core_Template{
 	{																
 		# code... 
 		$modelCustomer = Ccc::getModel('Customer');                
-		$id = Ccc::getFront()->getRequest()->getRequest('id');   
+		$id = $this->getData('id');   
 		if(!$id)
 		{
 			return false;

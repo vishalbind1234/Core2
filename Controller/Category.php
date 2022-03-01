@@ -45,8 +45,8 @@ class Controller_Category extends Controller_Core_Action{
 
 	public function editAction()  /*----------------------------------------------editCategory()------------------------------------------*/
 	{
-																				
-		$categoriesEdit = Ccc::getBlock('Category_Edit');      
+		$id = $this->getRequest()->getRequest('id');																		
+		$categoriesEdit = Ccc::getBlock('Category_Edit')->setData(['id' => $id]);     
 		$categoriesEdit->toHtml();
 	}
 
