@@ -12,6 +12,22 @@ class Model_Admin extends Model_Core_Row {
 
 	}
 
+	const ENABLE = 1;
+	const ENABLE_LBL = 'ENABLE';
+	const DISABLE = 2;
+	const DISABLE_LBL = 'DISABLE';
+
+	public function getStatus()
+	{
+		# code...
+		$status = [ 
+			self::ENABLE => self::ENABLE_LBL ,
+			self::DISABLE => self::DISABLE_LBL
+		];
+
+		return $status;
+	}
+
 
 
 

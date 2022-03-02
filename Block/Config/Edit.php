@@ -18,7 +18,7 @@ class Block_Config_Edit extends Block_Core_Template{
 		$id = $this->getData('id');
 		if(!isset($id))
 		{
-			return false;
+			$id = -1;
 		}
 		$configs = $modelConfig->fetchRow("SELECT * FROM Config where id = {$id}");
 		return $configs;

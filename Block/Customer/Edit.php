@@ -18,7 +18,7 @@ class Block_Customer_Edit extends Block_Core_Template{
 		$id = $this->getData('id');   
 		if(!$id)
 		{
-			return false;
+			$id = -1;
 		}  							
 		$customers = $modelCustomer->fetchRow("SELECT * FROM Customer c INNER JOIN Customer_Address a ON c.id = a.customerId Where id = {$id} ");
 		return $customers;

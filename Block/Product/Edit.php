@@ -18,7 +18,7 @@ class Block_Product_Edit extends Block_Core_Template{
 		$id = $this->getData('id');
 		if(!isset($id))
 		{
-			return null;
+			$id = -1;
 		}
 
 		$products = $modelProduct->fetchRow("SELECT * FROM Product Where id = {$id} ");
@@ -26,14 +26,17 @@ class Block_Product_Edit extends Block_Core_Template{
 
 	}
 
-	public function getProduct()
+	
+	
+
+/*	public function getProduct()
 	{
 		# code...
 		$modelProduct = Ccc::getModel('Product');
 		$products = $modelProduct->fetchAll("SELECT * FROM Product");
 		return $products;
 	}
-
+*/
 
 
 

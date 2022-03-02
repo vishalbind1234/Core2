@@ -49,13 +49,14 @@
 
 
 				<tr>
-					<td><label> Status &nbsp </label></td>
-					<td>
-						<select name=Page[status]> 
-							<option value="1"> Active </option>
-							<option value="2"> Inctive </option>
-					    </select>
-					</td>
+				<td><label for="status"> Status &nbsp</label></td>
+				<td>
+					<select name="Page[status]">
+						<?php foreach ($page->getStatus() as $key => $value) : ?>
+							<option value="<?php echo($key); ?>"  <?php if($page->status == $key){echo('selected');} ?> > <?php echo($value); ?> </option>
+						<?php endforeach ; ?>
+					</select>
+				</td>
 				</tr>
 				
 				<tr>

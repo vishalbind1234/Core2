@@ -106,9 +106,12 @@ class Model_Core_Row {
 		$row = $adapter->fetchRow($query);
 
 		$currentRow = new $this();
-		foreach ($row as $key => $value) 
+		if($row)
 		{
-			$currentRow->$key = $value;
+			foreach ($row as $key => $value) 
+			{
+				$currentRow->$key = $value;
+			}
 		}
 		return $currentRow;
 

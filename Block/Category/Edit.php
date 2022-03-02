@@ -18,7 +18,7 @@ class Block_Category_Edit extends Block_Core_Template{
 		$id = $this->getData('id');
 		if( !isset($id) )
 		{
-			return null;
+			$id = -1;
 		}
 		$category = $modelCategory->load($id);
 		return $category;

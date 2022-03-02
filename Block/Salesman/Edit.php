@@ -14,24 +14,18 @@ class Block_Salesman_Edit extends Block_Core_Template{
 	{																																
 		# code...
 		$modelSalesman = Ccc::getModel('Salesman');											
-		/*$vendorTable = $modelSalesman->getResource()->getTableName();
-		$vendorKey = $modelSalesman->getResource()->getPrimaryKey();
-
-		$modelSalesmanAddress = Ccc::getModel('Salesman_Address');
-		$addressTable = $modelSalesmanAddress->getResource()->getTableName();
-		$addressKey = $modelSalesmanAddress->getResource()->getPrimaryKey();*/
-
+		
 		$id = $this->getData('id');
 		if(!$id)
 		{
-			return false;
+			$id = -1;
 		}
 		$row = $modelSalesman->fetchRow(" SELECT * FROM Salesman  WHERE id = {$id}");
 		return $row;
 
 	}
 
-	const ENABLE = 1;
+	/*const ENABLE = 1;
 	const ENABLE_LBL = 'ENABLE';
 	const DISABLE = 2;
 	const DISABLE_LBL = 'DISABLE';
@@ -45,7 +39,7 @@ class Block_Salesman_Edit extends Block_Core_Template{
 		];
 
 		return $status;
-	}
+	}*/
 
 }
 

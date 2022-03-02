@@ -47,7 +47,7 @@
 		<td><label for="status">Person Status &nbsp</label></td>
 		<td>
 			<select name="Person[status]">
-				<?php foreach ($this->getStatus() as $key => $value) : ?>
+				<?php foreach ($vendor->getStatus() as $key => $value) : ?>
 					<option value="<?php echo $val = (!$vendor) ? "" : ($key); ?>"  <?php if($vendor->status == $key){echo $val = (!$vendor) ? "" : ('selected');} ?> > <?php echo $val = (!$vendor) ? "" : ($value); ?> </option>
 				<?php endforeach ; ?>
 			</select>

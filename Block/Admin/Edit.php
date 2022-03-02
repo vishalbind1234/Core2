@@ -17,7 +17,7 @@ class Block_Admin_Edit extends Block_Core_Template{
 		$id = $this->getData('id');
 		if(!$id)
 		{
-			return false;
+			$id = -1;
 		}
 		$admin = $modelAdmin->fetchRow("SELECT * FROM Admin Where id = {$id} ");
 		return $admin;

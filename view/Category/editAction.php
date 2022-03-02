@@ -61,11 +61,14 @@
 				</tr>
 				
 				<tr>
-					<td><label> Status &nbsp </label></td>
-					<td> <select name=Category[status]> 
-							<option value="1"> Active </option>
-							<option value="2"> Inctive </option>
-					    </select> </td>
+				<td><label for="status"> Status &nbsp</label></td>
+				<td>
+					<select name="Category[status]">
+						<?php foreach ($currentCategory->getStatus() as $key => $value) : ?>
+							<option value="<?php echo($key); ?>"  <?php if($currentCategory->status == $key){echo('selected');} ?> > <?php echo($value); ?> </option>
+						<?php endforeach ; ?>
+					</select>
+				</td>
 				</tr>
 				
 				<tr>

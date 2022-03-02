@@ -18,7 +18,7 @@ class Block_Page_Edit extends Block_Core_Template{
 		$id = $this->getData('id');
 		if(!isset($id))
 		{
-			return false;
+			$id = -1;
 		}
 		$pages = $modelPage->fetchRow("SELECT * FROM Page where id = {$id}");
 		return $pages;
