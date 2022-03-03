@@ -79,6 +79,8 @@
 					<td><label> UpdatedAt &nbsp </label></td>
 					<td><input type="date" name=Category[updatedAt]  value=""  hidden ></td> 
 				</tr>
+
+			
 				
 			</table>
 

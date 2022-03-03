@@ -9,6 +9,22 @@ class Controller_Core_Action{
 	public $view = null;
 	public $request = null;
 	protected $layout = null;
+	protected $message = null;
+
+	public function getMessage()
+	{
+		if(!$this->message)
+		{
+			$this->setMessage();
+		}
+		return $this->message;
+	}
+
+	public function setMessage()
+	{
+		$this->message = Ccc::getModel('Core_Message'); 					
+		return $this;
+	}
 
 	public function getLayout()
 	{
