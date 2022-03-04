@@ -44,7 +44,7 @@
 
 				<tr>
 					<td><label> Content &nbsp </label></td>
-					<td><input type="value" name=Page[value] value=<?php echo( $page->value); ?> ></td>
+					<td><input type="value" name=Page[content] value=<?php echo( $page->content); ?> ></td>
 				</tr>
 
 

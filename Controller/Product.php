@@ -14,13 +14,18 @@ class Controller_Product extends Controller_Core_Action{
 
 	public function gridAction( )
 	{							
-		
+		$this->getMessage()->getSession()->start();
 
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');
-		$this->getLayout()->getHeader()->setChild($menu);
 		$productGrid = Ccc::getBlock('Product_Grid');
+		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+
+		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($productGrid);
-		$this->renderLayout();																		
+		$this->getLayout()->getFooter()->setChild($blockMessage);
+		$this->renderLayout();					
+
+		$this->getMessage()->unsetMessages();													
 	        					 
 		//$productsGrid->toHtml();
 
@@ -51,7 +56,9 @@ class Controller_Product extends Controller_Core_Action{
 		$id = $this->getRequest()->getRequest('id');
 		$deletedRowId = $modelProduct->delete($id);
 		
-		$param['message'] = "Row id " .  $deletedRowId  . " deleted. "  ;
+		$message = " row ID" . $deletedRowId . " deleted. " ;
+		$modelMessage = $this->getMessage();
+        $modelMessage->addMessage($message);
 		$url = $this->getUrl('grid'  , 'Product' , $param);   
 		$this->redirect($url);
 
@@ -67,8 +74,10 @@ class Controller_Product extends Controller_Core_Action{
 
 			if( !(int)$array['id'] )
 			{
-				$param['message'] = " Invalid id.  "  ;
-				$url = $this->getUrl('grid'  , 'Product' , $param);   
+				$message = 'error : id not valid. ';
+        		$msg = $this->getMessage();
+        		$msg->addMessage($message , Model_Core_Message::ERROR); 
+				$url = $this->getUrl('grid'  , 'Product' );   
 				$this->redirect($url);
 			}
 
@@ -86,8 +95,9 @@ class Controller_Product extends Controller_Core_Action{
 			}
 			catch(Exception $e)
 			{
-				$param['message'] = $e->getMessage()  ;
-				$url = $this->getUrl('grid'  , 'Product' , $param);   
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl('grid'  , 'Product' );   
 				$this->redirect($url);			
 			}
 			
@@ -105,15 +115,17 @@ class Controller_Product extends Controller_Core_Action{
 			}
 			catch(Exception $e){
 
-				$param['message'] = $e->getMessage() ;
-				$url = $this->getUrl('grid'  , 'Product' , $param);   
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl('grid'  , 'Product' );   
 				$this->redirect($url);	
 			}
 		
 		}
 
-		$param['message'] = "row id " . $rowId . " inserted/updated. " ;
-		$url = $this->getUrl('grid'  , 'Product' , $param);   
+		$message = "row id " . $rowId . " Saved  " ;
+		$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
+		$url = $this->getUrl('grid'  , 'Product');   
 		$this->redirect($url);	
 
 	}

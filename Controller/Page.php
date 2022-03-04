@@ -7,12 +7,18 @@ class Controller_Page extends Controller_Core_Action{
 
 	public function gridAction()
 	{																
-		# code...
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$this->getLayout()->getHeader()->setChild($menu);
+		$this->getMessage()->getSession()->start();
+
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$pageGrid = Ccc::getBlock('Page_Grid');
+		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+
+		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($pageGrid);
+		$this->getLayout()->getFooter()->setChild($blockMessage);
 		$this->renderLayout();	
+
+		$this->getMessage()->unsetMessages();
 		
 		//$blockPage->toHtml();
 	}
@@ -40,8 +46,10 @@ class Controller_Page extends Controller_Core_Action{
 		{
 			if(!(int)$array['id'])
 			{
-				$message = 'Invalid ID.' ;
-				$url = $this->getUrl('grid' , 'Page' , ['message' => $message]);
+				$message = 'error : id not valid. ';
+        		$msg = $this->getMessage();
+        		$msg->addMessage($message , Model_Core_Message::ERROR); 
+				$url = $this->getUrl('grid' , 'Page' );
 				$this->redirect($url);
 			}
 
@@ -64,7 +72,9 @@ class Controller_Page extends Controller_Core_Action{
 			$id = $modelPage->save();
 		}
 
-		$url = $this->getUrl('grid' , 'Page' , ['message' => $id]);
+		$message = "row id " . $id . " Saved  " ;
+		$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
+		$url = $this->getUrl('grid' , 'Page');
 		$this->redirect($url);
 	}
 
@@ -74,8 +84,11 @@ class Controller_Page extends Controller_Core_Action{
 		$id = $this->getRequest()->getRequest('id');
 		$modelPage = Ccc::getModel('Page');  
 		$deletedId = $modelPage->delete($id); 
+		$message = " row ID" . $deletedId . " deleted. " ;
 
-		$url = $this->getUrl('grid' , 'Page' , ['message' => $deletedId]);
+		$modelMessage = $this->getMessage();
+        $modelMessage->addMessage($message);
+		$url = $this->getUrl('grid' , 'Page' );
 		$this->redirect($url); 
 	}
 

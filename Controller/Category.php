@@ -10,35 +10,26 @@ class Controller_Category extends Controller_Core_Action{
 
 	public function testAction()
 	{																										
-		# code...
 		$model = Ccc::getModel('Category');
 		$model->getTableName() ; 
-		
-		
-	}
-
- 
-
-	public function redirect($url) /*------------------------------------------redirect()-----------------------------------------------*/
-	{
-		header('Location:' . $url );
-		exit();
 	}
 
 	public function gridAction() /*------------------------------------------gridCategory()----------------------------------------------*/
 	{										
-	
 		try
 		{	
+			$this->getMessage()->getSession()->start();
 
 			$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-			$this->getLayout()->getHeader()->setChild($menu);
 			$categoryGrid = Ccc::getBlock('Category_Grid');
-			$this->getLayout()->getContent()->setChild($categoryGrid);
-			$this->renderLayout();	
-			//$categoriesGrid = Ccc::getBlock('Category_Grid'); 
-			//$categoriesGrid->toHtml();	
+			$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
 
+			$this->getLayout()->getContent()->setChild($categoryGrid);
+			$this->getLayout()->getHeader()->setChild($menu);
+			$this->getLayout()->getFooter()->setChild($blockMessage);
+			$this->renderLayout();	
+
+			$this->getMessage()->unsetMessages();
 
 			$message = ($this->getRequest()->getRequest('message')) ? $this->getRequest()->getRequest('message') : "123" ;      
 			echo($message );
@@ -58,8 +49,8 @@ class Controller_Category extends Controller_Core_Action{
 		$id = $this->getRequest()->getRequest('id');																		
 
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$this->getLayout()->getHeader()->setChild($menu);
 		$categoryEdit = Ccc::getBlock('Category_Edit')->setData(['id' => $id]);
+		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($categoryEdit);
 		$this->renderLayout();	     
 		//$categoriesEdit->toHtml();
@@ -77,15 +68,17 @@ class Controller_Category extends Controller_Core_Action{
       	}
         catch(Exception $e)
         {
-        	$message = $e->getMessage() ;
-		    $param['message'] = $message ;
-		    $url = $this->getUrl('grid' , 'Category' , $param );
+        	$msg = $e->getMessage();
+			$modelMessage = $this->getMessage();
+            $modelMessage->addMessage($msg);
+		    $url = $this->getUrl('grid' , 'Category');
 			$this->redirect($url);
         	
         }
         $message = " rows id " . $deletedRow .  " deleted" ;
-        $param['message'] = $message;
-        $url = $this->getUrl('grid' , 'Category' , $param );
+        $modelMessage = $this->getMessage();
+        $modelMessage->addMessage($message);
+        $url = $this->getUrl('grid' , 'Category');
 		$this->redirect($url);
 
 	}
@@ -103,9 +96,10 @@ class Controller_Category extends Controller_Core_Action{
 		{    
 			if(!(int)$array['id'] )
 			{
-				$errorMessage = 'Error - id not valid' ;
-				$param['message'] = $errorMessage ;
-        		$url = $this->getUrl( 'grid' , 'Category' , $param );
+				$message = 'error : id not valid. ';
+        		$msg = $this->getMessage();
+        		$msg->addMessage($message , Model_Core_Message::ERROR); 
+        		$url = $this->getUrl( 'grid' , 'Category' );
         		$this->redirect( $url );      
         	}
 
@@ -136,9 +130,9 @@ class Controller_Category extends Controller_Core_Action{
 			}
 			catch(Exception $e)
 			{
-				$message = $e->getMessage();
-				$param['message'] = $message;
-				$url = $this->getUrl( 'grid' , 'Category' , $param );
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl( 'grid' , 'Category' );
         		$this->redirect( $url );
 			}	
 			
@@ -182,16 +176,16 @@ class Controller_Category extends Controller_Core_Action{
 			catch(Exception $e)
 			{
 				$message = $e->getMessage() ;
-				$param['message'] = $message;
-				$url = $this->getUrl( 'grid' , 'Category' , $param );
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl( 'grid' , 'Category');
 				$this->redirect( $url );
 			}
 		
 		}
 
-		$message = " row id " . $returnRowId . " updated/inserted successfully" ;
-		$param['message'] = $message;
-		$url = $this->getUrl( 'grid' , 'Category' , $param );
+		$message = "row id " . $returnedRowId . " Saved  " ;
+		$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
+		$url = $this->getUrl( 'grid' , 'Category' );
 		$this->redirect( $url );
 
 	}
