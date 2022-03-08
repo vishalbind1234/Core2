@@ -77,15 +77,17 @@
 </form>
 
 
-<form action="<?php echo( $this->getUrl('save' , 'Product_Media' , ['id' => $media->productId] )); ?>"  method="POST"   enctype="multipart/form-data"   >
-	
-	<table>
-			
-			<tr>
-				<td> <input type="file" name="productImage" accept="image/*"  multiple   > BROWSE  </td> 
-				<td> <input type="submit"  value="submit"> </td>
-			</tr>
+<?php if( $productMedia ): ?>
+	<form action="<?php echo( $this->getUrl('save' , 'Product_Media' , ['id' => $media->productId] )); ?>"  method="POST"   enctype="multipart/form-data"   >
+		
+		<table>
+				
+				<tr>
+					<td> <input type="file" name="productImage" accept="image/*"  multiple   > BROWSE  </td> 
+					<td> <input type="submit"  value="submit"> </td>
+				</tr>
 
-	</table>
-	
-</form>
+		</table>
+		
+	</form>
+<?php endif ;  ?>

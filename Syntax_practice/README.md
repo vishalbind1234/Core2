@@ -1,2 +1,0 @@
-# core
-For PHP practice

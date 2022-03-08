@@ -52,13 +52,14 @@ class Model_Core_Request{
 	public function getAction()
 	{
 		# code...
-		return $_GET['a'];
+
+		return ( isset($_GET['a']) ) ? $_GET['a'] : 'grid' ;
 	}
 
 	public function getController()
 	{
 		# code...
-		return $_GET['c'];
+		return ( isset($_GET['c']) ) ? $_GET['c'] : 'Category' ;
 	}
 
 

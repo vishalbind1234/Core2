@@ -19,7 +19,8 @@ class Block_Product_Media extends Block_Core_Template{
 	{																									
 		# code...
 		$modelProductMedia = Ccc::getModel('Product_Media');
-		$id = Ccc::getFront()->getRequest()->getRequest('id');
+		//$id = Ccc::getFront()->getRequest()->getRequest('id');
+		$id = $this->getData('id');
 		$productMedia = $modelProductMedia->fetchAll(" SELECT * FROM Product_Media WHERE productId = {$id}");
 		return $productMedia;
 	}

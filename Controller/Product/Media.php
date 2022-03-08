@@ -13,8 +13,10 @@ class Controller_Product_Media extends Controller_Core_Action{
 	public function mediaAction()
 	{															
 		# code...
-		$productMedia = Ccc::getBlock('Product_Media');         
-		$productMedia->toHtml();												
+		$productMediaBlock = Ccc::getBlock('Product_Media'); 
+		$id = $this->getRequest()->getRequest('id');
+		$productMediaBlock->setData(['id' => $id]); 
+		$productMediaBlock->toHtml();												
 	}
 
 	public function saveAction()

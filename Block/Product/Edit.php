@@ -5,6 +5,8 @@
 
 class Block_Product_Edit extends Block_Core_Template{
 
+	protected $productId;
+
 	public function __construct()
 	{
 		# code...
@@ -13,30 +15,45 @@ class Block_Product_Edit extends Block_Core_Template{
 
 	public function getCurrentProduct()
 	{
-		# code...
 		$modelProduct = Ccc::getModel('Product');
-		$id = $this->getData('id');
-		if(!isset($id))
+		$this->productId = $this->getData('id');
+		if(!isset($this->productId))
 		{
-			$id = -1;
+			$this->productId = -1;
 		}
 
-		$products = $modelProduct->fetchRow("SELECT * FROM Product Where id = {$id} ");
+		$products = $modelProduct->fetchRow("SELECT * FROM Product Where id = {$this->productId} ");
 		return $products;
 
 	}
 
-	
-	
-
-/*	public function getProduct()
+	public function getCheckedCategories()
 	{
-		# code...
-		$modelProduct = Ccc::getModel('Product');
-		$products = $modelProduct->fetchAll("SELECT * FROM Product");
-		return $products;
+		$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
+		//$productId = $this->getData('id');														
+		$categories = $modelCategoryProduct->fetchAll("SELECT * FROM Category_Product Where productId = {$this->productId} ");
+		return $categories;
 	}
-*/
+
+	public function getAllCategories()
+	{
+		$modelCategory = Ccc::getModel('Category');
+		$category = $modelCategory->fetchAll("SELECT * FROM Category  ");
+		return $category ;
+	}
+
+	public function getCategoryName($id)
+	{
+		$modelCategory = Ccc::getModel('Category');
+		$category = $modelCategory->fetchRow("SELECT name FROM Category WHERE id = {$id} ");
+		return $category->name ;
+
+	}
+
+	
+	
+
+
 
 
 

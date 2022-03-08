@@ -65,7 +65,7 @@ class Model_Core_Row_Resource{
 		$primaryKey = $this->getPrimaryKey();
 		$tableName = $this->getTableName();
 
-		$set = "";														
+		$set = "";																			//print_r($array); exit();												
 
 		foreach($array as $key => $value) 
 		{
