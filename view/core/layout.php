@@ -2,6 +2,24 @@
 <html>
 <head>
 	<title></title>
+	<style>
+		table , tr , td , th 
+		{
+			border: 2px solid grey ;
+			border-collapse: collapse;
+		}
+
+		table
+		{
+			width:90%;
+		}
+
+		img
+		{
+			height: 30px;
+			width: 30px;
+		}
+	</style>
 </head>
 <body>
 

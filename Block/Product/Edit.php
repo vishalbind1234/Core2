@@ -42,13 +42,13 @@ class Block_Product_Edit extends Block_Core_Template{
 		return $category ;
 	}
 
-	public function getCategoryName($id)
+	/*public function getCategoryName($id)
 	{
 		$modelCategory = Ccc::getModel('Category');
 		$category = $modelCategory->fetchRow("SELECT name FROM Category WHERE id = {$id} ");
 		return $category->name ;
 
-	}
+	}*/
 
 	
 	

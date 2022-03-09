@@ -45,7 +45,7 @@ class Controller_Product extends Controller_Core_Action{
 
 	}
 
-	public function deleteAction() /*------------------------------------------------delete function----------------------------------------------*/
+	public function deleteAction() //-----------------------------------------------delete function----------------------------------------------
 	{
 		$modelProduct = Ccc::getModel('Product');
 		$id = $this->getRequest()->getRequest('id');
@@ -58,7 +58,7 @@ class Controller_Product extends Controller_Core_Action{
 	           
 	}
 
-	public function saveAction() /*-----------------------------------------save function---------------------------------------*/
+	public function saveAction() //-----------------------------------------save function---------------------------------------
 	{
 		$array = $this->getRequest()->getPost('Product');   //print_r($array); exit();
 		$modelProduct = Ccc::getModel('Product');
@@ -74,27 +74,8 @@ class Controller_Product extends Controller_Core_Action{
 
 			try{
 				$productId = $this->getRequest()->getRequest('productId');
-
-				foreach ($array['reference'] as $key => $value) 
-				{
-					$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
-					if( !in_array($value, $array['category'] ))
-					{
-						$modelCategoryProduct->delete($key);
-						unset($array['reference'][$key]); 
-					}						
-				}
-
-				foreach ($array['category'] as $key => $value) 
-				{
-					if( !in_array($value , $array['reference']))
-					{
-						$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
-						$modelCategoryProduct->productId = $productId;
-						$modelCategoryProduct->categoryId = $value;
-						$modelCategoryProduct->save();
-					}
-				}
+				$category = $array['category'];
+				$reference = $array['reference'];
 
 				unset($array['category']);
 				unset($array['reference']);
@@ -107,6 +88,29 @@ class Controller_Product extends Controller_Core_Action{
 				date_default_timezone_set('Asia/Kolkata');   
 				$modelProduct->updatedAt = date('Y-m-d');     //----------------updatedAt is set here-------------------- 
 				$rowId = $modelProduct->save();
+
+				//-----------------------------------------------------------------
+
+				foreach ($reference as $key => $value) 
+				{
+					$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
+					if( !in_array($value, $category ))
+					{
+						$modelCategoryProduct->delete($key);
+						unset($array['reference'][$key]); 
+					}						
+				}
+
+				foreach ($category as $key => $value) 
+				{
+					if( !in_array($value , $reference)
+					{
+						$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
+						$modelCategoryProduct->productId = $productId;
+						$modelCategoryProduct->categoryId = $value;
+						$modelCategoryProduct->save();
+					}
+				}
 				
 			}
 			catch(Exception $e)
@@ -119,13 +123,28 @@ class Controller_Product extends Controller_Core_Action{
 		}
 		else{
 
-			try{
+			try{														//print_r($array); exit();
+				$category = $array['category'];
+				unset($array['category']);
 
+				$modelProduct = Ccc::getModel('Product');
 				foreach ($array as $key => $value) 
 				{
 					$modelProduct->$key = $value;
 				}
 				$rowId = $modelProduct->save();
+
+				//-------------------------------------------------------------------------------
+				$productId = $rowId;
+
+				foreach ($category as $key => $value) 
+				{
+					$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
+					$modelCategoryProduct->productId = $productId;
+					$modelCategoryProduct->categoryId = $value;
+					$modelCategoryProduct->save();
+				}
+
 
 			}
 			catch(Exception $e){
@@ -143,7 +162,7 @@ class Controller_Product extends Controller_Core_Action{
 
 	}
 
-	public function errorAction( )
+	public function errorAction()
 	{
 		echo(' error occured.');
 	}

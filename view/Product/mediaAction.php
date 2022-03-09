@@ -1,22 +1,5 @@
 
 <?php   $productMedia = $this->getCurrentProductMedia();   /* $productMedia = null ;  */  /*print_r($productMedia);   exit(); */  ?>
-<style>
-	table , tr , th ,td {
-		border:2px solid red;
-		border-collapse: collapse;
-	
-	}
-	table{
-		
-		width:60%;
-
-	}
-
-	.img{
-		width:50px;
-		height:50px;
-	}
-</style>
 
 <form action="<?php  echo($this->getUrl('update' , 'Product_Media')); ?>"  method="POST">
 

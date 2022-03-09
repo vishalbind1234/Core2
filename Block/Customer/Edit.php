@@ -25,15 +25,6 @@ class Block_Customer_Edit extends Block_Core_Template{
 
 	}
 
-/*	public function getCustomer()
-	{
-		# code...
-		$modelCustomer = Ccc::getModel('Customer');
-		$customers = $modelCustomer->fetchAll("SELECT * FROM Customer c INNER JOIN Customer_Address a ON c.id = a.customerId");
-		return $customers;
-	}
-*/
-
 
 }
 

@@ -71,22 +71,6 @@ class Block_Category_Edit extends Block_Core_Template{
 		
 	}
 
-	/*function canBePlaced( $id  , $currentRecordParentId )
-	{
-		global $adapter;
-		$query = "SELECT * FROM Category";
-		$idNameArray = $adapter->fetchPairs('id' , 'name' , 'Category');
-		$idWholePathArray = $adapter->fetchPairs('id' , 'wholePath' , 'Category');
-
-	    $wholePathAsArray = explode( " > " , $idWholePathArray[$id] ); 
-	    $wholePathAsArray[sizeof($wholePathAsArray) - 1] = 0;           //-----just excluded parent from array (check) so that it appears in the list------
-	    if(  in_array( $currentRecordParentId , $wholePathAsArray ) )
-	    {
-	   		return false;
-	    }
-	    return true;
-	}*/
-
 
 
 

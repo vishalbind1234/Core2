@@ -74,6 +74,15 @@ class Model_Core_Row {
 		return $this;
 	}
 
+	public function __isset($key)
+	{
+		if(isset($this->data[$key]))
+		{
+			return true;
+		}
+		return false;
+	}
+
 	public function load($id)
 	{
 		$primaryKey = $this->getResource()->getPrimaryKey();

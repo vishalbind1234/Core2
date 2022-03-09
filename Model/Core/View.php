@@ -31,7 +31,7 @@ class Model_Core_View{
 	public function setData(array $data) /*--------here directly whole array  will be set-------------*/
 	{
 		# code...
-		$this->data = $data;
+		$this->data = array_merge($this->data , $data);
 		return $this;
 	}
 

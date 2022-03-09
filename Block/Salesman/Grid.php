@@ -19,10 +19,10 @@ class Block_Salesman_Grid extends Block_Core_Template{
 	{																																
 		# code...
 		$modelSalesman = Ccc::getModel('Salesman');											
-		$vendorTable = $modelSalesman->getResource()->getTableName();
-		//$vendorKey = $modelSalesman->getResource()->getPrimaryKey();
+		$salesmanTable = $modelSalesman->getResource()->getTableName();
+		//$salesmanKey = $modelSalesman->getResource()->getPrimaryKey();
 
-		$row = $modelSalesman->fetchAll(" SELECT * FROM {$vendorTable}  ");
+		$row = $modelSalesman->fetchAll(" SELECT * FROM {$salesmanTable}  ");
 		if(!$row)
 		{
 			return null;
