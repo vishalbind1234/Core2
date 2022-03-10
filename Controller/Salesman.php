@@ -1,9 +1,9 @@
 
 <?php
 
-Ccc::loadClass('Controller_Core_Action');
+Ccc::loadClass('Controller_Admin_Action');
 
-class Controller_Salesman extends Controller_Core_Action{
+class Controller_Salesman extends Controller_Admin_Action{
 
 	public function gridAction()
 	{

@@ -31,6 +31,12 @@ class Model_Core_Message{
 		return $this;
 	}
 
+	public function setMessage($message, $key)
+	{
+		$this->getSession()->$key = $message;
+		return $this;
+	}
+
 	public function addMessage($message, $type = self::SUCCESS)
 	{
 		$this->messages = (isset($this->getSession()->messages)) ? ($this->getSession()->messages) : [] ;
@@ -43,9 +49,10 @@ class Model_Core_Message{
 	{
 		if($key)
 		{
-			if(isset($this->getSession()->messages[$key])) 
+
+			if(isset($this->getSession()->$key)) 
 			{
-				return $this->getSession()->messages[$key];
+				return $this->getSession()->$key;
 			}
 			return null;
 		}
@@ -58,9 +65,9 @@ class Model_Core_Message{
 		{
 			$this->getSession()->messages = [];
 		}
-		if(isset($this->getSession()->messages[$key])) 
+		if(isset($this->getSession()->$key)) 
 		{
-			unset($this->getSession()->messages[$key]);
+			unset($this->getSession()->$key);
 		}
 		return $this;
 	}

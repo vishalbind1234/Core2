@@ -1,9 +1,9 @@
 
-<?php   Ccc::loadClass('Controller_Core_Action');   ?>
+<?php   Ccc::loadClass('Controller_Admin_Action');   ?>
 
 <?php 
 
-class Controller_Admin extends Controller_Core_Action{
+class Controller_Admin extends Controller_Admin_Action{
 
 	public function testAction()
 	{
@@ -16,18 +16,18 @@ class Controller_Admin extends Controller_Core_Action{
 	public function gridAction() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
 	{
 		
-		
-		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+		$modelAdminMessage = Ccc::getModel('Admin_Message');
+		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message')->setData(['messageClassObject' => $modelAdminMessage ]);
         $menu = Ccc::getBlock('Core_Layout_Header_Menu');
         $adminGrid = Ccc::getBlock('Admin_Grid');
 
        	$modelAdminMessage = Ccc::getModel('Admin_Message');
        	/*$modelAdminMessage->addMessage('selfmade'   , Model_Core_Message::WARNING);
        	$modelAdminMessage->addMessage('artificial' , Model_Core_Message::ERROR);
-*/
+       	*/
         $this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($adminGrid);
-        $this->getLayout()->getFooter()->setChild($blockMessage);
+        $this->getLayout()->getFooter()->setChild($blockMessage);   //print_r($_SESSION);  exit();
 		$this->renderLayout();
 
        	$modelAdminMessage->unsetMessages();
@@ -74,9 +74,9 @@ class Controller_Admin extends Controller_Core_Action{
 	public function saveAction() //-----------------------------------------saveAdmin()-------------------------------------------------------------
 	{     
 		
-		$array =  $this->getRequest()->getPost('Admin');
+		$array =  $this->getRequest()->getPost('Admin'); 
 
-        if(array_key_exists('id' , $array) ) 					
+        if(array_key_exists('id' , $array) && !empty($array['id']) ) 					
         {     																			
         	if(!(int)$array['id'] )
         	{
@@ -110,11 +110,12 @@ class Controller_Admin extends Controller_Core_Action{
 		{                       
 			try
 			{        
-				$modelAdmin = Ccc::getModel('Admin');
+				$modelAdmin = Ccc::getModel('Admin');       
 				foreach ($array as $key => $value) 
 				{
 					$modelAdmin->$key = $value;
 				}
+				$modelAdmin->password = md5($modelAdmin->password);    
 				$rowId = $modelAdmin->save();
 			}
 			catch(Exception $e)
@@ -130,7 +131,7 @@ class Controller_Admin extends Controller_Core_Action{
 
 		$message = "row id " . $rowId . " Saved  " ;
 		$modelAdminMessage = Ccc::getModel('Admin_Message');
-           		$modelAdminMessage->addMessage( $message , Model_Core_Message::SUCCESS );
+        $modelAdminMessage->addMessage( $message , Model_Core_Message::SUCCESS );
 		$url = $this->getUrl('grid' , 'Admin' );    	
 		$this->redirect($url);  
 

@@ -30,7 +30,16 @@
 			<tr>
 				<?php foreach($admin->getData() as $key => $value) : ?>
 
-					<td> <?php echo($value);  ?> </td>
+					<?php if($key == 'status'): ?>
+					<?php $array = $admin->getStatus(); ?>
+
+						<td> <label> <?php echo($array[$value]);  ?> </label> </td>
+
+					<?php else: ?>
+
+						<td> <?php echo($value);  ?> </td>
+
+					<?php endif ;  ?>
 
 				<?php endforeach ; ?>
 				<td> <a href="<?php echo($this->getUrl('edit' , 'Admin' , ['id' => $admin->id ] )); ?>" > Edit  </a></td> 

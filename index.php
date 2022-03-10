@@ -5,7 +5,7 @@
 
 	</head>
 
-	<!-- <body>
+	<body>
 		
 		 <button> <a href="index.php?a=grid&c=Category"> Category  </a>  </button>     
 		 <button> <a href="index.php?a=grid&c=Customer"> Customer  </a>  </button>  
@@ -17,7 +17,7 @@
 		 <button> <a href="index.php?a=grid&c=Page">     Page	   </a>  </button> 
 
 
-	</body> -->
+	</body> 
 </html>
 
 

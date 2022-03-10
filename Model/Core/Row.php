@@ -24,13 +24,21 @@ class Model_Core_Row {
 	public function setData($data)
 	{
 		# code...
-		$this->data = $data;
+		$this->data = array_merge($this->data , $data);
 		return $this;
 	}
 
-	public function getData()
+	public function getData($key = null)
 	{
 		# code...
+		if($key)
+		{
+			if(array_key_exists($key, $this->data))
+			{
+				return $this->data[$key];
+			}
+			return null;
+		}
 		return $this->data;
 	}
 
@@ -111,8 +119,8 @@ class Model_Core_Row {
 
 	public function fetchRow($query)
 	{
-		$adapter  = $this->getAdapter();
-		$row = $adapter->fetchRow($query);
+		$adapter  = $this->getAdapter();         //echo($query); //exit();
+		$row = $adapter->fetchRow($query);		 //print_r($row);  // exit();
 
 		$currentRow = new $this();
 		if($row)

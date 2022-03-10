@@ -1,10 +1,10 @@
 
-<?php  Ccc::loadClass('Controller_Core_Action');        ?>
+<?php  Ccc::loadClass('Controller_Admin_Action');        ?>
 <?php  Ccc::loadClass('Model_Product_Resource');        ?>
 
 <?php
 
-class Controller_Product extends Controller_Core_Action{
+class Controller_Product extends Controller_Admin_Action{
 
 	public function redirect( $url )
 	{
@@ -112,7 +112,7 @@ class Controller_Product extends Controller_Core_Action{
 
 				foreach ($category as $key => $value) 
 				{
-					if( !in_array($value , $reference)
+					if( !in_array($value , $reference))
 					{
 						$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
 						$modelCategoryProduct->productId = $productId;

@@ -11,4 +11,7 @@
 		<td>  <button> <a href="index.php?a=grid&c=Salesman"> SalesMan  </a>  </button> </td> 
 		<td>  <button> <a href="index.php?a=grid&c=Page">     Page	   </a>   </button> </td> 
 	</tr>
+	<tr>
+		<td> <a href="<?php echo($this->getUrl('logout', 'Admin_Login' , [] , true)); ?>"><h2>LOGOUT</h2></a> </td>
+	</tr>
 </table>

@@ -1,12 +1,12 @@
 
-<?php   Ccc::loadClass('Controller_Core_Action');  ?>
+<?php   Ccc::loadClass('Controller_Admin_Action');  ?>
 <?php   Ccc::loadClass('Model_Category');        ?>
 
 <?php   
 
 
 
-class Controller_Category extends Controller_Core_Action{
+class Controller_Category extends Controller_Admin_Action{
 
 	public function testAction()
 	{																										

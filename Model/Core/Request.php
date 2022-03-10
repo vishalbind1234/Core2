@@ -53,13 +53,13 @@ class Model_Core_Request{
 	{
 		# code...
 
-		return ( isset($_GET['a']) ) ? $_GET['a'] : 'grid' ;
+		return (isset($_GET['a'])) ? $_GET['a'] : 'login' ;
 	}
 
 	public function getController()
 	{
 		# code...
-		return ( isset($_GET['c']) ) ? $_GET['c'] : 'Category' ;
+		return ( isset($_GET['c']) ) ? $_GET['c'] : 'Admin_Login' ;
 	}
 
 
