@@ -7,12 +7,15 @@ class Controller_Vendor extends Controller_Core_Action{
 
 	public function gridAction()
 	{
-		# code...
+		$this->getMessage()->getSession()->start();
 		
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$this->getLayout()->getHeader()->setChild($menu);
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$vendorGrid = Ccc::getBlock('Vendor_Grid');
+		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+
+		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($vendorGrid);
+		$this->getLayout()->getFooter()->setChild($blockMessage);
 		$this->renderLayout();
 		//$blockVendor->toHtml();
 
@@ -26,6 +29,8 @@ class Controller_Vendor extends Controller_Core_Action{
 		$vendorEdit = Ccc::getBlock('Vendor_Edit')->setData(['id' => $id]); 
 		$this->getLayout()->getContent()->setChild($vendorEdit);
 		$this->renderLayout();
+
+		$this->getMessage()->unsetMessages();
 		//$blockVendor->toHtml();
 	
 	}
@@ -41,16 +46,18 @@ class Controller_Vendor extends Controller_Core_Action{
         }
         catch(Exception $e){
 
-			$message = " row id " . $deletedRowId . " deleted successfully" ;
-			$param['message'] = $message;
-			$url = $this->getUrl( 'grid' , 'Vendor' , $param );
+			$msg = $e->getMessage();
+			$modelMessage = $this->getMessage();
+            $modelMessage->addMessage($msg);
+			$url = $this->getUrl( 'grid' , 'Vendor' );
 			$this->redirect( $url );        
 		}	
 
 
 		$message = " row id " . $deletedRowId . " deleted successfully" ;
-		$param['message'] = $message;
-		$url = $this->getUrl( 'grid' , 'Vendor' , $param );
+		$modelMessage = $this->getMessage();
+        $modelMessage->addMessage($message);
+		$url = $this->getUrl( 'grid' , 'Vendor' );
 		$this->redirect( $url );
 	
 	}
@@ -66,9 +73,10 @@ class Controller_Vendor extends Controller_Core_Action{
 		{
 			if(!(int)$person['id'])
 			{
-				$message = " invalid id. " ;
-        		$param['message'] = $message;
-				$url = $this->getUrl( 'grid' , 'Vendor' , $param );
+				$message = 'error : id not valid. ';
+        		$msg = $this->getMessage();
+        		$msg->addMessage($message , Model_Core_Message::ERROR); 
+				$url = $this->getUrl( 'grid' , 'Vendor' );
 				$this->redirect( $url ); 
 			}
 
@@ -96,8 +104,8 @@ class Controller_Vendor extends Controller_Core_Action{
 			catch(Exception $e)
 			{
 				$message = $e->getMessage() ;
-        		$param['message'] = $message;
-				$url = $this->getUrl( 'grid' , 'Vendor' , $param );
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl( 'grid' , 'Vendor' );
 				$this->redirect( $url ); 
 			}
 
@@ -126,17 +134,17 @@ class Controller_Vendor extends Controller_Core_Action{
 			catch(Exception $e)
 			{
 
-				$message =  $e->getMessage() ;
-				$param['message'] = $message;
-				$url = $this->getUrl( 'grid' , 'Vendor' , $param );
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl( 'grid' , 'Vendor' );
 				$this->redirect( $url );			
 			}
 
 		}
 
-		$message = "Row Id " . $rowId . " Inserted/Updated" ;
-		$param['message'] = $message;
-		$url = $this->getUrl( 'grid' , 'Vendor' , $param );
+		$message = "row id " . $rowId . " Saved  " ;
+		$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
+		$url = $this->getUrl( 'grid' , 'Vendor' );
 		$this->redirect( $url ); 
 
 	}

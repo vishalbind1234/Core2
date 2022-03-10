@@ -53,11 +53,7 @@
 			<td><label> UpdatedAt &nbsp </label></td>
 			<td><input type="date" name=Admin[updatedAt]  value=""  hidden ></td> 
 		</tr>
-		<!-- -------------------------------------------------------------------------------------------------------------------------------- -->
 
-		
-
-		
 	</table>
 
 	<button type="submit" name="submit" value="submit"> Save </button>

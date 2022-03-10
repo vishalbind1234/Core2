@@ -5,37 +5,44 @@
 
 class Controller_Admin extends Controller_Core_Action{
 
-
+	public function testAction()
+	{
+		$modelAdminMessage = Ccc::getModel('Admin_Message');
+       	$modelAdminMessage->addMessage('selfmade'   , Model_Admin_Message::WARNING);
+       	$modelAdminMessage->addMessage('artificial' , Model_Admin_Message::ERROR);
+       	print_r($_SESSION);  exit();
+	}
 
 	public function gridAction() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
 	{
 		
 		
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$this->getLayout()->getHeader()->setChild($menu);
-		$adminGrid = Ccc::getBlock('Admin_Grid');
+		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+        $menu = Ccc::getBlock('Core_Layout_Header_Menu');
+        $adminGrid = Ccc::getBlock('Admin_Grid');
+
+       	$modelAdminMessage = Ccc::getModel('Admin_Message');
+       	/*$modelAdminMessage->addMessage('selfmade'   , Model_Core_Message::WARNING);
+       	$modelAdminMessage->addMessage('artificial' , Model_Core_Message::ERROR);
+*/
+        $this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($adminGrid);
+        $this->getLayout()->getFooter()->setChild($blockMessage);
 		$this->renderLayout();
 
-		/*$adminGrid = Ccc::getBlock('Admin_Grid');    
-		$adminGrid->toHtml();*/
-
-		$message = $this->getRequest()->getRequest('message');
-		$message = ($message) ? $message : " 123 " ;
-		echo($message );
+       	$modelAdminMessage->unsetMessages();
+		
 	}
 
 	public function editAction()
 	{
-		//$this->getLayout()->resetChild();
 		$id = $this->getRequest()->getRequest('id');
 		$adminEdit = Ccc::getBlock('Admin_Edit')->setData(['id' => $id]);
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($adminEdit);
 		$this->renderLayout();
 
-		//$adminEdit->toHtml();
 
 	}
 
@@ -46,18 +53,21 @@ class Controller_Admin extends Controller_Core_Action{
             $modelAdmin = Ccc::getModel('Admin');   		 		
             $id = $this->getRequest()->getRequest('id');  					
             $deletedId = $modelAdmin->delete($id);
-                               
-			$param['message'] = " id " . $deletedId . " row deleted " ;
-			$url = $this->getUrl('grid' , 'Admin' , $param );
+            $message = "row Id " . $deletedId . " deleted successfully";
+
+            $modelAdminMessage = Ccc::getModel('Admin_Message');
+            $modelAdminMessage->addMessage( $message );
+       		$url = $this->getUrl('grid' , 'Admin' );
         	$this->redirect($url);
         }
         catch(Exception $e)
         {
-			$param['message'] = $e ;
+        	$msg = $e->getMessage();
+			$modelMessage = $this->getMessage();
+            $modelMessage->addMessage($msg);
 			$url = $this->getUrl('grid' , 'Admin' , $param );
         	$this->redirect($url);
 		}
-
 	
 	}
 
@@ -66,73 +76,68 @@ class Controller_Admin extends Controller_Core_Action{
 		
 		$array =  $this->getRequest()->getPost('Admin');
 
-        if(array_key_exists('id' , $array)  &&  $array['id'] != null) 					
+        if(array_key_exists('id' , $array) ) 					
         {     																			
         	if(!(int)$array['id'] )
         	{
-        		$message = 'error : id not valid ';         
-        		$param['message'] = $message;
-        		$url = $this->getUrl('grid' , 'Admin' , $param);
+        		$message = 'error : id not valid. ';
+        		$modelAdminMessage = Ccc::getModel('Admin_Message');
+           		$modelAdminMessage->addMessage( $message , Model_Core_Message::ERROR );        
+        		$url = $this->getUrl('grid' , 'Admin');
         		$this->redirect($url);      
         	}
-			try{  
-
+			try
+			{  
 				$modelAdmin = Ccc::getModel('Admin');
-
 				foreach ($array as $key => $value) 
 				{
 					$modelAdmin->$key = $value;
 				}
 				$modelAdmin->updatedAt = date('Y-m-d');
 			    $rowId = $modelAdmin->save(); 
-												
-				$param['message'] = "row id " . $rowId . "  updated ";
-        		$url = $this->getUrl('grid' , 'Admin' , $param);    	
-        		$this->redirect($url);  
-
 			}
 			catch(Exception $e)
 			{
-				$param['message'] = $e->getMessage() ;
-				$url = $this->getUrl('grid' , 'Admin' , $param);    	
+				$message = $e->getMessage() ;
+				$modelAdminMessage = Ccc::getModel('Admin_Message');
+           		$modelAdminMessage->addMessage( $message , Model_Core_Message::ERROR );
+				$url = $this->getUrl('grid' , 'Admin' );    	
 				$this->redirect($url);  
 			}
 
 		}    
-		else{                       
-			try{        
-
-				//unset($array['updatedAt']);
+		else
+		{                       
+			try
+			{        
 				$modelAdmin = Ccc::getModel('Admin');
-
 				foreach ($array as $key => $value) 
 				{
 					$modelAdmin->$key = $value;
 				}
-
 				$rowId = $modelAdmin->save();
-		
 			}
 			catch(Exception $e)
-			{
-				$param['message'] = $e->getMessage() ;
-				$url = $this->getUrl('grid' , 'Admin' , $param);    	
+			{				
+				$message = $e->getMessage() ;
+				$modelAdminMessage = Ccc::getModel('Admin_Message');
+           		$modelAdminMessage->addMessage( $message , Model_Core_Message::ERROR );
+				$url = $this->getUrl('grid' , 'Admin' );    	
 				$this->redirect($url); 			
 			}
 
 		}
 
-		$param['message'] = "row id " . $rowId . "  updated/inserted ";
-		$url = $this->getUrl('grid' , 'Admin' , $param);    	
+		$message = "row id " . $rowId . " Saved  " ;
+		$modelAdminMessage = Ccc::getModel('Admin_Message');
+           		$modelAdminMessage->addMessage( $message , Model_Core_Message::SUCCESS );
+		$url = $this->getUrl('grid' , 'Admin' );    	
 		$this->redirect($url);  
 
 	}
 
-	
-
 	public function errorAction()
 	{
-
 		echo(" some error occured ");
 		exit();
 	}

@@ -37,7 +37,6 @@
 			<td><input type="text" name=Category[name] value=<?php echo( $currentCategory->name); ?>   ></td>
 		</tr>
 
-		
 		<tr>
 			<td><label> Category Whole Path &nbsp </label></td>
 			<td><input type="text" name=Category[wholePath] readonly value=<?php echo( $currentCategory->wholePath); ?>  ></td>
@@ -52,7 +51,7 @@
 				<?php endforeach ; ?>
 			</select>
 		</td>
-		</tr>
+		
 		
 		<tr>
 			<td><label> CreatedAt &nbsp </label></td>

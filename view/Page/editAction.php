@@ -27,7 +27,7 @@
 
 		<tr>
 			<td><label> Content &nbsp </label></td>
-			<td><input type="value" name=Page[value] value=<?php echo( $page->value); ?> ></td>
+			<td><input type="value" name=Page[content] value=<?php echo( $page->content); ?> ></td>
 		</tr>
 
 
@@ -47,6 +47,10 @@
 			<td><input type="date" name=Page[createdAt]  value=<?php echo( $page->createdAt); ?>   ></td>
 		</tr>
 		
+		<tr>
+			<td><label> UpdatedAt &nbsp </label></td>
+			<td><input type="date" name=Page[updatedAt]  value=<?php echo( $page->updatedAt); ?>   ></td>
+		</tr>
 
 		<!-- -------------------------------------------------------------------------------------------------------------------------------- -->
 

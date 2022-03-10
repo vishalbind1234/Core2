@@ -9,6 +9,22 @@ class Controller_Core_Action{
 	public $view = null;
 	public $request = null;
 	protected $layout = null;
+	protected $message = null;
+
+	public function getMessage()
+	{
+		if(!$this->message)
+		{
+			$this->setMessage();
+		}
+		return $this->message;
+	}
+
+	public function setMessage()
+	{
+		$this->message = Ccc::getModel('Core_Message'); 					
+		return $this;
+	}
 
 	public function getLayout()
 	{
@@ -48,22 +64,7 @@ class Controller_Core_Action{
 		return $adapter;
 	}
 
-	/*public function getView( )
-	{
-		if( !$this->view ){
-			$this->setView( new Model_Core_View() );
-		}
-
-		return $this->view;
-	}
-
-	public function setView( $view )
-	{
-		$this->view = $view;
-		return $this;
-		
-	}*/
-
+	
 	public function getRequest()
 	{
 		if( !$this->request )
@@ -118,3 +119,25 @@ class Controller_Core_Action{
 }
 
 ?>
+
+<!-- 
+hello sir
+
+when we set message for admin we use Model_Admin_Message class
+
+and the message will be set in 
+
+$_SESSION[
+
+			Admin => [
+						message => [
+										name => XXXXXX
+									]
+
+				     ]	
+
+		 ]
+
+but when we retrive message, we use Block_Core_Layout_Header_Message.php  which uses  Model_Core_Admin class and  odel_Core_Admin class is common for all 
+
+So , what we should do to retrive messages  -->

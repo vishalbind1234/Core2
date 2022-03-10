@@ -51,6 +51,11 @@
 	<td><input type="date"  id="createdAt" name="Salesman[createdAt]" placeholder="createdAt"   value=<?php echo ($salesman->createdAt); ?> ></td>
 	</tr>
 
+	<tr>
+	<td><label for="percentage">Percentage  &nbsp</label></td>
+	<td><input type="number"  id="percentage" name="Salesman[percentage]" placeholder="percentage"   value=<?php echo ($salesman->percentage); ?> ></td>
+	</tr>
+
 	
     </table>
 
