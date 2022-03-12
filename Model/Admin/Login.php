@@ -12,11 +12,11 @@ class Model_Admin_Login extends Model_Core_Row{
 		parent::__construct();
 	}
 
-	public function loginAction()
+	public function loginAction($email, $password)
 	{
 		# code...
-		$email = $this->getData('email');       
-		$password = $this->getData('password');	
+		//$email = $this->getData('email');       
+		//$password = $this->getData('password');	
 		$adapter = $this->getAdapter(); 
 		$row = $this->fetchRow(" SELECT * FROM Admin WHERE email = {$adapter->getConnect()->quote($email)} AND password = {$adapter->getConnect()->quote($password)} ");
 		if(!$row)

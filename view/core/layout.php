@@ -11,13 +11,13 @@
 
 		table
 		{
-			width:90%;
+			width:100%;
 		}
 
 		img
 		{
-			height: 30px;
-			width: 30px;
+			height: 40px;
+			width: 40px;
 		}
 	</style>
 </head>

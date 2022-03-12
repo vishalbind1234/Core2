@@ -7,10 +7,13 @@ class Controller_Page extends Controller_Admin_Action{
 
 	public function gridAction()
 	{																
-		$this->getMessage()->getSession()->start();
 
+		$modelCoreMessage = $this->getMessage();
+
+		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
+		$modelCoreMessage->addMessage(" On Page " . $currentPage );
+        $pageGrid  = Ccc::getBlock('Page_Grid')->setData(['currentPage' => $currentPage]);
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
-		$pageGrid = Ccc::getBlock('Page_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
 
 		$this->getLayout()->getHeader()->setChild($menu);

@@ -24,9 +24,25 @@
 		
 		<?php foreach($configs as $config) : ?>  <!-- -----------------for table data------------- -->
 			<tr>
-				<?php foreach($config->getData() as $key => $value) : ?>
+				<?php foreach($config->getData() as $key1 => $value1) : ?>
 
-					<td> <?php echo($value);  ?> </td>
+					<?php  if($key1 == "status") :  ?>
+
+						<?php foreach( $config->getStatus() as $key2 => $value2 ) :?>
+
+							<?php if($value1 == $key2 ) : ?>
+
+								<td> <option> <?php echo($value2); ?> </option> </td>
+
+							<?php  endif  ; ?>
+
+						<?php endforeach ;  ?>
+
+					<?php else : ?>
+
+						<td> <?php echo($value1);  ?> </td>
+
+					<?php endif ; ?>	
 
 				<?php endforeach ; ?>        
 

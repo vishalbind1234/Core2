@@ -26,15 +26,17 @@ class Block_Core_Layout_Header_Message extends Block_Core_Template{
 
 	public function setMessage()
 	{
-		if($this->getData('messageClassObject'))
+		$otherClassObj = $this->getData('messageClassObject');
+		
+		if($otherClassObj)
 		{
 			$this->message = $this->getData('messageClassObject');
 		}
 		else
 		{
 			$this->message = Ccc::getModel('Core_Message');
-			return $this;	
 		}
+		return $this;	
 		
 	}
 

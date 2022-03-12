@@ -40,7 +40,13 @@
 				<td> <?php echo($product->name ); ?> </td>  
 				<td> <?php echo($product->price ); ?> </td>  
 				<td> <?php echo($product->quantity ); ?> </td>  
-				<td> <?php echo($product->status ); ?> </td>  
+
+				<?php foreach( $product->getStatus() as $key2 => $value2 ) :?>
+					<?php if($product->status == $key2 ) : ?>
+						<td> <option> <?php echo($value2); ?> </option> </td>
+					<?php  endif  ; ?>
+				<?php endforeach ;  ?>
+				
 				<td> <?php echo($product->createdAt ); ?> </td>  
 				<td> <?php echo($product->updatedAt ); ?> </td>  
 				

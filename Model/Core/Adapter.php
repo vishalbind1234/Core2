@@ -1,6 +1,6 @@
 <?php
 
-echo("<pre>");
+ 
 
 class Model_Core_Adapter{
 

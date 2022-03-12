@@ -16,9 +16,9 @@ class Controller_Admin_Login extends Controller_Core_Action {
 	{
 		# code...
 		$credentials = $this->getRequest()->getPost('AdminLogin');
-		$credentials['password'] = md5($credentials['password']);
-		$modelAdminLogin = Ccc::getModel('Admin_Login')->setData($credentials);
-		$status = $modelAdminLogin->loginAction();
+		//$credentials['password'] = md5($credentials['password']);
+		$modelAdminLogin = Ccc::getModel('Admin_Login');   
+		$status = $modelAdminLogin->loginAction($credentials['email'] , md5($credentials['password']));
 		if(!$status)
 		{
 			$url = $this->getUrl('login', 'Admin_Login');
