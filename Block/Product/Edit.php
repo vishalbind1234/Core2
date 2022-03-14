@@ -42,6 +42,25 @@ class Block_Product_Edit extends Block_Core_Template{
 		return $category ;
 	}
 
+	public function wholePathName( $id )
+	{
+		$adapter = $this->getAdapter();	
+
+		$idNameArray = $adapter->fetchPairs('id' , 'name' , 'Category');
+		$idWholePathArray = $adapter->fetchPairs('id' , 'wholePath' , 'Category');
+		
+	    $wholePathAsArray = explode( " > " , $idWholePathArray[$id] );  // note the spaces around seperator ( > ) is also a path of delimiter  //
+	    $wholePathAsString = "";
+	    foreach ($wholePathAsArray as $key => $value) {
+	    	# code...
+	     	$wholePathAsString = $wholePathAsString  . $idNameArray[$value] .  " > "  ; 
+	    }
+	    return $wholePathAsString;
+	}
+
+
+
+	
 	/*public function getCategoryName($id)
 	{
 		$modelCategory = Ccc::getModel('Category');

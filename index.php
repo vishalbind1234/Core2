@@ -1,25 +1,3 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		
-
-	</head>
-
-	<body>
-		
-		<!--  <button> <a href="index.php?a=grid&c=Category"> Category  </a>  </button>     
-		 <button> <a href="index.php?a=grid&c=Customer"> Customer  </a>  </button>  
-		 <button> <a href="index.php?a=grid&c=Product">  Product   </a>  </button>  
-		 <button> <a href="index.php?a=grid&c=Admin">    Admin     </a>  </button> 
-		 <button> <a href="index.php?a=grid&c=Config">   Config    </a>  </button> 
-		 <button> <a href="index.php?a=grid&c=Vendor">   Vendor    </a>  </button> 
-		 <button> <a href="index.php?a=grid&c=Salesman"> SalesMan  </a>  </button> 
-		 <button> <a href="index.php?a=grid&c=Page">     Page	   </a>  </button> 
- -->
-
-	</body> 
-</html>
-
 
 <?php 	Ccc::loadClass('Model_Core_Adapter');
         $adapter = new Model_Core_Adapter();      ?>
@@ -28,10 +6,50 @@
 
 Ccc::loadClass('Controller_Core_Front') ;     
 
-class Ccc {
+class Ccc{
 
 
-	public static $front = null;                                      
+	public static $front = null;  
+	//public static $config = null;  
+
+	public static function getConfig($key)
+	{
+		if(!($config = self::getRegistry('config')) )
+		{
+			$config = self::loadFile('etc/config.php');
+			self::register('config' , $config);
+		}
+		if(!array_key_exists($key, $config))
+		{
+			return null;
+		}
+		return $config[$key];
+	}
+
+
+	public static function register($key, $value)
+    {
+    	$GLOBALS[$key] = $value;
+    	//return $this;
+    }
+
+    public static function getRegistry($key)
+    {
+    	if(!array_key_exists($key, $GLOBALS))
+    	{
+    		return null;
+    	}
+    	return $GLOBALS[$key];
+    }                                    
+
+	public static function unregister($key)
+    {
+    	if(array_key_exists($key, $GLOBALS))
+    	{
+    		unset($GLOBALS[$key]);
+    	}
+    	//return $this ;
+    }                                    
 
 	public static  function getFront()
 	{				
@@ -48,15 +66,15 @@ class Ccc {
 	{
 		# code...
 		self::$front = $front;
-		/*return $this;*/
+		//return $this;
 	}
 
-	public static function loadFile( $url )
+	public static function loadFile($url)
 	{	                                   				   
-		require_once( $url );    
+		return require_once(getCwd().DIRECTORY_SEPARATOR.$url);
 	}
 
-	public static function loadClass( $className )
+	public static function loadClass($className)
 	{
 		$controllerClassPath = str_replace( "_", "/" , $className ) ;    
 

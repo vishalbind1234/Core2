@@ -3,7 +3,8 @@
 
 class Model_Core_Pager{
 
-	protected $perPageCount = 10;
+	protected $perPageCountOptions = [10 , 20 , 30 , 40 , 100 , 200];
+	protected $perPageCount = null;
 	protected $totalCount = null;
 	protected $pageCount = null;
 	protected $start = null;
@@ -27,6 +28,19 @@ class Model_Core_Pager{
 		$this->setStartLimit( ($this->getCurrent() - 1) * $this->getPerPageCount() + 1 ); 
 		$this->setEndLimit( $this->getCurrent() * $this->getPerPageCount() );
 	}
+
+	public function setPerPageCountOptions($value)
+	{
+		# code...
+		$this->perPageCountOptions = $value;
+		return $this;
+	}
+
+	public function getPerPageCountOptions()
+	{
+		return $this->perPageCountOptions ;
+	}
+
 
 	public function setPerPageCount($value)
 	{

@@ -7,15 +7,19 @@ class Controller_Page extends Controller_Admin_Action{
 
 	public function gridAction()
 	{																
-
-		$modelCoreMessage = $this->getMessage();
-
 		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
-		$modelCoreMessage->addMessage(" On Page " . $currentPage );
-        $pageGrid  = Ccc::getBlock('Page_Grid')->setData(['currentPage' => $currentPage]);
+		$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
+		$this->getMessage()->addMessage(" On Page " . $currentPage );
+
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+        $pageGrid  = Ccc::getBlock('Page_Grid')->setData(['currentPage' => $currentPage]);
+        //print_r($pageGrid);
+		$pageGrid->getPager()->setPerPageCount($perPageCount);
+        //print_r($pageGrid);
+        //exit();
 
+		$this->setTitle('Page_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($pageGrid);
 		$this->getLayout()->getFooter()->setChild($blockMessage);
@@ -31,7 +35,7 @@ class Controller_Page extends Controller_Admin_Action{
 		# code...
 		$id = $this->getRequest()->getRequest('id');
 		
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$this->getLayout()->getHeader()->setChild($menu);
 		$pageEdit = Ccc::getBlock('Page_Edit')->setData(['id' => $id]);					
 		

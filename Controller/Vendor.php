@@ -13,6 +13,7 @@ class Controller_Vendor extends Controller_Admin_Action{
 		$vendorGrid = Ccc::getBlock('Vendor_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
 
+		$this->setTitle('Vendor_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($vendorGrid);
 		$this->getLayout()->getFooter()->setChild($blockMessage);

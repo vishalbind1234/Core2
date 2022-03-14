@@ -22,9 +22,8 @@ class Controller_Admin extends Controller_Admin_Action{
         $adminGrid = Ccc::getBlock('Admin_Grid');
 
        	$modelAdminMessage = Ccc::getModel('Admin_Message');
-       	/*$modelAdminMessage->addMessage('selfmade'   , Model_Core_Message::WARNING);
-       	$modelAdminMessage->addMessage('artificial' , Model_Core_Message::ERROR);
-       	*/
+      	
+      	$this->setTitle('Admin_Grid');
         $this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($adminGrid);
         $this->getLayout()->getFooter()->setChild($blockMessage);   //print_r($_SESSION);  exit();

@@ -13,6 +13,7 @@ class Controller_Salesman extends Controller_Admin_Action{
 		$salesmanGrid = Ccc::getBlock('Salesman_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
 
+		$this->setTitle('Salesman_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($salesmanGrid);
 		$this->getLayout()->getFooter()->setChild($blockMessage);

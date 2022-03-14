@@ -13,6 +13,7 @@ class Controller_Config extends Controller_Admin_Action{
 		$configGrid = Ccc::getBlock('Config_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
 
+		$this->setTitle('Config_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($configGrid);
 		$this->getLayout()->getFooter()->setChild($blockMessage);

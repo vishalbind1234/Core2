@@ -22,7 +22,7 @@ class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 		$percentage = $this->getRequest()->getRequest('percentage');
 		$customerId = $this->getRequest()->getRequest('customerId');
 
-		$salesmanCustomerProductGrid = Ccc::getBlock('Salesman_Customer_Product_Grid')->setData(['id' => $salesmanId])->setData(['percentage' => $percentage])->setData(['customerId' => $customerId]);
+		$salesmanCustomerProductGrid = Ccc::getBlock('Salesman_Customer_Product_Grid')->setData(['id' => $salesmanId , 'percentage' => $percentage , 'customerId' => $customerId]);
 		$this->getLayout()->getContent()->setChild($salesmanCustomerProductGrid);
 		$this->renderLayout();	
 		//$customerGrid->toHtml();
@@ -34,7 +34,7 @@ class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 
 	public function saveAction() //--------------------------------------------------saveAction()-------------------------------------------------------------
 	{     
-		$array = $this->getRequest()->getPost('Product');   //print_r($array);  exit();  
+		$array = $this->getRequest()->getPost('Product');   echo('<pre>'); print_r($array);  exit();  
 
 		foreach ($array['customerPrice'] as $key => $value) 
 		{

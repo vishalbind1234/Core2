@@ -7,6 +7,18 @@ class Block_Core_Template extends Model_Core_View{
 
 
 	protected $children = [];
+
+	public function getHead()
+	{											
+		$child = $this->getChild('head');    
+		if(!$child)
+		{																							
+			$child = Ccc::getBlock('Core_Layout_Head');       
+			$this->setChild($child , 'head');					
+		}
+																											
+		return $child;
+	}
 	
 	public function getHeader()
 	{											

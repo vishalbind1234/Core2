@@ -1,6 +1,7 @@
 
 <?php  Ccc::loadClass('Model_Core_View');   ?>
 <?php  Ccc::loadClass('Model_Core_Request');   ?>
+<?php  Ccc::loadClass('Model_Core_Response');   ?>
 
 <?php
 
@@ -8,6 +9,7 @@ class Controller_Core_Action{
 
 	public $view = null;
 	public $request = null;
+	public $response = null;
 	protected $layout = null;
 	protected $message = null;
 
@@ -26,6 +28,12 @@ class Controller_Core_Action{
 		return $this;
 	}
 
+	public function setTitle($title)
+	{
+		$this->getLayout()->getHead()->setTitle($title);
+		return $this;
+	}
+
 	public function getLayout()
 	{
 		if(!$this->layout)
@@ -41,6 +49,22 @@ class Controller_Core_Action{
 		return $this;
 	}
 
+	public function getResponse()
+	{
+		if( !$this->response )
+		{
+			$this->setResponse( new Model_Core_Response() );
+		}
+		return $this->response;
+	}
+
+	public function setResponse( $response )
+	{
+		$this->response = $response;
+		return $this;
+		
+	}
+
 	public function renderLayout()
 	{
 		if(!$this->layout)
@@ -48,7 +72,9 @@ class Controller_Core_Action{
 			echo('No Layout Selected.');
 			exit();
 		}
-		$this->layout->toHtml();
+		$this->getResponse()
+					->setHeader('content-type' , 'text/html')
+				    ->render($this->layout->toHtml());
 	}
 	
 

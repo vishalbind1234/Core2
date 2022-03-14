@@ -33,8 +33,9 @@ class Block_Salesman_Customer_Product_Grid extends Block_Core_Template{
 	public function getPrice($salesmanId , $customerId , $productId)
 	{
 				
-		$modelProduct = Ccc::getModel('Salesman_Customer_Product');											
-		$price = $modelProduct->fetchRow(" SELECT * FROM  Salesman_Customer_Price WHERE salesmanId = {$salesmanId} AND customerId = {$customerId} AND productId = {$productId} ");
+		$modelProduct = Ccc::getModel('Salesman_Customer_Product');	
+		$query = " SELECT * FROM  Salesman_Customer_Price WHERE salesmanId = {$salesmanId} AND customerId = {$customerId} AND productId = {$productId} " ; 				
+		$price = $modelProduct->fetchRow($query);
 		return $price;
 
 	}

@@ -1,41 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title></title>
-	<style>
-		table , tr , td , th 
-		{
-			border: 2px solid grey ;
-			border-collapse: collapse;
-		}
 
-		table
-		{
-			width:100%;
-		}
+<?php echo $this->getHead()->toHtml(); ?>
 
-		img
-		{
-			height: 40px;
-			width: 40px;
-		}
-	</style>
-</head>
 <body>
 
 	<table>
 		<tr>
-			<td> <?php  $this->getHeader()->toHtml();  ?> </td>	
+			<td> <?php  echo $this->getHeader()->toHtml();  ?> </td>	
 		</tr>
 
 		<tr>
-			<td> <?php  $this->getContent()->toHtml();  ?> </td>	
-			
+			<td> <?php  echo $this->getContent()->toHtml();  ?> </td>	
 		</tr>
-			<td> <?php  $this->getFooter()->toHtml();  ?> </td>	
 
 		<tr>
-			
+			<td> <?php  echo $this->getFooter()->toHtml();  ?> </td>	
 		</tr>
 
 	</table>

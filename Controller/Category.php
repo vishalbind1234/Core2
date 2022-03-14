@@ -24,6 +24,7 @@ class Controller_Category extends Controller_Admin_Action{
 			$categoryGrid = Ccc::getBlock('Category_Grid');
 			$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
 
+			$this->setTitle('Category_Grid');
 			$this->getLayout()->getContent()->setChild($categoryGrid);
 			$this->getLayout()->getHeader()->setChild($menu);
 			$this->getLayout()->getFooter()->setChild($blockMessage);

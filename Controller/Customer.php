@@ -20,6 +20,7 @@ class Controller_Customer extends Controller_Admin_Action{
 		$customerGrid = Ccc::getBlock('Customer_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
 
+		$this->setTitle('Customer_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($customerGrid);
 		$this->getLayout()->getFooter()->setChild($blockMessage);

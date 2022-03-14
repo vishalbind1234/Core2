@@ -1,8 +1,8 @@
 
-<?php Ccc::loadClass('Controller_Core_Action'); ?>
+<?php Ccc::loadClass('Controller_Admin_Action'); ?>
 <?php
 
-class Controller_Product_Media extends Controller_Core_Action{
+class Controller_Product_Media extends Controller_Admin_Action{
 
 	public function redirect( $url )
 	{
@@ -16,7 +16,9 @@ class Controller_Product_Media extends Controller_Core_Action{
 		$productMediaBlock = Ccc::getBlock('Product_Media'); 
 		$id = $this->getRequest()->getRequest('id');
 		$productMediaBlock->setData(['id' => $id]); 
-		$productMediaBlock->toHtml();												
+		$this->getLayout()->getContent()->setChild($productMediaBlock);
+		$this->renderLayout();
+		//echo $productMediaBlock->toHtml();												
 	}
 
 	public function saveAction()

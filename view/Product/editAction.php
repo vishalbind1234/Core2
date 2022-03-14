@@ -80,7 +80,7 @@
 
 					<?php foreach( $this->getAllCategories() as $key => $value) : ?>
 						<tr>
-							<td> <input type="checkbox" name="Product[category][]" <?php if(in_array($value->id, $array)){echo('checked');} ?>  value="<?php echo($value->id) ; ?>" > <?php echo($value->name) ; ?> </td>
+							<td> <input type="checkbox" name="Product[category][]" <?php if(in_array($value->id, $array)){echo('checked');} ?>  value="<?php echo($value->id) ; ?>" > <?php echo($this->wholePathName(($value->id))); ?> </td>
 						</tr>
 
 						

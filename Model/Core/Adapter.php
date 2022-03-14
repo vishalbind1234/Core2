@@ -5,23 +5,26 @@
 class Model_Core_Adapter{
 
 	private $connect = null;
-	private $config = [ 
-	              		"host" => "mysql:localhost"   , 
-				  		"user" => "vishalbind"        , 
-				  		"pass" => "vishal"       	  , 
-				  		"dbname" => "php_practice_db"  ];
+	private $config = null;
+
+    public function __construct()
+    {
+        $this->setConfig();  //echo('<pre>');  print_r($this->config); exit();
+    }
 
 
 	public function setConnect(){
 
-        try{
+        try
+        {                                                                                                       // echo('<pre>');  print_r($this->config); exit();
             $this->connect = new PDO($this->config["host"] , $this->config["user"] , $this->config["pass"]  );
             $this->connect->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION);
             $this->connect->setAttribute(PDO::MYSQL_ATTR_FOUND_ROWS ,  true );
             $this->connect->exec("use " . $this->config["dbname"]);
             
         }
-        catch(Exception $e){
+        catch(Exception $e)
+        {
 
             echo("error in connection : \n\n" . $e->getMessage() );
         }  
@@ -29,24 +32,33 @@ class Model_Core_Adapter{
 	}
 
 
-	public function getConnect(){
-		if(!$this->connect){
+	public function getConnect()
+    {                                      // print_r($this->config); exit();
+		if(!$this->connect)
+        {
 			$this->setConnect();
 		}
     	return $this->connect;
     }
 
-    public function setConfig($config){
-    	$this->config = $config;
-    	return $this;
-    }
+    public function getConfig($key)
+    {
 
-    public function getConfig(){
-
+        if(!$this->config)
+        {
+            $this->setConfig();
+        }
        	return $this->config;
     }
 
-    public function fetchAll($query){
+    public function setConfig()
+    {                                                   
+    	$this->config = Ccc::getConfig('connection');       //print_r($this->config); exit();  
+    	return $this;
+    }
+
+    public function fetchAll($query)
+    {
     	try{
     		               
     		$result = $this->getConnect()->prepare($query);
@@ -66,7 +78,8 @@ class Model_Core_Adapter{
     	
     }
 
-    public function fetchRow($query){
+    public function fetchRow($query)
+    {
     	try{
     		               
     		$result = $this->getConnect()->prepare($query);
@@ -86,7 +99,8 @@ class Model_Core_Adapter{
     	
     }
 
-    public function delete($query){
+    public function delete($query)
+    {
         try{
                         
             $del = $this->getConnect()->prepare($query); 

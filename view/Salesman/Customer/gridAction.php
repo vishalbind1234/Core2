@@ -1,6 +1,7 @@
 
 <?php   $salesmanCustomers = $this->getSalesmanCustomers();   /* print_r($salesmanCustomers);   exit(); */ ?>
 <?php   $salesmanId = $this->getData('id');    ?>
+<?php   $percentage = $this->getData('percentage');    ?>
 
 
 <table>
@@ -50,6 +51,8 @@
 					<td> <input type="checkbox" name="Salesman[customer][]"  <?php if($customer->salesmanId != -1){echo('checked');} ?> value="<?php echo($customer->id); ?>"> </td>  
 					
 					<td> <input type="checkbox" name="Salesman[reference][]" hidden checked value="<?php echo($customer->id); ?>"> </td>  
+
+					<td> <a href="<?php echo($this->getUrl('grid', 'Salesman_Customer_Product', ['id' => $salesmanId , 'percentage' => $percentage , 'customerId' => $customer->id ] )); ?>" > Product </a> </td>  
 
 
 				</tr>

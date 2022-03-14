@@ -1,7 +1,5 @@
 <?php
 
-
-
 class Model_Core_View{
 
 	protected $data = [];
@@ -23,9 +21,11 @@ class Model_Core_View{
 
 	public function toHtml()
 	{																				
-		# code...
-		require_once( $this->getTemplate() );									
-		return $this;             
+		ob_start();
+		require_once( $this->getTemplate() );
+		$html = ob_get_contents();
+		ob_end_clean();								
+		return $html;             
 	}
 
 	public function setData(array $data) /*--------here directly whole array  will be set-------------*/
@@ -66,12 +66,12 @@ class Model_Core_View{
 		
 		$a = ($a) ? $a : $_GET['a'] ;
 		$c = ($c) ? $c : $_GET['c'] ;
+		unset($_GET['a']);
+		unset($_GET['c']);
 		if($reset)
 		{
 			$_GET = [];
 		}
-		unset($_GET['a']);
-		unset($_GET['c']);
 		$param = array_merge($_GET , $param);
 		
 		$url = "";

@@ -1,4 +1,5 @@
 
+
 <?php   $pages = $this->getPage();    /*print_r($pages);   exit();*/  ?>    
 
 <button><a href="<?php echo($this->getUrl('edit'  , 'Page' , [] , true)); ?>"> Add New </a></button>
@@ -52,12 +53,47 @@
 			</tr>
 		<?php endforeach ; ?>                     
 	<?php endif ;  ?>
+
 	<tr>
-		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getStart() ])); ?>" ><button>Start</button></a> </td>
-		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getPrev() ])); ?>" ><button <?php if($this->getPager()->getPrev() == null){echo('disabled');} ?> >Prev</button></a> </td>
-		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getCurrent() ])); ?>" ><button>Current</button></a> </td>
-		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getNext() ])); ?>" ><button <?php if($this->getPager()->getNext() == null){echo('disabled');} ?> >Next</button></a> </td>
-		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getEnd() ])); ?>" ><button>End</button></a> </td>
+		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getStart() , 'perPageCount' =>  $this->getPager()->getPerPageCount() ])); ?>" ><button>Start</button></a> </td>
+		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getPrev() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button <?php if($this->getPager()->getPrev() == null){echo('disabled');} ?> >Prev</button></a> </td>
+		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getCurrent() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button>Current</button></a> </td>
+		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getNext() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button <?php if($this->getPager()->getNext() == null){echo('disabled');} ?> >Next</button></a> </td>
+		<td> <a href="<?php echo($this->getUrl('grid', 'Page' , ['currentPage' =>  $this->getPager()->getEnd() , 'perPageCount' =>  $this->getPager()->getPerPageCount() ])); ?>" ><button>End</button></a> </td>
+	</tr>
+
+	<tr>
+		<td>
+			<form name="myForm" action="<?php echo($this->getUrl('grid', 'Page')); ?>" method="post">
+				<select name="perPageCount"  onchange="this.form.submit()" >
+					<option selected hidden value="<?php echo $this->getPager()->getPerPageCount(); ?>" > <?php echo $this->getPager()->getPerPageCount(); ?> </option>
+					<?php foreach($this->getPager()->getPerPageCountOptions() as $key => $value) : ?>
+						<option value="<?php echo($value); ?>" > <?php echo($value); ?> </option>
+					<?php endforeach ; ?>
+				</select>
+			</form>
+		</td>
+	</tr>
+
+	<script type="text/javascript">
+		function hello(val)
+		{
+			alert(val);
+			<?php $value = "<script>document.write(val);</script>"; ?> 
+			window.location.href = "<?php echo $this->getUrl('grid', 'Page', ['perPageCount' => 20 ]); ?>" ;
+		}
+	</script>
+
+	<tr>
+		<td>
+			<select name="perPageCount"  onchange="hello(this.value)" >
+				<option selected hidden value="<?php echo $this->getPager()->getPerPageCount(); ?>" > <?php echo $this->getPager()->getPerPageCount(); ?> </option>
+				<?php foreach($this->getPager()->getPerPageCountOptions() as $key => $value) : ?>
+					<option value="<?php echo($value); ?>" > <?php echo($value); ?> </option>
+				<?php endforeach ; ?>
+			</select>
+
+		</td>
 	</tr>
 
 </table>	
