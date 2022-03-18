@@ -34,6 +34,31 @@ class Block_Category_Grid extends Block_Core_Template{
 	    return $wholePathAsString;
 	}
 
+	public function getThum($id)
+	{
+		$modelCategory = Ccc::getModel('Category');
+		$category = $modelCategory->load($id);
+		$thumRow = $modelCategory->getCategoryMedia()->setCategory($category)->getThum();
+		return $thumRow;
+	}
+
+	public function getBase($id)
+	{
+		$modelCategory = Ccc::getModel('Category');
+		$category = $modelCategory->load($id);
+		$baseRow = $modelCategory->getCategoryMedia()->setCategory($category)->getBase();
+		return $baseRow;
+	}
+
+	public function getSmall($id)
+	{
+		$modelCategory = Ccc::getModel('Category');
+		$category = $modelCategory->load($id);
+		$smallRow = $modelCategory->getCategoryMedia()->setCategory($category)->getSmall();
+		return $smallRow;
+	}
+
+
 
 
 

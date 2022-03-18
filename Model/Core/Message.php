@@ -7,8 +7,8 @@ class Model_Core_Message{
 	protected $messages = null;
 
 	const SUCCESS = 'success';
-	const ERROR   = 'error';
 	const WARNING = 'warning';
+	const ERROR   = 'error';
 
 	public function __construct()
 	{

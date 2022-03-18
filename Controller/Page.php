@@ -14,10 +14,7 @@ class Controller_Page extends Controller_Admin_Action{
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
         $pageGrid  = Ccc::getBlock('Page_Grid')->setData(['currentPage' => $currentPage]);
-        //print_r($pageGrid);
 		$pageGrid->getPager()->setPerPageCount($perPageCount);
-        //print_r($pageGrid);
-        //exit();
 
 		$this->setTitle('Page_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);
@@ -47,39 +44,45 @@ class Controller_Page extends Controller_Admin_Action{
 
 	public function saveAction()
 	{																		 
-		# code... 
 		$array = $this->getRequest()->getRequest('Page');                  
-		if(array_key_exists('id', $array)  && $array['id'] != null )
+		if(array_key_exists('id', $array)  && $array['id'] != null)
 		{
-			if(!(int)$array['id'])
+			try 
 			{
-				$message = 'error : id not valid. ';
-        		$msg = $this->getMessage();
-        		$msg->addMessage($message , Model_Core_Message::ERROR); 
-				$url = $this->getUrl('grid' , 'Page' );
-				$this->redirect($url);
-			}
-
-			$modelPage = Ccc::getModel('Page');
-			foreach ($array as $key => $value) 
+				if(!(int)$array['id'])
+				{
+					throw new Exception(" ID not Valid. ");
+				}
+				$modelPage = Ccc::getModel('Page');
+				$array['updatedAt'] = date('Y-m-d');
+				$rowId = $modelPage->setData($array)->save();
+			} 
+			catch (Exception $e) 
 			{
-				$modelPage->$key = $value;
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl('grid', 'Page');   
+				$this->redirect($url);	
 			}
-			$modelPage->updatedAt = date('Y-m-d');
-			$id = $modelPage->save();
 
 		}
 		else
 		{
-			$modelPage = Ccc::getModel('Page');
-			foreach ($array as $key => $value) 
+			try 
 			{
-				$modelPage->$key = $value;
+				$modelPage = Ccc::getModel('Page');
+				$rowId = $modelPage->setData($array)->save();
+			} 
+			catch (Exception $e) 
+			{
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl('grid', 'Page');   
+				$this->redirect($url);	
 			}
-			$id = $modelPage->save();
 		}
 
-		$message = "row id " . $id . " Saved  " ;
+		$message = "row id " . $rowId . " Saved  " ;
 		$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
 		$url = $this->getUrl('grid' , 'Page');
 		$this->redirect($url);
@@ -91,10 +94,9 @@ class Controller_Page extends Controller_Admin_Action{
 		$id = $this->getRequest()->getRequest('id');
 		$modelPage = Ccc::getModel('Page');  
 		$deletedId = $modelPage->delete($id); 
-		$message = " row ID" . $deletedId . " deleted. " ;
 
-		$modelMessage = $this->getMessage();
-        $modelMessage->addMessage($message);
+		$message = " row ID" . $deletedId . " deleted. " ;
+		$modelMessage = $this->getMessage()->addMessage($message);
 		$url = $this->getUrl('grid' , 'Page' );
 		$this->redirect($url); 
 	}

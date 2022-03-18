@@ -6,10 +6,7 @@ class Model_Core_Row {
 
 	public $data = [] ;
 	public $resourceName = null ;
-	/*public $tableName = null ;
-	public $primaryKey = null ;
-	public $rowClassName = null ;*/
-
+	
 //-------------------------------------------------------------------
 	public function __construct()
 	{
@@ -91,15 +88,15 @@ class Model_Core_Row {
 		return false;
 	}
 
-	public function load($id)
+	public function load($id = null)
 	{
+		$adapter = $this->getAdapter();
 		$primaryKey = $this->getResource()->getPrimaryKey();
-		//$tableName = $this->getTable()->getTableName(); 
 		$tableName = $this->getResource()->getTableName(); 
-		$rowData = $this->fetchRow("SELECT * FROM {$tableName} WHERE {$primaryKey} = {$id}");
+		$rowData = $this->fetchRow("SELECT * FROM {$tableName} WHERE {$primaryKey} = {$adapter->getConnect()->quote($id)}");
 		if(!$rowData)
 		{
-			return false;
+			return $this;
 		}
 		return $rowData ;
 		
@@ -153,10 +150,7 @@ class Model_Core_Row {
 
 	public function delete($id)
 	{								
-		# code...
-
-		$this->getResource()->delete($id);
-		return $id ;
+		return $this->getResource()->delete($id);
 	}
 
 

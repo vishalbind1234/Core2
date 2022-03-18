@@ -61,9 +61,9 @@ class Model_Core_View{
 	}
 
 
-	public function getUrl( $a = null , $c = null , $param = [] , $reset = false  )
+	public function getUrl( $a = null , $c = null , $param = null , $reset = false  )
 	{
-		
+		$param = ($param) ? $param : [];
 		$a = ($a) ? $a : $_GET['a'] ;
 		$c = ($c) ? $c : $_GET['c'] ;
 		unset($_GET['a']);

@@ -1,7 +1,7 @@
 
 <?php   $vendors = $this->getVendor();   /* print_r($vendors);   exit(); */ ?>
 
-<button><a href="<?php echo($this->getUrl('edit'  , 'Vendor' , [] , true)); ?>"> Add New </a></button>
+<button><a href="<?php echo($this->getUrl('edit'  , 'Vendor' , null , true)); ?>"> Add New </a></button>
 
 <table>
 

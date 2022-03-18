@@ -82,6 +82,7 @@ class Controller_Core_Action{
 	{
 		# code...
 		header('Location:' . $url );
+		exit();
 	}
 
 	public function getAdapter()

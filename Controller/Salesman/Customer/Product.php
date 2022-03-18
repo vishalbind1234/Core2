@@ -34,7 +34,7 @@ class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 
 	public function saveAction() //--------------------------------------------------saveAction()-------------------------------------------------------------
 	{     
-		$array = $this->getRequest()->getPost('Product');   echo('<pre>'); print_r($array);  exit();  
+		$array = $this->getRequest()->getPost('Product');   //echo('<pre>'); print_r($array);  exit();  
 
 		foreach ($array['customerPrice'] as $key => $value) 
 		{
@@ -55,9 +55,7 @@ class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 			
 		}
 
-		//exit();
-
-		$url = $this->getUrl( 'grid' , 'Salesman_Customer' );
+		$url = $this->getUrl( 'grid' , 'Salesman_Customer_Product' );
 		$this->redirect( $url );
 
 

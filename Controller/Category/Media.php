@@ -8,9 +8,10 @@ class Controller_Category_Media extends Controller_Core_Action{
 	public function mediaAction()
 	{
 		# code...
-		$blockCategoryMedia = Ccc::getBlock('Category_Media');		  
-		$blockCategoryMedia->toHtml();								  
-
+		$id = $this->getRequest()->getRequest('id');
+		$blockCategoryMedia = Ccc::getBlock('Category_Media')->setData(['id' => $id]);
+		$this->getLayout()->getContent()->setChild($blockCategoryMedia);		  
+		$this->renderLayout();		  
 	}
 
 	public function saveAction()
@@ -48,7 +49,6 @@ class Controller_Category_Media extends Controller_Core_Action{
 		{
 			foreach ($array['remove'] as $key => $value) 
 			{
-				# code...
 				$categoryMediaModel = Ccc::getModel('Category_Media');
 				$categoryMediaModel->delete($value)  ;
 

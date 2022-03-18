@@ -11,15 +11,12 @@ class Block_Product_Media extends Block_Core_Template{
 
 	public function __construct()
 	{
-		# code... 
 		$this->setTemplate('view/Product/mediaAction.php');    
 	} 
 
 	public function getCurrentProductMedia()
 	{																									
-		# code...
 		$modelProductMedia = Ccc::getModel('Product_Media');
-		//$id = Ccc::getFront()->getRequest()->getRequest('id');
 		$id = $this->getData('id');
 		$productMedia = $modelProductMedia->fetchAll(" SELECT * FROM Product_Media WHERE productId = {$id}");
 		return $productMedia;
@@ -28,13 +25,10 @@ class Block_Product_Media extends Block_Core_Template{
 	public function getStatus()
 	{
 		$status = [
-
 			self::STATUS_ENABLED => self::STATUS_ENABLED_LBL , 	
 			self::STATUS_DISABLED => self::STATUS_DISABLED_LBL  	
 		] ;
-
 		return $status;
-
 	}
 
 

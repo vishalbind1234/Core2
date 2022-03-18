@@ -13,20 +13,14 @@ class Block_Category_Edit extends Block_Core_Template{
 
 	public function getCurrentCategory()
 	{
-		# code...
 		$modelCategory = Ccc::getModel('Category');
 		$id = $this->getData('id');
-		if( !isset($id) )
-		{
-			$id = -1;
-		}
 		$category = $modelCategory->load($id);
 		return $category;
 	}
 
 	public function getCategory()
 	{
-		# code...
 		$modelCategory = Ccc::getModel('Category');
 		$categories = $modelCategory->fetchAll("SELECT * FROM Category ORDER BY wholePath ");
 		return $categories;
@@ -35,12 +29,10 @@ class Block_Category_Edit extends Block_Core_Template{
 	public function wholePathName( $id  = null)
 	{
 		$adapter =  $this->getAdapter() ; 
-
 		if($id == null)
 		{
 			return null;
 		}	
-
 		$idNameArray = $adapter->fetchPairs('id' , 'name' , 'Category');
 		$idWholePathArray = $adapter->fetchPairs('id' , 'wholePath' , 'Category');
 		
@@ -61,7 +53,6 @@ class Block_Category_Edit extends Block_Core_Template{
 			$categories = $adapter->fetchAll("SELECT * FROM Category");
 			return $categories;
 		}
-
 		$wholePath = explode(" > ", $currentWholePath );
 		$wholePath[sizeof($wholePath) - 1] = "" ;
 		$wholePathString = implode(" > ", $wholePath );

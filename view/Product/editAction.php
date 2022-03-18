@@ -1,7 +1,9 @@
 
-<?php  $products = $this->getCurrentProduct();   ?>
+<?php  $product = $this->getCurrentProduct();               /*echo "<pre>";  print_r($product); exit(); */          ?>
+<?php  $categoryProduct = $product->getCategoryProduct();  /*echo "<pre>";  print_r($categoryProduct); exit();*/ ?>
+<?php  $allCategories = $this->getAllCategories();          /*echo "<pre>";  print_r($allCategories); exit(); */    ?>
 	  
-<form action="<?php  echo($this->getUrl('save' , 'Product' , ['productId' => $products->id] )); ?>" method="post" >
+<form action="<?php  echo($this->getUrl('save' , 'Product' , ['productId' => $product->id] )); ?>" method="post" >
 
 	<table>
 		<tr>
@@ -11,25 +13,25 @@
 
 					<tr>
 					<td><label for="id">Product Id  &nbsp</label></td>
-					<td><input type="number" id="id" name="Product[id]" placeholder="enter id" value=<?php echo ($products->id); ?>   readonly ></td>
+					<td><input type="number" id="id" name="Product[id]" placeholder="enter id" value=<?php echo ($product->id); ?>   readonly ></td>
 					</tr>
 
 					
 					<tr>
 					<td><label for="name">Product Name  &nbsp</label></td>
-					<td><input type="text" id="name" name="Product[name]" placeholder="enter name"   value=<?php echo ($products->name); ?>   ></td>
+					<td><input type="text" id="name" name="Product[name]" placeholder="enter name"   value=<?php echo ($product->name); ?>   ></td>
 					</tr>
 
 					
 					<tr>
 					<td><label for="price">Product Price  &nbsp</label></td>
-					<td><input type="number" step="0.01" id="price" name="Product[price]" placeholder="enter price"   value=<?php echo ($products->price); ?>   ></td>
+					<td><input type="number" step="0.01" id="price" name="Product[price]" placeholder="enter price"   value=<?php echo ($product->price); ?>   ></td>
 					</tr>
 
 					
 					<tr>
 					<td><label for="quantity">Product Quantity  &nbsp</label></td>
-					<td><input type="number" id="quantity" name="Product[quantity]" placeholder="enter quantity"   value=<?php echo ($products->quantity); ?>  ></td>
+					<td><input type="number" id="quantity" name="Product[quantity]" placeholder="enter quantity"   value=<?php echo ($product->quantity); ?>  ></td>
 					</tr>
 
 					
@@ -37,8 +39,8 @@
 					<td><label for="status">Product Status &nbsp</label></td>
 					<td>
 						<select name="Product[status]">
-							<?php foreach ($products->getStatus() as $key => $value) : ?>
-								<option value="<?php echo($key); ?>"  <?php if($products->status == $key){echo('selected');} ?> > <?php echo($value); ?> </option>
+							<?php foreach ($product->getStatus() as $key => $value) : ?>
+								<option value="<?php echo($key); ?>"  <?php if($product->status == $key){echo('selected');} ?> > <?php echo($value); ?> </option>
 							<?php endforeach ; ?>
 						</select>
 					</td>
@@ -46,7 +48,7 @@
 
 					<tr>
 					<td><label for="createdAt">CreatedAt  &nbsp</label></td>
-					<td><input type="date"  id="createdAt" name="Product[createdAt]" placeholder="createdAt"   value=<?php echo ($products->createdAt); ?> ></td>
+					<td><input type="date"  id="createdAt" name="Product[createdAt]" placeholder="createdAt"   value=<?php echo ($product->createdAt); ?> ></td>
 					</tr>
 
 					<tr>
@@ -60,31 +62,16 @@
 
 			<td>
 				<table>
-					<?php 
-
-						$checkedCategories = $this->getCheckedCategories() ; 
-						$array = [] ;  
-					?>
-
-					<?php foreach ($checkedCategories as $key => $value)  : ?>
-					
+					<?php $array = [] ;  ?>	 
+					<?php foreach ($categoryProduct as $key => $value)  : ?>
 						<?php array_push($array, $value->categoryId); ?>
-					  	<!-- $array[$value->entityId] =  $value->categoryId; -->
-					  
-
-						<tr>
-							<td> <input type="checkbox" name="Product[reference][<?php echo($value->entityId); ?>]"  hidden value="<?php echo($value->categoryId); ?>" checked >  </td>
-						</tr>
-				 
+						<input type="checkbox" name="Product[reference][<?php echo($value->entityId); ?>]"  hidden value="<?php echo($value->categoryId); ?>" checked >  
 					<?php endforeach ; ?>
 
-					<?php foreach( $this->getAllCategories() as $key => $value) : ?>
+					<?php foreach( $allCategories as $key => $value) : ?>
 						<tr>
 							<td> <input type="checkbox" name="Product[category][]" <?php if(in_array($value->id, $array)){echo('checked');} ?>  value="<?php echo($value->id) ; ?>" > <?php echo($this->wholePathName(($value->id))); ?> </td>
 						</tr>
-
-						
-											
 					<?php endforeach ; ?>
 				</table>
 			</td>

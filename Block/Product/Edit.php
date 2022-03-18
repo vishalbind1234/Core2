@@ -9,37 +9,23 @@ class Block_Product_Edit extends Block_Core_Template{
 
 	public function __construct()
 	{
-		# code...
 		$this->setTemplate('view/Product/editAction.php');
 	}
 
 	public function getCurrentProduct()
 	{
 		$modelProduct = Ccc::getModel('Product');
-		$this->productId = $this->getData('id');
-		if(!isset($this->productId))
-		{
-			$this->productId = -1;
-		}
+		$productId = $this->getData('id');
+		$product = $modelProduct->load($productId);
+		return $product;
 
-		$products = $modelProduct->fetchRow("SELECT * FROM Product Where id = {$this->productId} ");
-		return $products;
-
-	}
-
-	public function getCheckedCategories()
-	{
-		$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
-		//$productId = $this->getData('id');														
-		$categories = $modelCategoryProduct->fetchAll("SELECT * FROM Category_Product Where productId = {$this->productId} ");
-		return $categories;
 	}
 
 	public function getAllCategories()
 	{
 		$modelCategory = Ccc::getModel('Category');
-		$category = $modelCategory->fetchAll("SELECT * FROM Category  ");
-		return $category ;
+		$Categories = $modelCategory->fetchAll("SELECT * FROM Category");
+		return $Categories;
 	}
 
 	public function wholePathName( $id )
@@ -51,12 +37,13 @@ class Block_Product_Edit extends Block_Core_Template{
 		
 	    $wholePathAsArray = explode( " > " , $idWholePathArray[$id] );  // note the spaces around seperator ( > ) is also a path of delimiter  //
 	    $wholePathAsString = "";
-	    foreach ($wholePathAsArray as $key => $value) {
-	    	# code...
+	    foreach ($wholePathAsArray as $key => $value) 
+	    {
 	     	$wholePathAsString = $wholePathAsString  . $idNameArray[$value] .  " > "  ; 
 	    }
 	    return $wholePathAsString;
 	}
+
 
 
 
@@ -69,22 +56,9 @@ class Block_Product_Edit extends Block_Core_Template{
 
 	}*/
 
-	
-	
-
-
-
-
-
 
 
 }
-
-
-
-
-
-
 
 
 ?>

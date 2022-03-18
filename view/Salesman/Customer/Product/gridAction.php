@@ -1,5 +1,5 @@
 
-<?php   $salesmanCustomerProducts = $this->getSalesmanCustomerProducts();    /*print_r($salesmanCustomerProducts);   exit();*/  ?>
+<?php   $products = $this->getProducts();    /*print_r($products);   exit();*/  ?>
 
 <?php   $salesmanId =  $this->getData('id');  ?>
 <?php   $customerId =  $this->getData('customerId');  ?>
@@ -18,7 +18,7 @@
 
 	</tr>
 
-	<?php if(!$salesmanCustomerProducts): ?>
+	<?php if(!$products): ?>
 		<tr>
 			<td colspan="6"><label> No Records Found . </label></td>
 		</tr>
@@ -27,10 +27,10 @@
 		 
 		<form action="<?php echo($this->getUrl('save', 'Salesman_Customer_Product' )); ?>"  method="post"  >
 
-			<?php foreach($salesmanCustomerProducts as $product) : ?>  <!-- -----------------for table data------------- -->
+			<?php foreach($products as $product) : ?>   <!-- -----------------for table data------------- -->
 				<tr>
 
-					<?php  $row = $this->getPrice($salesmanId , $customerId , $product->id ); 	?>
+					<?php  $row = $this->getCustomerPrice($product->id ); 	?>
 					<?php if( $row->entityId ) : ?>
 				   		 <input type="text" name="Product[entityId][<?php echo( $product->id ); ?>]" hidden  value="<?php echo( $row->entityId ); ?>" >
 					<?php endif ; ?>

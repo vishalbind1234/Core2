@@ -7,7 +7,7 @@ class Controller_Salesman extends Controller_Admin_Action{
 
 	public function gridAction()
 	{
-		$this->getMessage()->getSession()->start();
+		 //code...
 		       
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$salesmanGrid = Ccc::getBlock('Salesman_Grid');
@@ -72,28 +72,16 @@ class Controller_Salesman extends Controller_Admin_Action{
 
 		if(array_key_exists('id', $salesman) && $salesman['id'] != null )
 		{
-			if(!(int)$salesman['id'])
-			{
-				$message = 'error : id not valid. ';
-        		$msg = $this->getMessage();
-        		$msg->addMessage($message , Model_Core_Message::ERROR); 
-				$url = $this->getUrl( 'grid' , 'Salesman');
-				$this->redirect( $url ); 
-			}
 
 			try
 			{  																				
-
-				$salesmanModel = Ccc::getModel('Salesman');     
-			
-				foreach ($salesman as $key => $value) 
+				if(!(int)$salesman['id'])
 				{
-					$salesmanModel->$key = $value;
+					throw new Exception(" ID not Valid.");
 				}
-				$salesmanModel->updatedAt = date('Y-m-d');
-				$rowId = $salesmanModel->save();		
-				
-				     
+				$salesmanModel = Ccc::getModel('Salesman');  
+				$salesman['updatedAt'] =  date('Y-m-d');
+				$rowId = $salesmanModel->setData($salesman)->save();    
 			}
 			catch(Exception $e)
 			{
@@ -108,16 +96,8 @@ class Controller_Salesman extends Controller_Admin_Action{
 		{
 			try
 			{   
-								              			
-				$salesmanModel = Ccc::getModel('Salesman');	
-				foreach ($salesman as $key => $value) 
-				{
-					$salesmanModel->$key = $value;
-				}
-				$rowId = $salesmanModel->save();
-
-				
-
+				$salesmanModel = Ccc::getModel('Salesman');  
+				$rowId = $salesmanModel->setData($salesman)->save() ;
 			}
 			catch(Exception $e)
 			{

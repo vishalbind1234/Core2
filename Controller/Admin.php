@@ -77,51 +77,37 @@ class Controller_Admin extends Controller_Admin_Action{
 
         if(array_key_exists('id' , $array) && !empty($array['id']) ) 					
         {     																			
-        	if(!(int)$array['id'] )
-        	{
-        		$message = 'error : id not valid. ';
-        		$modelAdminMessage = Ccc::getModel('Admin_Message');
-           		$modelAdminMessage->addMessage( $message , Model_Core_Message::ERROR );        
-        		$url = $this->getUrl('grid' , 'Admin');
-        		$this->redirect($url);      
-        	}
 			try
 			{  
+	        	if(!(int)$array['id'] )
+	        	{
+	        		throw new Exception(" ID not Valid.");      
+	        	}
 				$modelAdmin = Ccc::getModel('Admin');
-				foreach ($array as $key => $value) 
-				{
-					$modelAdmin->$key = $value;
-				}
-				$modelAdmin->updatedAt = date('Y-m-d');
-			    $rowId = $modelAdmin->save(); 
+				$array['updatedAt'] =  date('Y-m-d');
+				$rowId = $modelAdmin->setData($array)->save();
 			}
 			catch(Exception $e)
 			{
 				$message = $e->getMessage() ;
-				$modelAdminMessage = Ccc::getModel('Admin_Message');
-           		$modelAdminMessage->addMessage( $message , Model_Core_Message::ERROR );
+				$modelAdminMessage = Ccc::getModel('Admin_Message')->addMessage( $message , Model_Core_Message::ERROR );
 				$url = $this->getUrl('grid' , 'Admin' );    	
 				$this->redirect($url);  
 			}
-
 		}    
 		else
 		{                       
 			try
 			{        
-				$modelAdmin = Ccc::getModel('Admin');       
-				foreach ($array as $key => $value) 
-				{
-					$modelAdmin->$key = $value;
-				}
-				$modelAdmin->password = md5($modelAdmin->password);    
-				$rowId = $modelAdmin->save();
+				$modelAdmin = Ccc::getModel('Admin');
+				$array['updatedAt'] =  date('Y-m-d');
+				$array['password'] = md5($array['password']);    
+				$rowId = $modelAdmin->setData($array)->save();
 			}
 			catch(Exception $e)
 			{				
 				$message = $e->getMessage() ;
-				$modelAdminMessage = Ccc::getModel('Admin_Message');
-           		$modelAdminMessage->addMessage( $message , Model_Core_Message::ERROR );
+				$modelAdminMessage = Ccc::getModel('Admin_Message')->addMessage( $message , Model_Core_Message::ERROR );
 				$url = $this->getUrl('grid' , 'Admin' );    	
 				$this->redirect($url); 			
 			}

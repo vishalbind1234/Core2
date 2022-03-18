@@ -12,9 +12,8 @@ class Controller_Product extends Controller_Admin_Action{
 		exit();
 	}
 
-	public function gridAction( )
+	public function gridAction()
 	{							
-		$this->getMessage()->getSession()->start();
 
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');
 		$productGrid = Ccc::getBlock('Product_Grid');
@@ -68,37 +67,27 @@ class Controller_Product extends Controller_Admin_Action{
 
 	public function saveAction() //-----------------------------------------save function---------------------------------------
 	{
-		$array = $this->getRequest()->getPost('Product');   //print_r($array); exit();
-		$modelProduct = Ccc::getModel('Product');
+		$array = $this->getRequest()->getPost('Product');  //echo "<pre>"; print_r($array); exit();
 
 		if( array_key_exists( 'id' , $array ) && $array['id'] != null ){
 
-			if( !(int)$array['id'] )
-			{
-				$message = 'error : id not valid. ';
-        		$msg = $this->getMessage();
-        		$msg->addMessage($message , Model_Core_Message::ERROR); 
-				$url = $this->getUrl('grid'  , 'Product' );   
-				$this->redirect($url);
-			}
-
 			try{
-				$productId = $this->getRequest()->getRequest('productId');
+				if(!(int)$array['id'])
+				{
+					throw new Exception(" ID not Valid. ");
+				}
+
 				$category = $array['category'];
 				$reference = $array['reference'];
 
 				unset($array['category']);
 				unset($array['reference']);
 
-				foreach ($array as $key => $value) 
-				{
-					$modelProduct->$key = $value;
-				}
-
+				$modelProduct = Ccc::getModel('Product');
 				date_default_timezone_set('Asia/Kolkata');   
-				$modelProduct->updatedAt = date('Y-m-d');     //----------------updatedAt is set here-------------------- 
-				$rowId = $modelProduct->save();
-
+				$array['updatedAt'] = date('Y-m-d'); 
+				$rowId = $modelProduct->setData($array)->save();
+				
 				//-----------------------------------------------------------------
 
 				foreach ($reference as $key => $value) 
@@ -116,7 +105,7 @@ class Controller_Product extends Controller_Admin_Action{
 					if( !in_array($value , $reference))
 					{
 						$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
-						$modelCategoryProduct->productId = $productId;
+						$modelCategoryProduct->productId = $rowId;
 						$modelCategoryProduct->categoryId = $value;
 						$modelCategoryProduct->save();
 					}
@@ -136,25 +125,23 @@ class Controller_Product extends Controller_Admin_Action{
 
 			try{														//print_r($array); exit();
 				$category = $array['category'];
+				$reference = $array['reference'];
+
 				unset($array['category']);
+				unset($array['reference']);
 
 				$modelProduct = Ccc::getModel('Product');
-				foreach ($array as $key => $value) 
-				{
-					$modelProduct->$key = $value;
-				}
-				$rowId = $modelProduct->save();
-
-				//-------------------------------------------------------------------------------
-				$productId = $rowId;
-
+				$rowId = $modelProduct->setData($array)->save();
+				//-----------------------------------------------------------------------------------------
 				foreach ($category as $key => $value) 
 				{
 					$modelCategoryProduct = Ccc::getModel('Product_CategoryProduct');
-					$modelCategoryProduct->productId = $productId;
+					$modelCategoryProduct->productId = $rowId;
 					$modelCategoryProduct->categoryId = $value;
 					$modelCategoryProduct->save();
+				
 				}
+				
 
 
 			}

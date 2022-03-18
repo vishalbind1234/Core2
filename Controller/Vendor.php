@@ -7,7 +7,7 @@ class Controller_Vendor extends Controller_Admin_Action{
 
 	public function gridAction()
 	{
-		$this->getMessage()->getSession()->start();
+		 //code...
 		
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$vendorGrid = Ccc::getBlock('Vendor_Grid');
@@ -25,9 +25,10 @@ class Controller_Vendor extends Controller_Admin_Action{
 	public function editAction()
 	{
 		$id = $this->getRequest()->getRequest('id');
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$this->getLayout()->getHeader()->setChild($menu);
+		$menu = Ccc::getBlock('Core_Layout_Header_Menu');
 		$vendorEdit = Ccc::getBlock('Vendor_Edit')->setData(['id' => $id]); 
+
+		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($vendorEdit);
 		$this->renderLayout();
 
@@ -38,26 +39,23 @@ class Controller_Vendor extends Controller_Admin_Action{
 
 	public function deleteAction()  /*--------------------------------------deleteAction()----------------------------------------------*/  
 	{
-		try{
-            
+		try
+		{
             $modelVendor = Ccc::getModel('Vendor');
             $id = $this->getRequest()->getRequest('id');
             $deletedRowId = $modelVendor->delete($id);
     
         }
-        catch(Exception $e){
-
+        catch(Exception $e)
+        {
 			$msg = $e->getMessage();
-			$modelMessage = $this->getMessage();
-            $modelMessage->addMessage($msg);
+			$modelMessage = $this->getMessage()->addMessage($msg);
 			$url = $this->getUrl( 'grid' , 'Vendor' );
 			$this->redirect( $url );        
 		}	
 
-
 		$message = " row id " . $deletedRowId . " deleted successfully" ;
-		$modelMessage = $this->getMessage();
-        $modelMessage->addMessage($message);
+		$modelMessage = $this->getMessage()->addMessage($message);
 		$url = $this->getUrl( 'grid' , 'Vendor' );
 		$this->redirect( $url );
 	
@@ -65,80 +63,50 @@ class Controller_Vendor extends Controller_Admin_Action{
 
 	public function saveAction()
 	{
-		# code...
-		$id = $this->getRequest()->getRequest('id');
 		$person = $this->getRequest()->getPost('Person');
 		$address = $this->getRequest()->getPost('Address');
 
 		if(array_key_exists('id', $person) && $person['id'] != null )
 		{
-			if(!(int)$person['id'])
-			{
-				$message = 'error : id not valid. ';
-        		$msg = $this->getMessage();
-        		$msg->addMessage($message , Model_Core_Message::ERROR); 
-				$url = $this->getUrl( 'grid' , 'Vendor' );
-				$this->redirect( $url ); 
-			}
-
 			try
 			{  																				
-
-				$vendorModel = Ccc::getModel('Vendor');     
-			
-				foreach ($person as $key => $value) 
+				if(!(int)$person['id'])
 				{
-					$vendorModel->$key = $value;
+					throw new Exception(" ID not Valid.");
 				}
-				$vendorModel->updatedAt = date('Y-m-d');
-				$rowId = $vendorModel->save();		
-				
-				$vendorAddressModel = Ccc::getModel('Vendor_Address'); 		
-				//$addressRow =  $vendorAddressModel->getRow() ;  					
 
-				foreach ($address as $key => $value) 
-				{
-					$vendorAddressModel->$key = $value;
-				}																				
-				$addressId = $vendorAddressModel->save();     
+				$vendorModel = Ccc::getModel('Vendor');
+				$person['updatedAt'] = date('Y-m-d');     
+				$rowId = $vendorModel->setData($person)->save();     
+				
+				$address['vendorId'] = $rowId;
+				$vendorModel->getAddress()->setData($address)->save();
 			}
 			catch(Exception $e)
 			{
 				$message = $e->getMessage() ;
 				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
-				$url = $this->getUrl( 'grid' , 'Vendor' );
-				$this->redirect( $url ); 
+				$url = $this->getUrl('grid', 'Vendor');
+				$this->redirect($url); 
 			}
 
 		}
 		else
 		{
 			try
-			{   
-								              			
-				$vendorModel = Ccc::getModel('Vendor');	
-				foreach ($person as $key => $value) 
-				{
-					$vendorModel->$key = $value;
-				}
-				$rowId = $vendorModel->save();
-
-				$address['vendorId'] = $rowId ;			
-				$vendorAddressModel = Ccc::getModel('Vendor_Address'); 
-				foreach ($address as $key => $value) 
-				{
-					$vendorAddressModel->$key = $value;
-				}
-				$addressId = $vendorAddressModel->save();
-
+			{  																				
+				$vendorModel = Ccc::getModel('Vendor');
+				$rowId = $vendorModel->setData($person)->save();     
+				
+				$address['vendorId'] = $rowId;
+				$vendorModel->getAddress()->setData($address)->save();
 			}
 			catch(Exception $e)
 			{
-
 				$message = $e->getMessage() ;
 				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
-				$url = $this->getUrl( 'grid' , 'Vendor' );
-				$this->redirect( $url );			
+				$url = $this->getUrl('grid', 'Vendor');
+				$this->redirect($url); 
 			}
 
 		}

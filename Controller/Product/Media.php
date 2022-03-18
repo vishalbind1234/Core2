@@ -13,35 +13,48 @@ class Controller_Product_Media extends Controller_Admin_Action{
 	public function mediaAction()
 	{															
 		# code...
-		$productMediaBlock = Ccc::getBlock('Product_Media'); 
 		$id = $this->getRequest()->getRequest('id');
+		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+		$productMediaBlock = Ccc::getBlock('Product_Media'); 
 		$productMediaBlock->setData(['id' => $id]); 
+
 		$this->getLayout()->getContent()->setChild($productMediaBlock);
+		$this->getLayout()->getFooter()->setChild($blockMessage);
 		$this->renderLayout();
-		//echo $productMediaBlock->toHtml();												
+
+		$this->getMessage()->unsetMessages();
 	}
 
 	public function saveAction()
 	{
-		# code...
-
-		$timeStamp = date('Y-m-d_H-i-s');													
-		$targetFolder = "Media/Product/" ;
-		$destination = $targetFolder . $timeStamp . "_" .$_FILES['productImage']['name'] ;         
-
-		if(!move_uploaded_file($_FILES['productImage']['tmp_name'], $destination) )
+		try 
 		{
-			echo('-----not uploaded----');
-			exit();
-		}
-					
-		$modelProductMedia = Ccc::getModel('Product_Media');
-		$modelProductMedia->productId = $this->getRequest()->getRequest('id');
-		$modelProductMedia->image = $destination;
-		$modelProductMedia->save();
+			$timeStamp = date('Y-m-d_H-i-s');													
+			$targetFolder = "Media/Product/" ;
+			$destination = $targetFolder . $timeStamp . "_" .$_FILES['productImage']['name'] ;         
 
-		$url = $this->getUrl('media' , 'Product_Media');
-		$this->redirect( $url );
+			if(!move_uploaded_file($_FILES['productImage']['tmp_name'], $destination) )
+			{
+				throw new Exception("file not updoaded.");
+			}
+						
+			$modelProductMedia = Ccc::getModel('Product_Media');
+			$modelProductMedia->productId = $this->getRequest()->getRequest('id');
+			$modelProductMedia->image = $destination;
+			$modelProductMedia->save();
+
+			$url = $this->getUrl('media' , 'Product_Media');
+			$this->redirect( $url );
+			
+		} 
+		catch (Exception $e) 
+		{
+			$msg = $e->getMessage();
+			$this->getMessage()->addMessage($msg);
+			$url = $this->getUrl('media' , 'Product_Media');
+			$this->redirect( $url );
+		}
+
 
 	}
 
@@ -93,9 +106,6 @@ class Controller_Product_Media extends Controller_Admin_Action{
 		$productMedia->id = $mediaArray['small'] ;
 		$productMedia->small = 1 ;
 		$productMedia->save();
-
-
-		//$productMedia->id = $value;
 
 		$url = $this->getUrl('media' , 'Product_Media');
 		$this->redirect( $url );

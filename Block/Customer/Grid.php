@@ -14,7 +14,7 @@ class Block_Customer_Grid extends Block_Core_Template{
 	{
 
 		$modelCustomer = Ccc::getModel('Customer');						
-		$customers = $modelCustomer->fetchAll(" SELECT * FROM Customer c INNER JOIN Customer_Address a ON c.id = a.customerId ");  
+		$customers = $modelCustomer->fetchAll(" SELECT * FROM Customer c INNER JOIN Customer_Address a ON c.id = a.customerId  /*WHERE billing = 1*/  ");  
 		return $customers;
 	}
 

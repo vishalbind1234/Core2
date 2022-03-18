@@ -21,6 +21,7 @@
 		<th>City        </th>
 		<th>State       </th>
 		<th>Country     </th>
+		<th>Same        </th>
 		<th>Billing     </th>
 		<th>Shipping    </th>
 	</tr>

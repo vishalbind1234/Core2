@@ -7,8 +7,6 @@ class Controller_Config extends Controller_Admin_Action{
 
 	public function gridAction()
 	{																
-		$this->getMessage()->getSession()->start();
-	
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
 		$configGrid = Ccc::getBlock('Config_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
@@ -28,15 +26,13 @@ class Controller_Config extends Controller_Admin_Action{
 	{																	
 		# code...
 		$id = $this->getRequest()->getRequest('id');
-	
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$this->getLayout()->getHeader()->setChild($menu);
 		$configEdit = Ccc::getBlock('Config_Edit')->setData(['id' => $id]);					
 		
+		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($configEdit);
 		$this->renderLayout();	
 		//$blockConfig->toHtml();
-
 	}
 
 	public function saveAction()
@@ -45,36 +41,45 @@ class Controller_Config extends Controller_Admin_Action{
 		$array = $this->getRequest()->getRequest('Config');                  
 		if(array_key_exists('id', $array)  && $array['id'] != null )
 		{
-			if(!(int)$array['id'])
+			try
 			{
-				$message = 'error : id not valid. ';
-        		$msg = $this->getMessage();
-        		$msg->addMessage($message , Model_Core_Message::ERROR); 
-				$url = $this->getUrl('grid' , 'Config' );
+				if(!(int)$array['id'])
+				{
+					throw new Exception(" ID not Valid. ");
+				}
+
+				$modelConfig = Ccc::getModel('Config');
+				$rowId = $modelConfig->setData($array)->save();
+				
+			} 
+			catch (Exception $e) 
+			{
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl('grid', 'Config');   
 				$this->redirect($url);
 			}
-
-			$modelConfig = Ccc::getModel('Config');
-			foreach ($array as $key => $value) 
-			{
-				$modelConfig->$key = $value;
-			}
-			$id = $modelConfig->save();
 
 		}
 		else
 		{
-			$modelConfig = Ccc::getModel('Config');
-			foreach ($array as $key => $value) 
+			try 
 			{
-				$modelConfig->$key = $value;
+				$modelConfig = Ccc::getModel('Config');
+				$rowId = $modelConfig->setData($array)->save();
+			} 
+			catch (Exception $e) 
+			{
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl('grid', 'Config');   
+				$this->redirect($url);
 			}
-			$id = $modelConfig->save();
 		}
 
-		$message = "row id " . $id . " Saved  " ;
+		$message = "row id " . $rowId . " Saved  " ;
 		$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
-		$url = $this->getUrl('grid' , 'Config' );
+		$url = $this->getUrl('grid' , 'Config');
 		$this->redirect($url);
 	}
 
@@ -84,10 +89,9 @@ class Controller_Config extends Controller_Admin_Action{
 		$id = $this->getRequest()->getRequest('id');
 		$modelConfig = Ccc::getModel('Config');  
 		$deletedId = $modelConfig->delete($id); 
-		$message = " row ID" . $deletedId . " deleted. " ;
 
-		$modelMessage = $this->getMessage();
-        $modelMessage->addMessage($message);
+		$message = " row ID" . $deletedId . " deleted. " ;
+		$modelMessage = $this->getMessage()->addMessage($message);
 		$url = $this->getUrl('grid' , 'Config' );
 		$this->redirect($url); 
 	}

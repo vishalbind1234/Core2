@@ -19,9 +19,10 @@ class Controller_Salesman_Customer extends Controller_Core_Action{
 		$this->getLayout()->getHeader()->setChild($menu);
 
 		$salesmanId = $this->getRequest()->getRequest('id');
+		$customerId = $this->getRequest()->getRequest('customerId');
 		$percentage = $this->getRequest()->getRequest('percentage');        
 
-		$salesmanCustomerGrid = Ccc::getBlock('Salesman_Customer_Grid')->setData(['id' => $salesmanId , 'percentage' => $percentage ]);
+		$salesmanCustomerGrid = Ccc::getBlock('Salesman_Customer_Grid')->setData(['id' => $salesmanId , 'percentage' => $percentage , 'customerId' => $customerId ]);
 		$this->getLayout()->getContent()->setChild($salesmanCustomerGrid);
 		$this->renderLayout();	
 		//$customerGrid->toHtml();

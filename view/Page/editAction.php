@@ -49,7 +49,7 @@
 		
 		<tr>
 			<td><label> UpdatedAt &nbsp </label></td>
-			<td><input type="date" name=Page[updatedAt]  value=<?php echo( $page->updatedAt); ?>   ></td>
+			<td><input type="date" name=Page[updatedAt] hidden value=<?php echo( $page->updatedAt); ?>   ></td>
 		</tr>
 
 		<!-- -------------------------------------------------------------------------------------------------------------------------------- -->

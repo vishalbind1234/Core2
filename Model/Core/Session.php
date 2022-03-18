@@ -37,6 +37,7 @@ class Model_Core_Session{
 		if(!$this->isStarted())
 		{
 			session_start();
+			$_SESSION[$this->getNamespace()] = [];
 		}
 		return $this;
 	}
