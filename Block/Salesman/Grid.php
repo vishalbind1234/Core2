@@ -7,6 +7,8 @@
 
 class Block_Salesman_Grid extends Block_Core_Template{
 
+	protected $pager = null;
+
 	public function __construct()
 	{													
 		# code...
@@ -15,7 +17,7 @@ class Block_Salesman_Grid extends Block_Core_Template{
 	}
 
 
-	public function getSalesman()
+/*	public function getSalesman()
 	{																																
 		# code...
 		$modelSalesman = Ccc::getModel('Salesman');											
@@ -29,7 +31,7 @@ class Block_Salesman_Grid extends Block_Core_Template{
 		}
 		return $row;
 
-	}
+	}*/
 
 
 	const ENABLE = 1;
@@ -47,6 +49,39 @@ class Block_Salesman_Grid extends Block_Core_Template{
 
 		return $status;
 	}
+
+
+	public function getPager()
+	{
+		if(!$this->pager)
+		{
+			$this->setPager();
+		}
+		return $this->pager;
+	}
+	public function setPager()
+	{
+		$this->pager = Ccc::getModel('Core_Pager');
+		return $this;
+	}
+
+	public function getSalesman()
+	{
+	
+		$modelSalesman = Ccc::getModel('Salesman');
+		$rowCount = $modelSalesman->fetchOne();
+
+		$modelPager = $this->getPager();
+		$modelPager->execute($rowCount, $modelPager->getCurrent());
+
+		$start = $modelPager->getStartLimit() - 1 ;
+		$offset = $modelPager->getPerPageCount();
+		$result = $modelSalesman->fetchAll("SELECT * FROM Salesman LIMIT {$start} , {$offset}");
+		return $result;
+
+
+	}
+
 
 
 }

@@ -15,8 +15,7 @@ class Controller_Product_Media extends Controller_Admin_Action{
 		# code...
 		$id = $this->getRequest()->getRequest('id');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
-		$productMediaBlock = Ccc::getBlock('Product_Media'); 
-		$productMediaBlock->setData(['id' => $id]); 
+		$productMediaBlock = Ccc::getBlock('Product_Media')->setData(['id' => $id]);
 
 		$this->getLayout()->getContent()->setChild($productMediaBlock);
 		$this->getLayout()->getFooter()->setChild($blockMessage);
@@ -29,8 +28,14 @@ class Controller_Product_Media extends Controller_Admin_Action{
 	{
 		try 
 		{
-			$timeStamp = date('Y-m-d_H-i-s');													
-			$targetFolder = "Media/Product/" ;
+			$timeStamp = date('Y-m-d_H-i-s');
+
+			$modelProductMedia = Ccc::getModel('Product_Media');
+			$modelProductMedia->productId = $this->getRequest()->getRequest('id');
+			$modelProductMedia->image = $timeStamp . "_" .$_FILES['productImage']['name'] ;
+			$modelProductMedia->save();
+
+			$targetFolder = $modelProductMedia->getImageUrl();
 			$destination = $targetFolder . $timeStamp . "_" .$_FILES['productImage']['name'] ;         
 
 			if(!move_uploaded_file($_FILES['productImage']['tmp_name'], $destination) )
@@ -38,11 +43,6 @@ class Controller_Product_Media extends Controller_Admin_Action{
 				throw new Exception("file not updoaded.");
 			}
 						
-			$modelProductMedia = Ccc::getModel('Product_Media');
-			$modelProductMedia->productId = $this->getRequest()->getRequest('id');
-			$modelProductMedia->image = $destination;
-			$modelProductMedia->save();
-
 			$url = $this->getUrl('media' , 'Product_Media');
 			$this->redirect( $url );
 			
@@ -63,14 +63,16 @@ class Controller_Product_Media extends Controller_Admin_Action{
 		# code...
 		$productMedia = Ccc::getModel('Product_Media');
 
-		$mediaArray = $this->getRequest()->getPost('media');   //print_r($mediaArray); exit();
+		$mediaArray = $this->getRequest()->getPost('media');  // echo "<pre>"; print_r($mediaArray); exit();
 
-		
-		foreach ($mediaArray['remove'] as $key => $value) 
+		if(array_key_exists("remove", $mediaArray))
 		{
-			$productMedia = Ccc::getModel('Product_Media');
-			$productMedia->delete($value);
+			foreach($mediaArray['remove'] as $key => $value) 
+			{
+				$productMedia = Ccc::getModel('Product_Media');
+				$productMedia->delete($value);
 
+			}
 		}
 
 		foreach ($mediaArray['id'] as $key => $value) 
@@ -84,28 +86,41 @@ class Controller_Product_Media extends Controller_Admin_Action{
 			$productMedia->save();
 		}
 
-		foreach ($mediaArray['gallary'] as $key => $value) 
+		if(array_key_exists("gallary", $mediaArray))
+		{
+			foreach ($mediaArray['gallary'] as $key => $value) 
+			{
+				$productMedia = Ccc::getModel('Product_Media');
+				$productMedia->id = $value;
+				$productMedia->gallary = 1;
+				$productMedia->save();
+			}
+		}
+
+		if(array_key_exists("base", $mediaArray))
 		{
 			$productMedia = Ccc::getModel('Product_Media');
-			$productMedia->id = $value;
-			$productMedia->gallary = 1;
+			$productMedia->id = $mediaArray['base'] ;
+			$productMedia->base = 1 ;
 			$productMedia->save();
 		}
 
-		$productMedia = Ccc::getModel('Product_Media');
-		$productMedia->id = $mediaArray['base'] ;
-		$productMedia->base = 1 ;
-		$productMedia->save();
+		if(array_key_exists("thum", $mediaArray))
+		{
+			$productMedia = Ccc::getModel('Product_Media');
+			$productMedia->id = $mediaArray['thum'] ;
+			$productMedia->thum = 1 ;
+			$productMedia->save();
+		}
 
-		$productMedia = Ccc::getModel('Product_Media');
-		$productMedia->id = $mediaArray['thum'] ;
-		$productMedia->thum = 1 ;
-		$productMedia->save();
 
-		$productMedia = Ccc::getModel('Product_Media');
-		$productMedia->id = $mediaArray['small'] ;
-		$productMedia->small = 1 ;
-		$productMedia->save();
+		if(array_key_exists("small", $mediaArray))
+		{
+			$productMedia = Ccc::getModel('Product_Media');
+			$productMedia->id = $mediaArray['small'] ;
+			$productMedia->small = 1 ;
+			$productMedia->save();
+		}
 
 		$url = $this->getUrl('media' , 'Product_Media');
 		$this->redirect( $url );

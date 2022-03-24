@@ -24,32 +24,36 @@
 		
 		<?php foreach($configs as $config) : ?>  <!-- -----------------for table data------------- -->
 			<tr>
-				<?php foreach($config->getData() as $key1 => $value1) : ?>
-
-					<?php  if($key1 == "status") :  ?>
-
-						<?php foreach( $config->getStatus() as $key2 => $value2 ) :?>
-
-							<?php if($value1 == $key2 ) : ?>
-
-								<td> <option> <?php echo($value2); ?> </option> </td>
-
-							<?php  endif  ; ?>
-
-						<?php endforeach ;  ?>
-
-					<?php else : ?>
-
-						<td> <?php echo($value1);  ?> </td>
-
-					<?php endif ; ?>	
-
-				<?php endforeach ; ?>        
+				<td> <?php echo $config->id;  ?>  </td>
+				<td> <?php echo $config->name;  ?>  </td>
+				<td> <?php echo $config->code;  ?>  </td>
+				<td> <?php echo $config->value;  ?>  </td>
+				<td> <?php $array = $config->getStatus(); echo $array[$config->status]; ?>  </td>
+				<td> <?php echo $config->createdAt;  ?>  </td>
 
 				<td> <a href="<?php echo($this->getUrl('edit' , 'Config' , ['id' => $config->id ])); ?>" > Edit  </a> </td>  
 				<td> <a href="<?php echo($this->getUrl('delete' , 'Config' , ['id' => $config->id ])); ?>" > Delete </a> </td>  
 			</tr>
-		<?php endforeach ; ?>                     
+		<?php endforeach ; ?> 
+		<tr>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Config' , ['currentPage' =>  $this->getPager()->getStart() , 'perPageCount' =>  $this->getPager()->getPerPageCount() ])); ?>" ><button>Start</button></a> </td>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Config' , ['currentPage' =>  $this->getPager()->getPrev() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button <?php if($this->getPager()->getPrev() == null){echo('disabled');} ?> >Prev</button></a> </td>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Config' , ['currentPage' =>  $this->getPager()->getCurrent() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button>Current</button></a> </td>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Config' , ['currentPage' =>  $this->getPager()->getNext() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button <?php if($this->getPager()->getNext() == null){echo('disabled');} ?> >Next</button></a> </td>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Config' , ['currentPage' =>  $this->getPager()->getEnd() , 'perPageCount' =>  $this->getPager()->getPerPageCount() ])); ?>" ><button>End</button></a> </td>
+		</tr>
+		<tr>
+			<td>
+				<form name="myForm" action="<?php echo($this->getUrl('grid')); ?>" method="post">
+					<select name="perPageCount"  onchange="this.form.submit()" >
+						<option selected hidden value="<?php echo $this->getPager()->getPerPageCount(); ?>" > <?php echo $this->getPager()->getPerPageCount(); ?> </option>
+						<?php foreach($this->getPager()->getPerPageCountOptions() as $key => $value) : ?>
+							<option value="<?php echo($value); ?>" > <?php echo($value); ?> </option>
+						<?php endforeach ; ?>
+					</select>
+				</form>
+			</td>
+		</tr>                    
 	<?php endif ;  ?>
 
 </table>	

@@ -26,11 +26,11 @@ class Block_Core_Layout_Header_Message extends Block_Core_Template{
 
 	public function setMessage()
 	{
-		$otherClassObj = $this->getData('messageClassObject');
+		$otherClassObj = $this->messageClassObject;
 		
 		if($otherClassObj)
 		{
-			$this->message = $this->getData('messageClassObject');
+			$this->message = $this->messageClassObject;
 		}
 		else
 		{

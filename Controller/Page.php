@@ -13,8 +13,8 @@ class Controller_Page extends Controller_Admin_Action{
 
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
-        $pageGrid  = Ccc::getBlock('Page_Grid')->setData(['currentPage' => $currentPage]);
-		$pageGrid->getPager()->setPerPageCount($perPageCount);
+        $pageGrid  = Ccc::getBlock('Page_Grid');
+		$pageGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
 
 		$this->setTitle('Page_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);
@@ -99,6 +99,21 @@ class Controller_Page extends Controller_Admin_Action{
 		$modelMessage = $this->getMessage()->addMessage($message);
 		$url = $this->getUrl('grid' , 'Page' );
 		$this->redirect($url); 
+	}
+
+	public function multipleDeleteAction()
+	{
+		//echo "<pre>"; print_r($_POST);  exit();
+		$array = $id = $this->getRequest()->getPost();
+		$idArray = $array['Page']['id'];
+		foreach ($idArray as $key => $value) 
+		{
+			$modelPage = Ccc::getModel("Page");
+			$modelPage->delete($value);
+		}
+		$url = $this->getUrl("grid" , "Page");
+		$this->redirect($url);
+
 	}
 
 

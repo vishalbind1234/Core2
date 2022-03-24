@@ -20,7 +20,7 @@ class Model_Salesman_Customer_Product extends Model_Core_Row{
 
 	//----------------------------------------------------------------------
 
-	public function getCustomer()
+	/*public function getCustomer()
 	{
 		$modelCustomer = Ccc::getModel('Customer');
 		if(!$this->id)
@@ -41,7 +41,7 @@ class Model_Salesman_Customer_Product extends Model_Core_Row{
 	{
 		$this->customer = $customer;
 		return $this;
-	}
+	}*/
 	
 
 

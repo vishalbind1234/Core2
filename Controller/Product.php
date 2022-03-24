@@ -13,11 +13,15 @@ class Controller_Product extends Controller_Admin_Action{
 	}
 
 	public function gridAction()
-	{							
+	{						
+		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
+		$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
+		$this->getMessage()->addMessage(" On Page " . $currentPage );	
 
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');
-		$productGrid = Ccc::getBlock('Product_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+		$productGrid = Ccc::getBlock('Product_Grid');
+		$productGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
 
 		$this->setTitle('Product_Grid');		
 		$this->getLayout()->getHeader()->setChild($menu);
@@ -84,7 +88,6 @@ class Controller_Product extends Controller_Admin_Action{
 				unset($array['reference']);
 
 				$modelProduct = Ccc::getModel('Product');
-				date_default_timezone_set('Asia/Kolkata');   
 				$array['updatedAt'] = date('Y-m-d'); 
 				$rowId = $modelProduct->setData($array)->save();
 				

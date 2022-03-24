@@ -25,15 +25,26 @@ class Block_Salesman_Customer_Product_Grid extends Block_Core_Template{
 
 	}
 
-	public function getCustomerPrice($productId)
+	/*public function getCustomerPrice($productId)
 	{																																
 		# code...
-		$id = $this->getData('customerId');
+		$id = $this->customerId;
+		//$id = $this->getData('customerId');
 		$modelCustomer = Ccc::getModel('Customer');											
 		$modelCustomer = $modelCustomer->load($id);
 		return $modelCustomer->getPrice($productId);
 
+	}*/
+
+	public function getCustomerPrice()
+	{
+		# code...
+		$modelCustomer = Ccc::getModel("Customer")->load($this->customerId);
+		$arr = $modelCustomer->getPrice();
+		return $arr;
 	}
+
+
 
 
 

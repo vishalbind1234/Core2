@@ -4,20 +4,22 @@
 
 class Block_Category_Grid extends Block_Core_Template{
 
+	protected $pager = null;
+
 	public function __construct()
 	{
 		# code...
 		$this->setTemplate('view/Category/gridAction.php');       
 	}
 
-	public function getCategory()
+/*	public function getCategory()
 	{													
 		# code...
 		$modelCategory = Ccc::getModel('Category');												
 		$categories = $modelCategory->fetchAll("SELECT * FROM Category ORDER BY wholePath ");				
 		return $categories;
 	}
-
+*/
 	public function wholePathName( $id )
 	{
 		$adapter = $this->getAdapter();	
@@ -34,29 +36,38 @@ class Block_Category_Grid extends Block_Core_Template{
 	    return $wholePathAsString;
 	}
 
-	public function getThum($id)
+
+	public function getPager()
 	{
-		$modelCategory = Ccc::getModel('Category');
-		$category = $modelCategory->load($id);
-		$thumRow = $modelCategory->getCategoryMedia()->setCategory($category)->getThum();
-		return $thumRow;
+		if(!$this->pager)
+		{
+			$this->setPager();
+		}
+		return $this->pager;
+	}
+	public function setPager()
+	{
+		$this->pager = Ccc::getModel('Core_Pager');
+		return $this;
 	}
 
-	public function getBase($id)
+	public function getCategory()
 	{
+	
 		$modelCategory = Ccc::getModel('Category');
-		$category = $modelCategory->load($id);
-		$baseRow = $modelCategory->getCategoryMedia()->setCategory($category)->getBase();
-		return $baseRow;
+		$rowCount = $modelCategory->fetchOne();
+
+		$modelPager = $this->getPager();
+		$modelPager->execute($rowCount, $modelPager->getCurrent());
+
+		$start = $modelPager->getStartLimit() - 1 ;
+		$offset = $modelPager->getPerPageCount();
+		$result = $modelCategory->fetchAll("SELECT * FROM Category ORDER BY wholePath LIMIT {$start} , {$offset}");
+		return $result;
+
+
 	}
 
-	public function getSmall($id)
-	{
-		$modelCategory = Ccc::getModel('Category');
-		$category = $modelCategory->load($id);
-		$smallRow = $modelCategory->getCategoryMedia()->setCategory($category)->getSmall();
-		return $smallRow;
-	}
 
 
 

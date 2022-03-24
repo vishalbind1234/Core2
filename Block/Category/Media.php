@@ -21,7 +21,8 @@ class Block_Category_Media extends Block_Core_Template{
 		# code...
 		$modelCategoryMedia = Ccc::getModel('Category_Media');
 		$tableName = $modelCategoryMedia->getResource()->getTableName();
-		$id = $this->getData('id');	  						                                                                                 
+		$id = $this->id;	  						                                                                                 
+		//$id = $this->getData('id');	  						                                                                                 
 		$media = $modelCategoryMedia->fetchAll("SELECT * FROM {$tableName} WHERE categoryId = {$id} ");
 		return $media;
 	}

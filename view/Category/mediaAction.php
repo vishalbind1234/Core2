@@ -1,11 +1,12 @@
 
-<?php $media = $this->getMedia(); /*  print_r($media);  exit();*/ ?>
+<?php $medias = $this->getMedia(); /*  print_r($media);  exit();*/ ?>
 <?php  $categoryId = Ccc::getFront()->getRequest()->getRequest('id');   ?>
 
 <form action="<?php  echo($this->getUrl('update' , 'Category_Media' , ['id' => $categoryId] )); ?>"  method="POST">
 
-	<button><a href="<?php  echo($this->getUrl('grid' , 'Category')); ?>"> Cancel </a></button> <br>
-	<button type="submit" value="submit" > Update </a></button> 
+	<button><a href="<?php  echo($this->getUrl('grid' , 'Category')); ?>"> Cancel </a></button> 
+	<br>
+	<button type="submit" value="submit" > Update </button> 
 
 	<table>
 
@@ -22,20 +23,20 @@
 			<th> Status      </th>
 		</tr>
 
-		<?php if( !$media ): ?>
+		<?php if( !$medias ): ?>
 			<tr>
 				<td colspan="10"><label> No Records Found . </label></td>
 			</tr>
 		<?php else :  ?>
 			
-			<?php foreach($media as $media) : ?> 
+			<?php foreach($medias as $media) : ?> 
 				<tr>
 
 					<td> <input type="number" name='media[id][]' value="<?php echo($media->id); ?>" readonly > </td>
 					<td> <input type="number" name='media[categoryId][]' value="<?php echo($media->categoryId); ?>" readonly > </td>
 					<td> <input type="text" name='media[image][]' value="<?php echo($media->image); ?>" readonly > </td>
 					
-					<td> <image class="img" src="<?php echo($media->image); ?>"> </td>
+					<td> <image class="img" src="<?php echo $media->getImageUrl($media->image); ?>"> </td>
 
 					<td> <input type="radio" name='media[base]' value="<?php echo($media->id); ?>"  <?php if($media->base == 1){echo('checked');} ?>  > </td>
 					<td> <input type="radio" name='media[thum]' value="<?php echo($media->id); ?>"  <?php if($media->thum == 1){echo('checked');}  ?>  > </td>

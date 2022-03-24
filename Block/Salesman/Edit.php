@@ -15,7 +15,8 @@ class Block_Salesman_Edit extends Block_Core_Template{
 		# code...
 		$modelSalesman = Ccc::getModel('Salesman');											
 		
-		$id = $this->getData('id');
+		$id = $this->id;
+		//$id = $this->getData('id');
 		$row = $modelSalesman->load($id);
 		return $row;
 

@@ -70,9 +70,12 @@ class Model_Core_Session{
 	{
 		if($this->isStarted())
 		{
-			if(array_key_exists($key, $_SESSION[$this->getNamespace()]))
+			if(array_key_exists($this->getNamespace(), $_SESSION))
 			{
-				return $_SESSION[$this->getNamespace()][$key];
+				if(array_key_exists($key, $_SESSION[$this->getNamespace()]))
+				{
+					return $_SESSION[$this->getNamespace()][$key];
+				}
 			}
 		}
 		return null;

@@ -1,6 +1,7 @@
 
 <head>
 	<title> <?php echo($this->getTitle()); ?> </title>
+	<script src="jQuery_3-6-0.js" ></script>	
 	<style>
 		table , tr , td , th 
 		{

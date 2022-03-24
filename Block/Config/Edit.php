@@ -15,7 +15,8 @@ class Block_Config_Edit extends Block_Core_Template{
 	{
 		# code...
 		$modelConfig = Ccc::getModel('Config');
-		$id = $this->getData('id');
+		$id = $this->id;
+		//$id = $this->getData('id');
 		if(!isset($id))
 		{
 			$id = -1;

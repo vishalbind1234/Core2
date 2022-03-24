@@ -17,15 +17,13 @@ class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 	
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
 		$this->getLayout()->getHeader()->setChild($menu);
-		
-		$salesmanId = $this->getRequest()->getRequest('id');
-		$percentage = $this->getRequest()->getRequest('percentage');
-		$customerId = $this->getRequest()->getRequest('customerId');
 
-		$salesmanCustomerProductGrid = Ccc::getBlock('Salesman_Customer_Product_Grid')->setData(['id' => $salesmanId , 'percentage' => $percentage , 'customerId' => $customerId]);
+		$customerId = $this->getRequest()->getRequest('customerId');
+		$percentage = $this->getRequest()->getRequest('percentage');
+
+		$salesmanCustomerProductGrid = Ccc::getBlock('Salesman_Customer_Product_Grid')->setData(['customerId' => $customerId , 'percentage' => $percentage]);
 		$this->getLayout()->getContent()->setChild($salesmanCustomerProductGrid);
 		$this->renderLayout();	
-		//$customerGrid->toHtml();
 
 		$message = $this->getRequest()->getRequest('message');
 		$message = ($message) ? $this->getRequest()->getRequest('message') : '123' ;
@@ -34,30 +32,36 @@ class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 
 	public function saveAction() //--------------------------------------------------saveAction()-------------------------------------------------------------
 	{     
-		$array = $this->getRequest()->getPost('Product');   //echo('<pre>'); print_r($array);  exit();  
+		$array = $this->getRequest()->getPost('Product');  							  
+		$id = $this->getRequest()->getRequest('customerId');   
+		$modelCustomer = Ccc::getModel('Customer')->load($id);
+		$salesmanId = $modelCustomer->salesmanId;
 
-		foreach ($array['customerPrice'] as $key => $value) 
+
+		foreach($array['customerPrice'] as $key => $value) 
 		{
-			$modelSalesmanCustomerProduct = Ccc::getModel('Salesman_Customer_Product');
-			if(isset($array['entityId']))
+			if($array['entityId'][$key] != null)
 			{
-				$modelSalesmanCustomerProduct->entityId = $array['entityId'][$key];
-			}
-			$modelSalesmanCustomerProduct->salesmanId = $array['salesmanId'];
-			$modelSalesmanCustomerProduct->customerId = $array['customerId'];
-			$modelSalesmanCustomerProduct->productId = $key; 
-			$modelSalesmanCustomerProduct->customerPrice = $value; 
-			$modelSalesmanCustomerProduct->salesmanPrice = $array['salesmanPrice'][$key]; 
-			$modelSalesmanCustomerProduct->productPrice = $array['productPrice'][$key]; 
+				$modelProduct = Ccc::getModel("Salesman_Customer_Product")->load($array['entityId'][$key]);
+				$modelProduct->customerPrice = $array['customerPrice'][$key];
+				$modelProduct->save();                                                		//echo "<pre>"; print_r($modelProduct);  exit();
 
-			//print_r($modelSalesmanCustomerProduct); 
-			$modelSalesmanCustomerProduct->save(); 
-			
+			}
+			else
+			{
+				$modelProduct = Ccc::getModel("Salesman_Customer_Product");
+				$modelProduct->productId = $key;
+				$modelProduct->salesmanId = $salesmanId;
+				$modelProduct->customerId = $modelCustomer->id;
+				$modelProduct->customerPrice = $value;
+				$modelProduct->salesmanPrice = $array['salesmanPrice'][$key];
+				$modelProduct->productPrice = $array['productPrice'][$key];
+				$modelProduct->save();														 //echo "<pre>"; print_r($modelProduct);  exit();
+			}
 		}
 
-		$url = $this->getUrl( 'grid' , 'Salesman_Customer_Product' );
-		$this->redirect( $url );
-
+		$url = $this->getUrl( 'grid' , 'Salesman' );
+		$this->redirect($url);
 
 	}
 	

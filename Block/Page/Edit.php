@@ -15,7 +15,8 @@ class Block_Page_Edit extends Block_Core_Template{
 	{
 		# code...
 		$modelPage = Ccc::getModel('Page');
-		$id = $this->getData('id');
+		$id = $this->id;
+		//$id = $this->getData('id');
 		if(!isset($id))
 		{
 			$id = -1;

@@ -12,7 +12,7 @@ class Block_Page_Grid extends Block_Core_Template{
 	{
 		# code...
 		$this->setTemplate('view/Page/gridAction.php');
-		//$this->currentPage = $this->getData('currentPage');
+		//$this->currentPage = $this->currentPage;
 	}
 
 	public function getPager()
@@ -31,18 +31,17 @@ class Block_Page_Grid extends Block_Core_Template{
 
 	public function getPage()
 	{
-		# code...
+	
 		$modelPage = Ccc::getModel('Page');
-		$pages = $modelPage->fetchAll("SELECT * FROM Page");
-		if(!$pages)
-		{
-			return false;
-		}
+		$rowCount = $modelPage->fetchOne();
 
 		$modelPager = $this->getPager();
-		$modelPager->execute(count($pages), $this->getData('currentPage'));
-		$pages = array_slice($pages, $modelPager->getStartLimit() - 1 , $modelPager->getPerPageCount() );
-		return $pages;
+		$modelPager->execute($rowCount, $modelPager->getCurrent());
+
+		$start = $modelPager->getStartLimit() - 1 ;
+		$offset = $modelPager->getPerPageCount();
+		$result = $modelPage->fetchAll("SELECT * FROM Page LIMIT {$start} , {$offset}");
+		return $result;
 
 
 	}

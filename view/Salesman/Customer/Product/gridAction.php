@@ -1,9 +1,9 @@
 
 <?php   $products = $this->getProducts();    /*print_r($products);   exit();*/  ?>
 
-<?php   $salesmanId =  $this->getData('id');  ?>
-<?php   $customerId =  $this->getData('customerId');  ?>
-<?php   $percentage =  $this->getData('percentage');        ?>
+<?php   $salesmanId =  $this->id;  			?>
+<?php   $customerId =  $this->customerId;  	?>
+<?php   $percentage =  $this->percentage;   ?>
 
 
 <table>
@@ -13,6 +13,7 @@
 		<th>Name  			 </th>
 		<th>Sku   			 </th>
 		<th>Product Price    </th>
+		<th>Entity Id		 </th>
 		<th>Salesman Price   </th>
 		<th>Customer Price   </th>
 
@@ -25,26 +26,30 @@
 		
 	<?php else :  ?>
 		 
-		<form action="<?php echo($this->getUrl('save', 'Salesman_Customer_Product' )); ?>"  method="post"  >
+		<form action="<?php echo($this->getUrl('save', 'Salesman_Customer_Product'  , ['customerId' => $this->customerId] )); ?>"  method="post"  >
 
 			<?php foreach($products as $product) : ?>   <!-- -----------------for table data------------- -->
 				<tr>
-
-					<?php  $row = $this->getCustomerPrice($product->id ); 	?>
-					<?php if( $row->entityId ) : ?>
-				   		 <input type="text" name="Product[entityId][<?php echo( $product->id ); ?>]" hidden  value="<?php echo( $row->entityId ); ?>" >
-					<?php endif ; ?>
-
+					<?php $bool = true; ?>
 					<td> <input type="text"  value="<?php echo($product->id ); ?>" >  </td>  
 					<td> <input type="text"  value="<?php echo($product->name ); ?>" >  </td>  
 					<td> <input type="text"  value="<?php echo($product->sku ); ?>" >  </td>  
-					<td> <input type="text" name="Product[productPrice][<?php echo( $product->id ); ?>]" value="<?php echo( ($product->price) ); ?>" >  </td>  
-					<td> <input type="text" name="Product[salesmanPrice][<?php echo( $product->id ); ?>]" value="<?php echo( ($product->price)*((100 - $percentage)/100) ); ?>" >  </td> 
+					<td> <input type="text" name="Product[productPrice][<?php echo $product->id ; ?>]" value="<?php echo( ($product->price) ); ?>" >  </td> 
+					
+					<?php foreach($this->getCustomerPrice() as $key => $value) : ?>
+						<?php if($value->productId == $product->id) : ?>
+							<td> <input type="text" name="Product[entityId][<?php echo $product->id ; ?>]" value="<?php echo $value->entityId; ?>" >  </td> 
+							<td> <input type="text" name="Product[salesmanPrice][<?php echo $product->id ; ?>]" value="<?php echo ($product->price - $product->price*($this->percentage/100)); ?>" >  </td> 
+							<td> <input type="text" name="Product[customerPrice][<?php echo $product->id ; ?>]" value="<?php echo $value->customerPrice; ?>" >  </td>
+							<?php $bool = false; ?>
+						<?php endif ; ?>
+					<?php endforeach ; ?>
 
-
-					<td> <input type="text" name="Product[customerPrice][<?php echo( $product->id ); ?>]"  value="<?php echo( $row->customerPrice ); ?>" >  </td>
-					<input type="text" name="Product[salesmanId]" hidden  value="<?php echo( $salesmanId ); ?>" > 
-					<input type="text" name="Product[customerId]" hidden  value="<?php echo( $customerId ); ?>" > 
+					<?php if($bool) : ?>
+						<td> <input type="text" name="Product[entityId][<?php echo $product->id ; ?>]" value="" >  </td> 
+						<td> <input type="text" name="Product[salesmanPrice][<?php echo $product->id ; ?>]" value="<?php echo ($product->price - $product->price*($this->percentage/100)); ?>" >  </td> 
+						<td> <input type="text" name="Product[customerPrice][<?php echo $product->id ; ?>]" value="" >  </td>
+					<?php endif; ?>
 
 				</tr>
 			<?php endforeach ; ?>  

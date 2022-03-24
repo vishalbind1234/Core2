@@ -38,7 +38,7 @@ class Model_Vendor extends Model_Core_Row {
 			return $this->address;
 		}
 
-		$vendorAddress = $address->fetchRow("SELECT * FROM Vendor_Address WHERE aId = {$this->id}");
+		$vendorAddress = $address->fetchRow("SELECT * FROM Vendor_Address WHERE id = {$this->id}");
 		$this->setAddress($vendorAddress);
 		return $vendorAddress;
 	}

@@ -15,7 +15,8 @@ class Block_Product_Edit extends Block_Core_Template{
 	public function getCurrentProduct()
 	{
 		$modelProduct = Ccc::getModel('Product');
-		$productId = $this->getData('id');
+		$productId = $this->id;
+		//$productId = $this->getData('id');
 		$product = $modelProduct->load($productId);
 		return $product;
 

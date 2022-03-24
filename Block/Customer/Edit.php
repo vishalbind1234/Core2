@@ -13,7 +13,8 @@ class Block_Customer_Edit extends Block_Core_Template{
 	public function getCurrentCustomer()
 	{																
 		$modelCustomer = Ccc::getModel('Customer');                
-		$id = $this->getData('id'); 
+		$id = $this->id; 
+		//$id = $this->getData('id'); 
 		$customer = $modelCustomer->load($id);
 		
 		return $customer;

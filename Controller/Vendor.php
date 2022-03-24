@@ -8,10 +8,14 @@ class Controller_Vendor extends Controller_Admin_Action{
 	public function gridAction()
 	{
 		 //code...
+		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
+		$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
+		$this->getMessage()->addMessage(" On Page " . $currentPage );
 		
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
-		$vendorGrid = Ccc::getBlock('Vendor_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+		$vendorGrid = Ccc::getBlock('Vendor_Grid');
+		$vendorGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
 
 		$this->setTitle('Vendor_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);

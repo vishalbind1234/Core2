@@ -1,5 +1,6 @@
 
 <?php  $vendor = $this->getCurrentVendor();  /*print_r($vendor);  exit();*/ ?>
+<?php  $address = $vendor->getAddress();    /*print_r($address);  exit();*/ ?>
   
 <form action="<?php  echo($this->getUrl('save' , 'Vendor' )); ?>" method="post" >
 
@@ -53,36 +54,36 @@
 
 	<tr>
 	<td><label >Address Id  &nbsp</label></td>
-	<td><input type="number"     name="Address[aId]" placeholder="enter aId" value=<?php echo $val = (!$vendor) ? "" : ($vendor->aId); ?>   readonly ></td>
+	<td><input type="number"     name="Address[id]" placeholder="enter id" value=<?php echo $val = (!$address) ? "" : ($address->id); ?>   readonly ></td>
 	</tr>
 
 
 	<tr>
 	<td><label >Vendor Id  &nbsp</label></td>
-	<td><input type="number"  name="Address[vendorId]" placeholder="enter vendorId" value=<?php echo $val = (!$vendor) ? "" : ($vendor->vendorId); ?>   readonly ></td>
+	<td><input type="number"  name="Address[vendorId]" placeholder="enter vendorId" value=<?php echo $val = (!$address) ? "" : ($address->vendorId); ?>   readonly ></td>
 	</tr>
 
 
 	<tr>
 	<td><label for="country">Country  &nbsp</label></td>
-	<td><input type="text" id="country" name="Address[country]" placeholder="enter country"   value=<?php echo $val = (!$vendor) ? "" : ($vendor->country); ?>   ></td>
+	<td><input type="text" id="country" name="Address[country]" placeholder="enter country"   value=<?php echo $val = (!$address) ? "" : ($address->country); ?>   ></td>
 	</tr>
 
 
 	<tr>
 	<td><label for="state"> State  &nbsp</label></td>
-	<td><input type="text" id="state" name="Address[state]" placeholder="enter state"   value=<?php echo $val = (!$vendor) ? "" : ($vendor->state); ?>   ></td>
+	<td><input type="text" id="state" name="Address[state]" placeholder="enter state"   value=<?php echo $val = (!$address) ? "" : ($address->state); ?>   ></td>
 	</tr>
 
 
 	<tr>
 	<td><label for="city">City  &nbsp</label></td>
-	<td><input type="text" id="city" name="Address[city]" placeholder="enter city"   value=<?php echo $val = (!$vendor) ? "" : ($vendor->city); ?>   ></td>
+	<td><input type="text" id="city" name="Address[city]" placeholder="enter city"   value=<?php echo $val = (!$address) ? "" : ($address->city); ?>   ></td>
 	</tr>
 
 	<tr>
 	<td><label >Pincode Id  &nbsp</label></td>
-	<td><input type="number"  name="Address[pincode]" placeholder="enter pincode" value=<?php echo $val = (!$vendor) ? "" : ($vendor->pincode); ?>    ></td>
+	<td><input type="number"  name="Address[pincode]" placeholder="enter pincode" value=<?php echo $val = (!$address) ? "" : ($address->pincode); ?>    ></td>
 	</tr>
 	
 	

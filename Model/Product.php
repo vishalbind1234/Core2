@@ -8,6 +8,7 @@ class Model_Product extends Model_Core_Row {
 	protected $small = null;
 	protected $base = null;
 	protected $categoryProduct = null;
+	protected $imagePath = "Media/Product/";
 
 	//protected $categoryProduct = null;
 	//protected $productMedia = null;
@@ -20,6 +21,18 @@ class Model_Product extends Model_Core_Row {
 	public function __construct()
 	{
 		$this->setResourceName('Product_Resource');					
+	}
+
+	public function getImageUrl($image = null)
+	{
+		# code...
+		$url = Ccc::getBaseUrl();
+		if($image)
+		{
+			return $this->imagePath.$image;	
+		}
+		return $this->imagePath;  
+		//return $url.$this->imagePath.$image;  
 	}
 	
 	public function getStatus()
@@ -127,6 +140,23 @@ class Model_Product extends Model_Core_Row {
 		$this->categoryProduct = $categoryProduct;
 		return $this;
 	}
+
+	public function getFinalPrice()
+	{
+		if(!$this->id)
+		{
+			return 0;
+		}
+		$modelProduct = $this->fetchRow("SELECT * FROM Product WHERE id = {$this->id}");
+		if($modelProduct->discountMode == "percentage")
+		{
+			$price = $modelProduct->price - $modelProduct->price*($modelProduct->discount/100);
+			return $price;
+		}
+		$price = $modelProduct->price - $modelProduct->discount;
+		return $price;
+	}
+
 
 
 

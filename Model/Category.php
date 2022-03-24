@@ -5,6 +5,7 @@ Ccc::loadClass('Model_Core_Row');
 class Model_Category extends Model_Core_Row {
 
 	protected $category = null;
+	protected $imagePath = "Media/Category/";
 
 	const ENABLE = 1;
 	const ENABLE_LBL = 'ENABLE';
@@ -14,6 +15,18 @@ class Model_Category extends Model_Core_Row {
 	public function __construct()
 	{
 		$this->setResourceName('Category_Resource');
+	}
+
+	public function getImageUrl($image = null)
+	{
+		# code...
+		$url = Ccc::getBaseUrl();
+		if($image)
+		{
+			return $this->imagePath.$image;	
+		}
+		return $this->imagePath;  
+		//return $url.$this->imagePath.$image;  
 	}
 
 	public function getStatus()

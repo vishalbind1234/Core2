@@ -3,6 +3,8 @@
 <?php
 
 class Block_Product_Grid extends Block_Core_Template{
+	
+	protected $pager = null;
 
 	public function __construct()
 	{
@@ -10,37 +12,44 @@ class Block_Product_Grid extends Block_Core_Template{
 		$this->setTemplate('view/Product/gridAction.php');
 	}
 
-	public function getProduct()
+	/*public function getProduct()
 	{
 		$modelProduct = Ccc::getModel('Product');
 		$products = $modelProduct->fetchAll(" SELECT *  FROM Product ");
 		return $products;
-	}
+	}*/
 
-	public function getThum($id)
+
+	public function getPager()
 	{
-		$modelProduct = Ccc::getModel('Product');
-		$product = $modelProduct->load($id);
-		$thumRow = $modelProduct->getProductMedia()->setProduct($product)->getThum();
-		return $thumRow;
+		if(!$this->pager)
+		{
+			$this->setPager();
+		}
+		return $this->pager;
 	}
-
-	public function getBase($id)
+	public function setPager()
 	{
-		$modelProduct = Ccc::getModel('Product');
-		$product = $modelProduct->load($id);
-		$baseRow = $modelProduct->getProductMedia()->setProduct($product)->getBase();
-		return $baseRow;
+		$this->pager = Ccc::getModel('Core_Pager');
+		return $this;
 	}
 
-	public function getSmall($id)
+	public function getProduct()
 	{
+	
 		$modelProduct = Ccc::getModel('Product');
-		$product = $modelProduct->load($id);
-		$smallRow = $modelProduct->getProductMedia()->setProduct($product)->getSmall();
-		return $smallRow;
-	}
+		$rowCount = $modelProduct->fetchOne();
 
+		$modelPager = $this->getPager();
+		$modelPager->execute($rowCount, $modelPager->getCurrent());
+
+		$start = $modelPager->getStartLimit() - 1 ;
+		$offset = $modelPager->getPerPageCount();
+		$result = $modelProduct->fetchAll("SELECT * FROM Product LIMIT {$start} , {$offset}");
+		return $result;
+
+
+	}
 
 
 

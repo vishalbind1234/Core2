@@ -1,6 +1,14 @@
 
-<?php 	Ccc::loadClass('Model_Core_Adapter');
-        $adapter = new Model_Core_Adapter();      ?>
+<?php 	
+		date_default_timezone_set('Asia/Kolkata');
+		Ccc::loadClass('Model_Core_Adapter');
+     	Ccc::loadClass('Model_Cart');
+     	Ccc::loadClass('Model_Cart_CartItem');
+     	Ccc::loadClass('Model_Cart_CartAddress');
+     	Ccc::loadClass('Model_Cart_ShippingMethod');
+     	Ccc::loadClass('Model_Cart_PaymentMethod');
+     	Ccc::loadClass('Model_Customer_Address');
+        $adapter = new Model_Core_Adapter();           ?>
 
 <?php 		
 
@@ -98,6 +106,28 @@ class Ccc{
 		self::loadClass($blockName);
 		return new $blockName();
 
+	}
+
+	public static function getPath($subPath = null)
+	{
+		# code...
+		$path = getcwd().DIRECTORY_SEPARATOR;
+		if($subPath)
+		{
+			$path = $path.$subPath;
+		}
+		return $path;
+	}
+
+	public static function getBaseUrl($subUrl = null)
+	{
+		# code...
+		$url = self::getConfig("baseUrl");
+		if($subUrl)
+		{
+			$url = $url.$subUrl;
+		}
+		return $url;
 	}
 
 	public static function init()

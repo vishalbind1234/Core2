@@ -28,6 +28,21 @@
 					<td><input type="number" step="0.01" id="price" name="Product[price]" placeholder="enter price"   value=<?php echo ($product->price); ?>   ></td>
 					</tr>
 
+					<tr>
+					<td><label for="discount"> Discount  &nbsp</label></td>
+					<td><input type="number" step="0.0001" id="discount" name="Product[discount]" placeholder="enter discount"   value=<?php echo ($product->discount); ?>   ></td>
+					</tr>
+
+					<tr>
+					<td><label for="discountMode"> Discount Mode  &nbsp</label></td>
+					<td><input type="text"  id="discountMode" name="Product[discountMode]" placeholder="enter discountMode"   value=<?php echo ($product->discountMode); ?>   ></td>
+					</tr>
+
+					<tr>
+					<td><label for="taxPercentage"> Tax Percentage &nbsp</label></td>
+					<td><input type="number" step="0.0001" id="taxPercentage" name="Product[taxPercentage]" placeholder="enter taxPercentage"   value=<?php echo ($product->taxPercentage); ?>   ></td>
+					</tr>
+
 					
 					<tr>
 					<td><label for="quantity">Product Quantity  &nbsp</label></td>

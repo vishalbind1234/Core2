@@ -7,6 +7,7 @@ class Model_Customer extends Model_Core_Row {
 	protected $billingAddress = null;
 	protected $shippingAddress = null;
 	protected $salesmanCustomerProduct = null;
+	protected $cart = null;
 
 	const ENABLE = 1;
 	const ENABLE_LBL = 'ENABLE';
@@ -40,7 +41,8 @@ class Model_Customer extends Model_Core_Row {
 			return $this->billingAddress;
 		}
 		$adapter = $this->getAdapter();
-		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address WHERE customerId = {$this->id} AND billing = {$adapter->getConnect()->quote(Model_Customer_Address::BILLING)} ");
+		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address WHERE customerId = {$this->id} AND addressType = {$adapter->getConnect()->quote(Model_Customer_Address::BILLING)} ");
+		
 		$this->setBillingAddress($address);
 		return $address;
 	}
@@ -64,7 +66,8 @@ class Model_Customer extends Model_Core_Row {
 			return $this->shippingAddress;
 		}
 		$adapter = $this->getAdapter();
-		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address WHERE customerId = {$this->id} AND shipping = {$adapter->getConnect()->quote(Model_Customer_Address::SHIPPING)} ");
+		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address WHERE customerId = {$this->id} AND addressType = {$adapter->getConnect()->quote(Model_Customer_Address::SHIPPING)} ");
+
 		$this->setShippingAddress($address);
 		return $address;
 	}
@@ -77,27 +80,59 @@ class Model_Customer extends Model_Core_Row {
 
 	//-------------------------------------------------------------------------------------------------------------------
 
-	public function getPrice($productId)
+	public function getPrice()
 	{
 		$modelSalesmanCustomerProduct = Ccc::getModel('Salesman_Customer_Product');
 		if(!$this->id)
 		{
-			return $modelSalesmanCustomerProduct;
+			return [];
 		}
 
 		if($this->salesmanCustomerProduct)
 		{
 			return $this->salesmanCustomerProduct;
 		}
-		//$adapter = $this->getAdapter();
-		$price = $modelSalesmanCustomerProduct->fetchRow("SELECT * FROM Salesman_Customer_Price WHERE customerId = {$this->id} AND salesmanId = {$this->salesmanId} AND productId = {$productId}");
+		$price = $modelSalesmanCustomerProduct->fetchAll("SELECT * FROM Salesman_Customer_Price WHERE customerId = {$this->id} AND salesmanId = {$this->salesmanId} ");
 		$this->setPrice($price);
 		return $price;
 	}
 
-	public function setPrice(Model_Salesman_Customer_Product $obj)
+	public function setPrice(array $arr)
 	{
-		$this->salesmanCustomerProduct = $obj;
+		$this->salesmanCustomerProduct = $arr;
+		return $this;
+	}
+
+	//-----------------------------------------cart functions--------------------------------------------------------------
+
+	public function getCart()
+	{
+		$modelCart = Ccc::getModel('Cart');
+		if(!$this->id)
+		{
+			return $modelCart;
+		}
+		if($this->cart)
+		{
+			return $cart;
+		}
+
+		$cart = $modelCart->load($this->id, "customerId");  //echo "<pre>";    print_r($cart);  exit();
+		if(!$cart->id)
+		{
+			$cart->customerId = $this->id;
+			$cart->save();
+		}
+		/*$modelCart->customerId = $this->id;
+		$modelCart->save();*/
+		$modelCart = $cart->fetchRow("SELECT * FROM Cart WHERE customerId = {$this->id}");    //echo "<pre>";    print_r($modelCart);  exit();
+		$this->setCart($modelCart);
+		return $modelCart;
+	}
+
+	public function setCart(Model_Cart $cart)
+	{
+		$this->cart = $cart;
 		return $this;
 	}
 

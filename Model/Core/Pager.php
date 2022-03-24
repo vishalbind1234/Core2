@@ -29,7 +29,7 @@ class Model_Core_Pager{
 		$this->setEndLimit( $this->getCurrent() * $this->getPerPageCount() );
 	}
 
-	public function setPerPageCountOptions($value)
+	public function setPerPageCountOptions(array $value)
 	{
 		# code...
 		$this->perPageCountOptions = $value;

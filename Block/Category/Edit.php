@@ -14,7 +14,8 @@ class Block_Category_Edit extends Block_Core_Template{
 	public function getCurrentCategory()
 	{
 		$modelCategory = Ccc::getModel('Category');
-		$id = $this->getData('id');
+		$id = $this->id;
+		//$id = $this->getData('id');
 		$category = $modelCategory->load($id);
 		return $category;
 	}

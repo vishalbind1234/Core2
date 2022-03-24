@@ -108,32 +108,31 @@ class Controller_Core_Action{
 		
 	}
 
-	public function getUrl( $a = null , $c = null , $param = [] , $reset = false  )
+	public function getUrl( $a = null , $c = null , $param = null , $reset = false  )
 	{
-		# code...
-		
-
+		$param = ($param) ? $param : [];
 		$a = ($a) ? $a : $_GET['a'] ;
 		$c = ($c) ? $c : $_GET['c'] ;
+		
 		if($reset)
 		{
 			$_GET = [];
 		}
-		unset($_GET['a']);
-		unset($_GET['c']);
+		$_GET['a'] = $a;
+		$_GET['c'] = $c;
 		$param = array_merge($_GET , $param);
 		
 		$url = "";
-		$url = $url . $this->baseUrl() . "index.php?a={$a}&c={$c}" ;
+		$url = $url . $this->baseUrl() . "index.php?" ;
 		foreach ($param as $key => $value) {
 			# code...
 			if($value)
 			{
-				$url = $url . "&{$key}={$value}";
+				$url = $url . "{$key}={$value}&";
 			}
 		}
 		
-		return $url;
+		return substr($url, 0 , -1);
 	}
 
 	public function baseUrl()

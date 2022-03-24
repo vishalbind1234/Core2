@@ -14,7 +14,8 @@ class Block_Salesman_Customer_Grid extends Block_Core_Template{
 
 	public function getSalesmanCustomers()
 	{																																
-		$salesmanId = $this->getData('id');
+		$salesmanId = $this->id;
+		//$salesmanId = $this->getData('id');
 		$modelSalesman = Ccc::getModel('Salesman');											
 		$salesman = $modelSalesman->load($salesmanId);	
         return $salesman->getCustomers();

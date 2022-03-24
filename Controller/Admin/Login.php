@@ -27,7 +27,7 @@ class Controller_Admin_Login extends Controller_Core_Action {
 		else
 		{
 			$modelAdminMessage = Ccc::getModel('Admin_Message');
-			$modelAdminMessage->setMessage($status->getData() , 'login');
+			$modelAdminMessage->setMessage($status->email , 'login');
 
 			$url = $this->getUrl('grid', 'Admin');
 			$this->redirect($url);

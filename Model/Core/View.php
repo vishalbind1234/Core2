@@ -35,11 +35,23 @@ class Model_Core_View{
 		return $this;
 	}
 
-	public function addData($key , $value ) /*-----here key(Controller)-value(array) will be stored------*/
+	public function __set($key , $value ) 
 	{
 		# code...
 		$this->data[$key] = $value;
 		return $this;
+	}
+
+	public function __get($key = null)
+	{
+		# code...
+		if(!$key){
+			return $this->data;
+		}
+		if(array_key_exists($key, $this->data)){
+			return $this->data[$key];
+		}
+		return null; 
 	}
 
 	public function getData($key = null)
@@ -54,6 +66,24 @@ class Model_Core_View{
 		return null; 
 	}
 
+	public function __unset($key)
+	{
+		if(array_key_exists($key, $this->data))
+		{
+			unset($this->data[$key]);
+		}
+		return $this;
+	}
+
+	public function __isset($key)
+	{
+		if(array_key_exists($key, $this->data))
+		{
+			return true;
+		}
+		return false;
+	}
+
 	public function getAdapter()
 	{
 		global $adapter;
@@ -66,25 +96,26 @@ class Model_Core_View{
 		$param = ($param) ? $param : [];
 		$a = ($a) ? $a : $_GET['a'] ;
 		$c = ($c) ? $c : $_GET['c'] ;
-		unset($_GET['a']);
-		unset($_GET['c']);
+		
 		if($reset)
 		{
 			$_GET = [];
 		}
+		$_GET['a'] = $a;
+		$_GET['c'] = $c;
 		$param = array_merge($_GET , $param);
 		
 		$url = "";
-		$url = $url . $this->baseUrl() . "index.php?a={$a}&c={$c}" ;
+		$url = $url . $this->baseUrl() . "index.php?" ;
 		foreach ($param as $key => $value) {
 			# code...
 			if($value)
 			{
-				$url = $url . "&{$key}={$value}";
+				$url = $url . "{$key}={$value}&";
 			}
 		}
 		
-		return $url;
+		return substr($url, 0 , -1);
 	}
 
 	public function baseUrl()

@@ -7,7 +7,7 @@ class Model_Customer_Address_Resource extends Model_Core_Row_Resource{
 	public function __construct()
 	{
 
-		$this->setPrimaryKey('aId')->setTableName('Customer_Address');
+		$this->setPrimaryKey('id')->setTableName('Customer_Address');
 		
 	}
 

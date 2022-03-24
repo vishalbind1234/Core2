@@ -19,10 +19,14 @@ class Controller_Category extends Controller_Admin_Action{
 		try
 		{	
 			 //code...
+			$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
+			$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
+			$this->getMessage()->addMessage(" On Page " . $currentPage );
 
 			$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-			$categoryGrid = Ccc::getBlock('Category_Grid');
 			$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+			$categoryGrid = Ccc::getBlock('Category_Grid');
+			$categoryGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
 
 			$this->setTitle('Category_Grid');
 			$this->getLayout()->getContent()->setChild($categoryGrid);
@@ -99,13 +103,14 @@ class Controller_Category extends Controller_Admin_Action{
 
 				$parentId = ( isset($array['parentId']) ) ? $array['parentId'] : null ;    
 	        	$wholePath = "" ;
+	        	$categoryModel = Ccc::getModel('Category');
 				if($parentId == null)
 				{    
 					$wholePath =   $array['id'] ;
 				}
 				else
 				{                               
-	       			$categoryModel = Ccc::getModel('Category');
+	       			//$categoryModel = Ccc::getModel('Category');
 			        $row = $categoryModel->load($parentId);          
 			        $parentPath = $row->wholePath ;  						
 			        $wholePath =  $parentPath . " > " . $array['id'] ;   
@@ -114,7 +119,6 @@ class Controller_Category extends Controller_Admin_Action{
 	       		$array['parentId'] = $parentId;
 	       		$array['updatedAt'] = date('Y-m-d');
 
-				$array['updatedAt'] = date('Y-m-d');
 				$rowId = $categoryModel->setData($array)->save();
 			}
 			catch(Exception $e)

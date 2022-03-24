@@ -77,7 +77,7 @@
 		</tr>
 		<tr>
 			<td><label > A_ID &nbsp </label></td>
-			<td><input type="number" name=Address[aId] value=<?php echo( $billing->aId ); ?>  readonly ></td>
+			<td><input type="number" name=Address[id] value=<?php echo( $billing->id ); ?>  readonly ></td>
 		</tr>
 		<tr>
 			<td><label > Customer ID &nbsp </label></td>
@@ -104,9 +104,9 @@
 			<td><input type="text" name=Address[country]  value=<?php echo( $billing->country ); ?>  ></td>
 		</tr>
 		<tr>
-			<td><label> TYPE (Billing) &nbsp </label></td>
+			<td><label> Address TYPE &nbsp </label></td>
 			<td>
-				<input type="number" name=Address[billing] value="1" >
+				<input type="text" readonly name=Address[addressType] value="billing" >
 			</td>
 		</tr>
 
@@ -124,7 +124,7 @@
 			</tr>
 			<tr>
 				<td><label > A_ID &nbsp </label></td>
-				<td><input type="number" name=ShippingAddress[aId] value=<?php echo( $shipping->aId ); ?>  readonly ></td>
+				<td><input type="number" name=ShippingAddress[id] value=<?php echo( $shipping->id ); ?>  readonly ></td>
 			</tr>
 			<tr>
 				<td><label > Customer ID &nbsp </label></td>
@@ -152,9 +152,9 @@
 			</tr>
 
 			<tr>
-				<td><label> TYPE (Shipping) &nbsp </label></td>
+				<td><label> Address TYPE  &nbsp </label></td>
 				<td>
-					<input type="number" name=ShippingAddress[shipping] value="1"  >
+					<input type="text" readonly name=ShippingAddress[addressType] value="shipping"  >
 				</td>                                           
 			</tr>
 					

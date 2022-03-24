@@ -14,7 +14,8 @@ class Block_Admin_Edit extends Block_Core_Template{
 	{
 		# code...
 		$modelAdmin = Ccc::getModel('Admin');
-		$id = $this->getData('id');
+		$id = $this->id;
+		//$id = $this->getData('id');
 		if(!$id)
 		{
 			$id = -1;

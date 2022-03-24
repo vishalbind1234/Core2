@@ -1,7 +1,5 @@
 
 <?php   $salesmanCustomers = $this->getSalesmanCustomers();  /* echo "<pre>"; print_r($salesmanCustomers);   exit();*/  ?>
-<?php   $salesmanId = $this->getData('id');            ?>
-<?php   $percentage = $this->getData('percentage');    ?>
 
 
 <table>
@@ -30,29 +28,20 @@
 
 			<?php foreach($salesmanCustomers as $customer) : ?>  <!-- -----------------for table data------------- -->
 				<tr>
-					<?php foreach($customer->getData() as $key => $value) : ?>
-
-						<?php if($key == 'status'): ?>
-							<td>
-								<select>
-									<?php foreach($customer->getStatus() as $key2 => $value2) : ?>
-
-										<option <?php if($key2 == $value){echo('selected');} ?>  value="<?php echo($key2); ?>" > <?php echo($value2);  ?> </option>
-
-									<?php endforeach; ?>
-								</select>
-							</td>
-						<?php else : ?>
-							<td> <?php echo($value); ?> </td>
-						<?php endif ; ?>	
-
-					<?php endforeach ; ?> 
+					<td> <?php echo $customer->id;  ?>  </td>
+					<td> <?php echo $customer->firstName;  ?>  </td>
+					<td> <?php echo $customer->lastName;  ?>  </td>
+					<td> <?php echo $customer->email;  ?>  </td>
+					<td> <?php echo $customer->mobile;  ?>  </td>
+					<td> <?php echo $customer->createdAt;  ?>  </td>
+					<td> <?php echo $customer->updatedAt;  ?>  </td>
+					<td> <?php echo $customer->salesmanId;  ?>  </td>
 
 					<td> <input type="checkbox" name="Salesman[customer][]"  <?php if($customer->salesmanId != -1){echo('checked');} ?> value="<?php echo($customer->id); ?>"> </td>  
 					
 					<input type="checkbox" name="Salesman[reference][]" hidden checked value="<?php echo($customer->id); ?>"> 
 
-					<td> <a href="<?php echo($this->getUrl('grid', 'Salesman_Customer_Product', ['id' => $salesmanId , 'percentage' => $percentage , 'customerId' => $customer->id ] )); ?>" > Product </a> </td>  
+					<td> <a href="<?php echo($this->getUrl('grid', 'Salesman_Customer_Product', ['customerId' => $customer->id , 'percentage' => $this->percentage ] )); ?>" > Product </a> </td>  
 
 				</tr>
 			<?php endforeach ; ?>  

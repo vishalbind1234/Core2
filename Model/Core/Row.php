@@ -88,10 +88,11 @@ class Model_Core_Row {
 		return false;
 	}
 
-	public function load($id = null)
+	public function load($id = null , $column = null)
 	{
 		$adapter = $this->getAdapter();
-		$primaryKey = $this->getResource()->getPrimaryKey();
+		$primaryKey = ($column) ? $column :  $this->getResource()->getPrimaryKey();
+		
 		$tableName = $this->getResource()->getTableName(); 
 		$rowData = $this->fetchRow("SELECT * FROM {$tableName} WHERE {$primaryKey} = {$adapter->getConnect()->quote($id)}");
 		if(!$rowData)
@@ -129,7 +130,17 @@ class Model_Core_Row {
 		}
 		return $currentRow;
 
-	}															
+	}	
+
+	public function fetchOne()
+	{
+		$adapter  = $this->getAdapter();
+		$id = $this->getResource()->getPrimaryKey();
+		$tableName = $this->getResource()->getTableName(); 							// echo "SELECT COUNT({$id}) FROM {$tableName}"; exit();
+		$row = $this->fetchRow("SELECT COUNT({$id}) AS count FROM {$tableName}");   // echo $row->count;   exit();
+		return $row->count;
+
+	}														
 
 	public function save()
 	{																							
@@ -139,9 +150,9 @@ class Model_Core_Row {
 		if(array_key_exists($primaryKey , $this->data) && $this->data[$primaryKey] != null )
 		{												
 			//print_r($this->data); exit();	
-			$id = $this->data[$primaryKey];
-			unset($this->data[$primaryKey]);																	 
-			$updatedRowKey = $this->getResource()->update($this->data , $id );    
+			//$id = $this->data[$primaryKey];
+			//unset($this->data[$primaryKey]);																	 
+			$updatedRowKey = $this->getResource()->update($this->data , $this->data[$primaryKey] );    
 			return $updatedRowKey;  
 		}
 		$insertedRowKey = $this->getResource()->insert($this->data);   

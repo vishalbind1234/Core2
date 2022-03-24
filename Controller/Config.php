@@ -6,10 +6,15 @@
 class Controller_Config extends Controller_Admin_Action{
 
 	public function gridAction()
-	{																
+	{							
+		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
+		$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
+		$this->getMessage()->addMessage(" On Page " . $currentPage );
+
 		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$configGrid = Ccc::getBlock('Config_Grid');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+		$configGrid = Ccc::getBlock('Config_Grid');
+		$configGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
 
 		$this->setTitle('Config_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);

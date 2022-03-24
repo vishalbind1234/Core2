@@ -27,40 +27,17 @@
 
 		<?php foreach( $categories as $key => $category ) : ?> <!-- ------------------------printing array data---------------- -->
 			<tr>
+				<td> <?php echo $category->id;  ?>  </td>
+				<td> <?php echo $category->parentId;  ?>  </td>
+				<td> <?php echo $this->wholePathName($category->id);  ?>  </td>
+				<td> <?php echo $category->name;  ?>  </td>
+				<td> <?php $array = $category->getStatus(); echo $array[$category->status]; ?>  </td>
+				<td> <?php echo $category->createdAt;  ?>  </td>
+				<td> <?php echo $category->updatedAt;  ?>  </td>
 				
-				<?php foreach( $category->getData() as $key1 => $value1 ) : ?>
-
-					<?php  if($key1 == "status") :  ?>
-
-						<?php foreach( $category->getStatus() as $key2 => $value2 ) :?>
-
-							<?php if($value1 == $key2 ) : ?>
-
-								<td> <option> <?php echo($value2); ?> </option> </td>
-
-							<?php  endif  ; ?>
-
-						<?php endforeach ;  ?>
-
-					<?php  elseif( $key1 == "wholePath" ) :  ?>
-
-						<td> <?php echo( $this->wholePathName( $category->id ) ); ?>   </td>
-
-					<?php  else :  ?>
-
-						<td> <?php echo($value1); ?> </td>
-
-					<?php  endif  ; ?>
-
-				<?php endforeach ;  ?>
-
-				<?php $thumRow = $category->getThum($category->id);   ?>                    
-				<?php $baseRow = $category->getBase($category->id);   ?>                    
-				<?php $smallRow = $category->getSmall($category->id); ?> 
-
-				<td>  <image class="img" src="<?php echo($baseRow->image); ?>" >  </td>  
-				<td>  <image class="img" src="<?php echo($thumRow->image); ?>" >  </td>  
-				<td>  <image class="img" src="<?php echo($smallRow->image); ?>" >  </td>  
+				<td>  <image class="img" src="<?php echo $category->getImageUrl($category->getThum()->image); ?>" >  </td>  
+				<td>  <image class="img" src="<?php echo $category->getImageUrl($category->getBase()->image); ?>" >  </td>  
+				<td>  <image class="img" src="<?php echo $category->getImageUrl($category->getSmall()->image); ?>" >  </td>  
 				
 
 				<td> <a href="<?php echo( $this->getUrl('edit'   , 'Category'       , ['id' => $category->id] ) ); ?>"  > Edit </a> </td>
@@ -68,7 +45,25 @@
 				<td> <a href="<?php echo( $this->getUrl('media'  , 'Category_Media' , ['id' => $category->id] ) ); ?>"  > Media </a> </td>
 			</tr>
 		<?php endforeach ;  ?>
-
+		<tr>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Category' , ['currentPage' =>  $this->getPager()->getStart() , 'perPageCount' =>  $this->getPager()->getPerPageCount() ])); ?>" ><button>Start</button></a> </td>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Category' , ['currentPage' =>  $this->getPager()->getPrev() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button <?php if($this->getPager()->getPrev() == null){echo('disabled');} ?> >Prev</button></a> </td>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Category' , ['currentPage' =>  $this->getPager()->getCurrent() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button>Current</button></a> </td>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Category' , ['currentPage' =>  $this->getPager()->getNext() , 'perPageCount' =>  $this->getPager()->getPerPageCount()])); ?>" ><button <?php if($this->getPager()->getNext() == null){echo('disabled');} ?> >Next</button></a> </td>
+			<td> <a href="<?php echo($this->getUrl('grid', 'Category' , ['currentPage' =>  $this->getPager()->getEnd() , 'perPageCount' =>  $this->getPager()->getPerPageCount() ])); ?>" ><button>End</button></a> </td>
+		</tr>
+		<tr>
+			<td>
+				<form name="myForm" action="<?php echo($this->getUrl('grid','Category')); ?>" method="post">
+					<select name="perPageCount"  onchange="this.form.submit()" >
+						<option selected hidden value="<?php echo $this->getPager()->getPerPageCount(); ?>" > <?php echo $this->getPager()->getPerPageCount(); ?> </option>
+						<?php foreach($this->getPager()->getPerPageCountOptions() as $key => $value) : ?>
+							<option value="<?php echo($value); ?>" > <?php echo($value); ?> </option>
+						<?php endforeach ; ?>
+					</select>
+				</form>
+			</td>
+		</tr>
 	<?php endif ;  ?>
 
 

@@ -15,13 +15,17 @@ class Controller_Admin extends Controller_Admin_Action{
 
 	public function gridAction() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
 	{
-		
+		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
+		$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
+		$this->getMessage()->addMessage(" On Page " . $currentPage );
+
 		$modelAdminMessage = Ccc::getModel('Admin_Message');
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message')->setData(['messageClassObject' => $modelAdminMessage ]);
         $menu = Ccc::getBlock('Core_Layout_Header_Menu');
         $adminGrid = Ccc::getBlock('Admin_Grid');
+        $adminGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
 
-       	$modelAdminMessage = Ccc::getModel('Admin_Message');
+       	//$modelAdminMessage = Ccc::getModel('Admin_Message');
       	
       	$this->setTitle('Admin_Grid');
         $this->getLayout()->getHeader()->setChild($menu);
