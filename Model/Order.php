@@ -60,6 +60,9 @@ class Model_Order extends Model_Core_Row {
 	
 	//-----------------------------------------------------------------------------------------------------------------------------
 
+
+
+
 	public function getShippingAddress()
 	{
 		$modelOrderAddress = Ccc::getModel('Order_Address');
@@ -79,6 +82,50 @@ class Model_Order extends Model_Core_Row {
 	public function setShippingAddress($orderAddress)
 	{
 		$this->orderShippingAddress = $orderAddress;
+		return $this;
+	}
+
+	public function getShippingMethod()
+	{
+		$modelShippingMethod = Ccc::getModel('Cart_ShippingMethod');
+		if(!$this->id)
+		{
+			return $modelShippingMethod;
+		}
+		if($this->shippingMethodInfo)
+		{
+			return $this->shippingMethodInfo;
+		}
+		$modelShippingMethod = $modelShippingMethod->fetchRow("SELECT * FROM Shipping_Method WHERE id = {$this->shippingMethodId}");
+		$this->setShippingMethod($modelShippingMethod);
+		return $modelShippingMethod;
+	}
+
+	public function setShippingMethod(Model_Cart_ShippingMethod $shippingMethodInfo)
+	{
+		$this->shippingMethodInfo = $shippingMethodInfo;
+		return $this;
+	}
+    //--------------------------------------------------------------------------------------------------------------------------
+	public function getPaymentMethod()
+	{
+		$modelPaymentMethod = Ccc::getModel('Cart_PaymentMethod');
+		if(!$this->id)
+		{
+			return $modelPaymentMethod;
+		}
+		if($this->paymentMethodInfo)
+		{
+			return $this->paymentMethodInfo;
+		}
+		$modelPaymentMethod = $modelPaymentMethod->fetchRow("SELECT * FROM Payment_Method  WHERE id = {$this->paymentMethodId}");
+		$this->setPaymentMethod($modelPaymentMethod);
+		return $modelPaymentMethod;
+	}
+
+	public function setPaymentMethod(Model_Cart_PaymentMethod $paymentMethodInfo)
+	{
+		$this->paymentMethodInfo = $paymentMethodInfo;
 		return $this;
 	}
 

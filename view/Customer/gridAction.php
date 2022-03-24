@@ -52,7 +52,7 @@
 				<?php $address = $customer->getBillingAddress(); ?>
 				<td> <?php echo $address->id; 			 ?> </td>
 				<td> <?php echo $address->customerId;	 ?> </td>
-				<td> <?php echo $address->address;      ?> </td>
+				<td> <?php echo htmlentities($address->address);  ?> </td>
 				<td> <?php echo $address->pincode;      ?> </td>
 				<td> <?php echo $address->city;         ?> </td>
 				<td> <?php echo $address->state;        ?> </td>

@@ -27,6 +27,22 @@ class Model_Cart_CartItem extends Model_Core_Row {
 		return $finalPrice;
 	}
 
+	public function getDiscountAmount()
+	{
+		if(!$this->id)
+		{
+			return 0;
+		}
+		$modelCartItem = $this->fetchRow("SELECT * FROM Cart_Item WHERE id = {$this->id}");
+		//$price = $modelCartItem->price * $modelCartItem->quantity + $modelCartItem->taxAmount ;
+		if($modelCartItem->discountMode == "percentage")
+		{
+			$discount = ($modelCartItem->price*$modelCartItem->quantity)*($modelCartItem->discount/100);
+			return $discount;
+		}
+		return $modelCartItem->discount;
+	}
+
 
 
 }

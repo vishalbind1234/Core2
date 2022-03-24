@@ -259,6 +259,7 @@ class Controller_Cart extends Controller_Admin_Action{
 		$modelCartItem = Ccc::getModel("Cart_CartItem")->load($id);
 		$cartDetails = $this->getMessage()->getMessages("cart");     				//echo "<pre>";  print_r($cartDetails);   exit();
 		$cartDetails->cartTotal = $cartDetails->cartTotal - $modelCartItem->getFinalPrice();
+		$cartDetails->discount = $cartDetails->discount - $modelCartItem->getDiscountAmount();
 		$cartDetails->setCartItem([]);
 		$cartDetails->save();
 
@@ -275,6 +276,7 @@ class Controller_Cart extends Controller_Admin_Action{
 		$cartDetails = $this->getMessage()->getMessages("cart");
 
 		$cartDetails->cartTotal = 0;								//echo "<pre>";  print_r($modelCart);  exit();	
+		$cartDetails->discount = 0;								//echo "<pre>";  print_r($modelCart);  exit();	
 		$cartDetails->save();
 		$arr = [];									 					//echo "<pre>";  print_r($modelCart);  exit();
 		foreach ($quantity as $key => $value) 
@@ -288,6 +290,7 @@ class Controller_Cart extends Controller_Admin_Action{
 			array_push($arr, $modelCartItem);
 
 			$cartDetails->cartTotal = $cartDetails->cartTotal + $modelCartItem->getFinalPrice();
+			$cartDetails->discount = $cartDetails->discount + $modelCartItem->getDiscountAmount();
 			$cartDetails->save();
 		}
 		$cartDetails->setCartItem($arr)->save();
@@ -315,6 +318,7 @@ class Controller_Cart extends Controller_Admin_Action{
 		$modelOrder->email = $addressData['email'];
 		$modelOrder->mobile = $addressData['mobile'];
 		$modelOrder->grandTotal = $cartData['grandTotal'];
+		$modelOrder->discount = $cartData['discount'];
 		$modelOrder->paymentMethodId = $paymentData['method'];
 		$modelOrder->shippingMethodId = $shippingData['0'];
 		$modelOrder->shippingAmount = $shippingData['1'];
@@ -354,7 +358,7 @@ class Controller_Cart extends Controller_Admin_Action{
 		$shipping->same = (array_key_exists("same", $shippingData)) ? 1 : 2 ;
 		$shipping->setData($shippingData)->save();
 
-		$modelItem = $modelOrder->getOrderItem(); 
+		//$modelItem = $modelOrder->getOrderItem(); 
 		$cartDetails = $this->getMessage()->getMessages("cart");
 		$array = $cartDetails->getCartItem();
 		foreach ($array as $key => $value) 
@@ -364,17 +368,34 @@ class Controller_Cart extends Controller_Admin_Action{
 			$modelItem->orderId = $orderId;	
 			$modelItem->productId = $value->productId;	
 			$modelItem->name = $value->productName;	
-			$modelItem->cost = $value->price;	
-			$modelItem->price = $value->price;	
-			$modelItem->discount = $value->discount;	
+			$modelItem->cost = $value->price ;	
+			$modelItem->price = $value->getFinalPrice() + $value->getDiscountAmount();	
+			$modelItem->discount = $value->getDiscountAmount();	
 			$modelItem->quantity = $value->quantity;	
 			$modelItem->save();	
 		}
 
 
-		$url = $this->getUrl('grid', 'Cart');
+		$url = $this->getUrl('orderGrid', 'Cart' , ['orderId' => $orderId]);
 		$this->redirect($url);
 
+	}
+
+
+	public function orderGridAction()
+	{
+		# code...
+		try 
+		{
+			$orderId = $this->getRequest()->getRequest('orderId'); 
+			$blockOrderGrid = Ccc::getBlock("Order_Grid")->setData(['orderId' => $orderId]);
+			$this->getLayout()->getContent()->setChild($blockOrderGrid);
+			$this->renderLayout();
+		} 
+		catch (Exception $e) 
+		{
+			echo $msg = $e->getMessage();	exit();
+		}
 	}
 
 
