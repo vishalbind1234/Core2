@@ -8,6 +8,8 @@ class Controller_Salesman extends Controller_Admin_Action{
 	public function gridAction()
 	{
 		 //code...
+		//Ccc::register('name' , 'rahul');
+
 		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
 		$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
 		$this->getMessage()->addMessage(" On Page " . $currentPage );

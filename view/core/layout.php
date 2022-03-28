@@ -5,7 +5,7 @@
 
 <body>
 
-	<table>
+	<table class="table">
 		<tr>
 			<td> <?php  echo $this->getHeader()->toHtml();  ?> </td>	
 		</tr>

@@ -42,7 +42,13 @@ class Model_Customer extends Model_Core_Row {
 		}
 		$adapter = $this->getAdapter();
 		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address WHERE customerId = {$this->id} AND addressType = {$adapter->getConnect()->quote(Model_Customer_Address::BILLING)} ");
-		
+		if(!$address->id)
+		{
+			$modelAddress->customerId = $this->id;
+			$modelAddress->addressType = Model_Customer_Address::BILLING;
+			$id = $modelAddress->save();
+			$address = $modelAddress->load($id);
+		}
 		$this->setBillingAddress($address);
 		return $address;
 	}
@@ -67,6 +73,14 @@ class Model_Customer extends Model_Core_Row {
 		}
 		$adapter = $this->getAdapter();
 		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address WHERE customerId = {$this->id} AND addressType = {$adapter->getConnect()->quote(Model_Customer_Address::SHIPPING)} ");
+		if(!$address->id)
+		{
+			$modelAddress->customerId = $this->id;
+			$modelAddress->addressType = Model_Customer_Address::SHIPPING;
+			$id = $modelAddress->save();        
+			$address = $modelAddress->load($id);      //echo "<pre>";  print_r($address);  exit();
+
+		}
 
 		$this->setShippingAddress($address);
 		return $address;

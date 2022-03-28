@@ -8,6 +8,7 @@
      	Ccc::loadClass('Model_Cart_ShippingMethod');
      	Ccc::loadClass('Model_Cart_PaymentMethod');
      	Ccc::loadClass('Model_Customer_Address');
+     	Ccc::loadClass('Model_Admin');
         $adapter = new Model_Core_Adapter();           ?>
 
 <?php 		

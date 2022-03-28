@@ -31,10 +31,15 @@ class Controller_Customer extends Controller_Admin_Action{
 	{
 		$id = $this->getRequest()->getRequest('id');
 
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
-		$this->getLayout()->getHeader()->setChild($menu);
-		$customerEdit = Ccc::getBlock('Customer_Edit')->setData(['id' => $id]);   
+		//$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
+		//$this->getLayout()->getHeader()->setChild($menu);
+		$id = $this->getRequest()->getRequest('id');
+		$modelCustomer = Ccc::getModel("Customer")->load($id);
+		Ccc::register('customer', $modelCustomer); 
+		$customerEdit = Ccc::getBlock('Customer_Edit');
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message');
 		$this->getLayout()->getContent()->setChild($customerEdit);
+		$this->getLayout()->getFooter()->setChild($messageBlock);
 		$this->renderLayout();	
 		//$customerEdit->toHtml(); 							
 	}
@@ -64,35 +69,72 @@ class Controller_Customer extends Controller_Admin_Action{
 		}	
 	}
 
-	public function saveAction() /*-----------------------------------------saveAction()-------------------------------------------------------------*/
+	public function saveAction() /*-----------------------------------------saveAction()--------------------------------------*/
 	{     
 		//echo"<pre>"; print_r($_POST); exit();
 
-		$person = $this->getRequest()->getPost('Person');		
-		$address = $this->getRequest()->getPost('Address');		
-		$shippingAddress = $this->getRequest()->getPost('ShippingAddress');		
+		$array = $this->getRequest()->getPost();
 
-        if(array_key_exists('id', $person) && $person['id'] != null ) 
-        {   								 // update if key exist 		
-			try
-			{  																				
-	        	if(!(int)$person['id'])
+		if(array_key_exists('Person', $array))
+		{
+			try 
+			{
+				$person = $array['Person'];	
+				if(array_key_exists('id', $person) && $person['id'] != null )
+				{
+		        	if(!(int)$person['id'])
+		        	{
+		        		throw new Exception(" ID not Valid. "); 
+		        	}
+					$customerModel = Ccc::getModel('Customer');
+					$person['updatedAt'] = date('Y-m-d');
+					$customerModel->setData($person);
+					$rowId = $customerModel->save();
+
+					$message = "row id " . $rowId . " Saved  " ;
+					$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
+					$url = $this->getUrl('edit' , 'Customer');
+					$this->redirect($url);
+				}
+				else
+				{
+					$customerModel = Ccc::getModel('Customer');
+					$customerModel->setData($person);
+					$rowId = $customerModel->save();
+
+					$message = "row id " . $rowId . " Saved  " ;
+					$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
+					$url = $this->getUrl('edit' , 'Customer' ,['id' => $rowId]);
+					$this->redirect($url);
+				}
+			} 
+			catch (Exception $e) 
+			{
+				$message = $e->getMessage() ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
+				$url = $this->getUrl('grid' , 'Customer');
+				$this->redirect($url);	
+			}
+		}
+		if(array_key_exists('Address', $array))
+		{
+			try 
+			{
+				$address = $array['Address'];
+				$shippingAddress = $array['ShippingAddress'];	
+					
+	        	if(!(int)$address['id'])
 	        	{
 	        		throw new Exception(" ID not Valid. "); 
 	        	}
+	        	$id = $this->getRequest()->getRequest('id');
+	        	$customerModel = Ccc::getModel('Customer')->load($id);
 
-				$customerModel = Ccc::getModel('Customer');
-				$person['updatedAt'] = date('Y-m-d');
-				$customerModel->setData($person);
-				$rowId = $customerModel->save();	
-
-				$address['same'] = (array_key_exists("same", $address)) ? 1 : 2;
-				$address['customerId'] = $rowId ;
-				$customerModel->getBillingAddress()->setData($address)->save();
+	        	$address['same'] = (array_key_exists("same", $address)) ? 1 : 2;
+				$rowId = $customerModel->getBillingAddress()->setData($address)->save();
 
 				if(array_key_exists("same", $address) && $address["same"] == 1 )
 				{
-					$address['customerId'] = $rowId ;
 					$address['addressType'] = "shipping" ;
 					$address['id'] = $shippingAddress['id'] ;
 					$customerModel->getShippingAddress()->setData($address)->save();
@@ -100,66 +142,21 @@ class Controller_Customer extends Controller_Admin_Action{
 				else
 				{
 					$shippingAddress['same'] = 2;
-					$shippingAddress['customerId'] = $rowId ;
 					$customerModel->getShippingAddress()->setData($shippingAddress)->save();
-				}	
-
-				$message = "row id " . $rowId . " Saved  " ;
-				$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
-
-			}
-			catch(Exception $e)
-			{
-				$message = $e->getMessage() ;
-				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
-				$url = $this->getUrl( 'grid' , 'Customer' );
-				$this->redirect( $url );			
-			}
-
-		}    
-		else
-		{ 
-			try
-			{   
-				$customerModel = Ccc::getModel('Customer');
-				$customerModel->setData($person);
-				$rowId = $customerModel->save();	
-
-				$address['same'] = (array_key_exists("same", $address)) ? 1 : 2;
-				$address['customerId'] = $rowId ;
-				$customerModel->getBillingAddress()->setData($address)->save();
-
-				if(array_key_exists("same", $address) && $address["same"] == 1)
-				{
-					$address['customerId'] = $rowId ;
-					$address['addressType'] = "shipping" ;
-					$customerModel->getShippingAddress()->setData($address)->save();
 				}
-				else
-				{
-					$shippingAddress['same'] =  2;
-					$shippingAddress['customerId'] = $rowId ;
-					$customerModel->getShippingAddress()->setData($shippingAddress)->save();
-				}	
-
 				$message = "row id " . $rowId . " Saved  " ;
 				$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
-
-
-			}
-			catch(Exception $e)
+				$url = $this->getUrl('edit' , 'Customer');
+				$this->redirect($url);
+			} 
+			catch (Exception $e) 
 			{
-
-				$message = $e->getMessage() ;
-				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
-				$url = $this->getUrl( 'grid' , 'Customer' );
-				$this->redirect( $url );			
+				$message = "row id " . $rowId . " Saved  " ;
+				$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
+				$url = $this->getUrl('edit' , 'Customer');
+				$this->redirect($url);
 			}
-
 		}
-
-		$url = $this->getUrl( 'grid' , 'Customer' );
-		$this->redirect( $url );
 
 	}
 
@@ -169,7 +166,6 @@ class Controller_Customer extends Controller_Admin_Action{
 	{
 		echo(" some error occured.");
 	}
-	
 
 }
 

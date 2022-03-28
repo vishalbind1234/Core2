@@ -49,7 +49,6 @@ class Model_Core_Message{
 	{
 		if($key)
 		{
-
 			if(isset($this->getSession()->$key)) 
 			{
 				return $this->getSession()->$key;

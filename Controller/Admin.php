@@ -39,11 +39,23 @@ class Controller_Admin extends Controller_Admin_Action{
 
 	public function editAction()
 	{
+		
+
 		$id = $this->getRequest()->getRequest('id');
-		$adminEdit = Ccc::getBlock('Admin_Edit')->setData(['id' => $id]);
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
-		$this->getLayout()->getHeader()->setChild($menu);
+		//$admin = Ccc::getRegistry('admin');
+		$admin = Ccc::getModel('Core_Message')->getMessages('admin');
+		if(!$admin)
+		{
+			$modelAdmin = Ccc::getModel('Admin')->load($id);
+			//Ccc::register('admin', $modelAdmin);
+			Ccc::getModel('Core_Message')->setMessage($modelAdmin, 'admin');
+		}
+
+		//$menu = Ccc::getBlock('Core_Layout_Header_Menu');	
+		$adminEdit = Ccc::getBlock('Admin_Edit');
+
 		$this->getLayout()->getContent()->setChild($adminEdit);
+		//$this->getLayout()->getHeader()->setChild($menu);
 		$this->renderLayout();
 
 

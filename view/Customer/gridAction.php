@@ -2,7 +2,7 @@
 
 <button><a href="<?php echo($this->getUrl('edit'  , 'Customer' , [] , true)); ?>"> Add New </a></button>
 
-<table>
+<table class="table table-striped table-hover" >
 
 	<tr>
 		<th>  <a href="<?php echo $this->getUrl("addNew", "Cart"); ?>"> <button > Order </button> </a>
@@ -60,8 +60,8 @@
 				<td> <?php echo $address->same;         ?> </td>
 				<td> <?php echo $address->addressType;  ?> </td>
 
-				<td> <a href="<?php echo($this->getUrl('edit' , 'Customer' , ['id' => $customer->id ])); ?>" > Edit  </a> </td>  
-				<td> <a href="<?php echo($this->getUrl('delete' , 'Customer' , ['id' => $customer->id ])); ?>" > Delete </a> </td>  
+				<td> <a href="<?php echo($this->getUrl('edit' , 'Customer' , ['id' => $customer->id ])); ?>" class="btn btn-primary" > Edit  </a> </td>  
+				<td> <a href="<?php echo($this->getUrl('delete' , 'Customer' , ['id' => $customer->id ])); ?>" class="btn btn-danger" onclick="return confirm('are you sure ?');" > Delete </a> </td>  
 			</tr>
 		<?php endforeach ; ?>  
 		<tr>

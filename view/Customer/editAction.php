@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 
-	document.onreadystatechange = function()
+	/*document.onreadystatechange = function()
 	{
 		if(document.readyState === 'complete')
 		{
@@ -25,7 +25,25 @@
 		{
 			form.style.display = "block";	
 		}
+	}*/
+
+	function showShipping()
+	{
+		if($("#same").attr('checked')
+		{
+			$("#shipping").hide();
+		}
+		else
+		{
+			$("#shipping").show();
+		}
 	}
+
+	$(document).ready(function(){
+
+		$("#same").click(showShipping());
+
+	});
 	
 </script>
 
@@ -116,8 +134,7 @@
 		</tr>
 
 		<!-- ---------------------------------------------------------------------------------------------------------------------------------------- -->
-		<tbody id="shipping"  >
-			
+		<table id="shipping" >
 			<tr>
 				<td colspan="2"><label> Shipping Address &nbsp </label></td>
 				
@@ -157,10 +174,13 @@
 					<input type="text" readonly name=ShippingAddress[addressType] value="shipping"  >
 				</td>                                           
 			</tr>
+			
+		</table>
+			
 					
 		</tbody>
 		<tfoot>
-			<td><input type="submit"></tr>
+			<tr><td><input type="submit"></td></tr>
 		</tfoot>
 						
 	</table>

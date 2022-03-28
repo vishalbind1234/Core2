@@ -19,8 +19,8 @@ class Controller_Config extends Controller_Admin_Action{
 		$this->setTitle('Config_Grid');
 		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($configGrid);
-		$this->getLayout()->getFooter()->setChild($blockMessage);
-		$this->renderLayout();	
+		$this->getLayout()->getFooter()->setChild($blockMessage);			//echo "<pre>"; print_r($this->getLayout()); exit();
+		$this->renderLayout();											
 
 		$this->getMessage()->unsetMessages();
 
