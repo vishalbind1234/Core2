@@ -5,6 +5,7 @@
 <table>
 	<form id="form-1" action="<?php echo $this->getUrl("multipleDelete" , "Page"); ?>" method="post" >
 		<tr>
+			<th>     	</th>
 			<th>ID     	</th>
 			<th>Name  	</th>
 			<th>Code   	</th>
@@ -15,8 +16,7 @@
 
 		</tr>
 		<tr>
-			<td> <input id="selectAll" type="checkbox" name="Page[selectAll]" value="1" > </td>
-			<td> <button id="delete" type="button"  > DELETE </button> </td>
+			<td>  <label id="delete" type="button"> DELETE ALL </label> <input id="selectAll" type="checkbox" name="Page[selectAll]" value="1" > </td>
 		</tr>
 
 		<?php if(!$pages): ?>

@@ -35,14 +35,36 @@
 		<td><label> UpdatedAt &nbsp </label></td>
 		<td><input type="date" name=Person[updatedAt]  value=""  hidden ></td> 
 	</tr>
-	<tr>
-		<td> <button type="submit"> Save & Continue </button> </td>
-	</tr>
 
 	<tr>
-		<td> <a href="<?php echo $this->getUrl('grid', 'Customer'); ?>"><button type="button"> Back To Grid </button></a> </td>
+		<td><button type="button" id="submit-button" value="<?php echo $this->getUrl('save','Customer'); ?>"> Save </button></td>
+		<td><button type="button" id="cancel-button" value="<?php echo $this->getUrl('index','Customer'); ?>" > Cancel </button></td>
 	</tr>
-
+	
 
 
 </table>
+
+
+	
+<script type="text/javascript">
+	
+	jQuery("#cancel-button").click(function(){
+
+		var url = jQuery(this).val();
+		admin.setUrl(url).load();
+
+	});
+
+	jQuery("#submit-button").click(function(){
+
+		admin.setUrl(jQuery(this).val());
+		admin.setData(jQuery("#edit-form").serializeArray());
+		admin.load();
+
+	});
+
+
+	
+	
+</script>

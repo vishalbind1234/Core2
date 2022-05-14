@@ -1,30 +1,34 @@
 
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Edit'); ?>
+<?php Ccc::loadClass('Block_Config_Edit_Tab'); ?>
 
 <?php 
 
-class Block_Config_Edit extends Block_Core_Template{
-
+class Block_Config_Edit extends Block_Core_Edit{
+	
 	public function __construct()
-	{														
-		# code...
-		$this->setTemplate('view/Config/editAction.php');	
+	{
+		parent::__construct();
 	}
 
-	public function getCurrentConfig()
+	public function getTab()
+	{
+		if($this->tab)
+		{
+			return $this->tab;
+		}
+		$tabName = get_class($this) . "_Tab";		
+		$object = new $tabName();
+		$this->tab = $object;						
+		return $object;
+	}
+
+	public function getTabContent()
 	{
 		# code...
-		$modelConfig = Ccc::getModel('Config');
-		$id = $this->id;
-		//$id = $this->getData('id');
-		if(!isset($id))
-		{
-			$id = -1;
-		}
-		$configs = $modelConfig->fetchRow("SELECT * FROM Config where id = {$id}");
-		return $configs;
-
-		
+		$obj = $this->getTab()->getSelectedTab();
+		$block = Ccc::getBlock($obj['block']);
+		return $block;
 	}
 
 }

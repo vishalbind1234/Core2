@@ -91,7 +91,7 @@ class Block_Core_Template extends Model_Core_View{
 		{
 			$key = get_class($object);
 		}
-		$object->setLayout($this);
+		$object->setLayout($this->getLayout());
 		$this->children[$key] = $object;
 		return $this;
 	}

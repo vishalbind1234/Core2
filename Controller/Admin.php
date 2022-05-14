@@ -5,81 +5,107 @@
 
 class Controller_Admin extends Controller_Admin_Action{
 
-	public function testAction()
+	public function indexAction()
 	{
-		$modelAdminMessage = Ccc::getModel('Admin_Message');
-       	$modelAdminMessage->addMessage('selfmade'   , Model_Admin_Message::WARNING);
-       	$modelAdminMessage->addMessage('artificial' , Model_Admin_Message::ERROR);
-       	print_r($_SESSION);  exit();
+		$currentPage = $this->getRequest()->getRequest('currentPage', 1);
+		$this->getMessage()->addMessage(" On Page ". $currentPage , Model_Admin_Message::WARNING);
+		
+		$adminGrid = Ccc::getBlock('Admin_Grid');
+		$adminGrid = $adminGrid->toHtml();
+
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $adminGrid,
+					'addClass' => 'bgred'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgred'
+				]
+			]
+		];
+
+        $this->renderJson($response);
+
 	}
 
-	public function gridAction() /*---------------------------------------------------------gridAdmin()-----------------------------------------*/
+	public function gridAction() //--------------------------------------------------------gridAdmin()-----------------------------------------
 	{
-		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
-		$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
-		$this->getMessage()->addMessage(" On Page " . $currentPage );
-
-		$modelAdminMessage = Ccc::getModel('Admin_Message');
-		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message')->setData(['messageClassObject' => $modelAdminMessage ]);
-        $menu = Ccc::getBlock('Core_Layout_Header_Menu');
-        $adminGrid = Ccc::getBlock('Admin_Grid');
-        $adminGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
-
-       	//$modelAdminMessage = Ccc::getModel('Admin_Message');
-      	
+       	$adminGrid = Ccc::getBlock('Admin_Grid');
       	$this->setTitle('Admin_Grid');
-        $this->getLayout()->getHeader()->setChild($menu);
+
 		$this->getLayout()->getContent()->setChild($adminGrid);
-        $this->getLayout()->getFooter()->setChild($blockMessage);   //print_r($_SESSION);  exit();
 		$this->renderLayout();
 
-       	$modelAdminMessage->unsetMessages();
-		
 	}
 
 	public function editAction()
 	{
-		
 
 		$id = $this->getRequest()->getRequest('id');
-		//$admin = Ccc::getRegistry('admin');
-		$admin = Ccc::getModel('Core_Message')->getMessages('admin');
-		if(!$admin)
-		{
-			$modelAdmin = Ccc::getModel('Admin')->load($id);
-			//Ccc::register('admin', $modelAdmin);
-			Ccc::getModel('Core_Message')->setMessage($modelAdmin, 'admin');
-		}
+		$modelAdmin = Ccc::getModel('Admin')->load($id);
+		Ccc::register('admin', $modelAdmin);
 
-		//$menu = Ccc::getBlock('Core_Layout_Header_Menu');	
-		$adminEdit = Ccc::getBlock('Admin_Edit');
+		$adminEdit = Ccc::getBlock('Admin_Edit')->toHtml();
+        $response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $adminEdit,
+					'addClass' => 'bgred'
+				]
+			]
+		];
 
-		$this->getLayout()->getContent()->setChild($adminEdit);
-		//$this->getLayout()->getHeader()->setChild($menu);
-		$this->renderLayout();
-
+        $this->renderJson($response);
 
 	}
 
-	public function deleteAction()  /*--------------------------------------deleteAdmin()----------------------------------------------*/  
+	public function deleteAction()  //-------------------------------------deleteAdmin()----------------------------------------------  
 	{
 		try
 		{  
             $modelAdmin = Ccc::getModel('Admin');   		 		
             $id = $this->getRequest()->getRequest('id');  					
             $deletedId = $modelAdmin->delete($id);
-            $message = "row Id " . $deletedId . " deleted successfully";
 
-            $modelAdminMessage = Ccc::getModel('Admin_Message');
-            $modelAdminMessage->addMessage( $message );
-       		$url = $this->getUrl('grid' , 'Admin' );
-        	$this->redirect($url);
+            $message = "row Id " . $deletedId . " deleted successfully";
+            $this->getMessage()->addMessage($message);
+
+            $adminGrid = Ccc::getBlock('Admin_Grid')->toHtml();
+            $messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+
+			$response = [
+				'status' => 'success',
+				'elements' => [
+					[
+						'element' => '#indexContent',
+						'content' => $adminGrid,
+						'addClass' => 'bgred'
+					],
+					[
+						'element' => '#messageContent',
+						'content' => $messageBlock,
+						'addClass' => 'bgred'
+					]
+				]
+			];
+
+        $this->renderJson($response);
+            
         }
         catch(Exception $e)
         {
-        	$msg = $e->getMessage();
-			$modelMessage = $this->getMessage();
-            $modelMessage->addMessage($msg);
+        	$message = $e->getMessage() ;
+			$this->getMessage()->addMessage($message,  Model_Core_Message::ERROR);
+
 			$url = $this->getUrl('grid' , 'Admin' , $param );
         	$this->redirect($url);
 		}
@@ -106,7 +132,8 @@ class Controller_Admin extends Controller_Admin_Action{
 			catch(Exception $e)
 			{
 				$message = $e->getMessage() ;
-				$modelAdminMessage = Ccc::getModel('Admin_Message')->addMessage( $message , Model_Core_Message::ERROR );
+				$this->getMessage()->addMessage($message,  Model_Core_Message::ERROR);
+
 				$url = $this->getUrl('grid' , 'Admin' );    	
 				$this->redirect($url);  
 			}
@@ -123,19 +150,37 @@ class Controller_Admin extends Controller_Admin_Action{
 			catch(Exception $e)
 			{				
 				$message = $e->getMessage() ;
-				$modelAdminMessage = Ccc::getModel('Admin_Message')->addMessage( $message , Model_Core_Message::ERROR );
-				$url = $this->getUrl('grid' , 'Admin' );    	
+				$this->getMessage()->addMessage($message,  Model_Core_Message::ERROR);
+
+				$url = $this->getUrl('grid', 'Admin');    	
 				$this->redirect($url); 			
 			}
 
 		}
 
 		$message = "row id " . $rowId . " Saved  " ;
-		$modelAdminMessage = Ccc::getModel('Admin_Message');
-        $modelAdminMessage->addMessage( $message , Model_Core_Message::SUCCESS );
-		$url = $this->getUrl('grid' , 'Admin' );    	
-		$this->redirect($url);  
+        $this->getMessage()->addMessage($message,  Model_Core_Message::SUCCESS);
+        
+        $adminGrid = Ccc::getBlock('Admin_Grid')->toHtml();
+        $messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+            
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $adminGrid,
+					'addClass' => 'bgred'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgred'
+				]
+			]
+		];
 
+        $this->renderJson($response);		
 	}
 
 	public function errorAction()

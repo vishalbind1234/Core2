@@ -3,27 +3,25 @@
 class Model_Core_Request{
 
 
-	public function getPost($key = null , $default = 10)
+	public function getPost($key = null , $default = null)
 	{
 		# code...
 		if(!$this->isPost())
 		{
-			
-			echo('invalid request method');
-			exit();
+			//echo('invalid request method');
+			return null;
 		}
 		if($key == null){
 			return $_POST;
 		}
 		if(array_key_exists($key, $_POST))
 		{
-			if(!empty($_POST[$key]) )
+			if(!empty($_POST[$key]))
 			{
 				return $_POST[$key];	
 			}
-			return $default;
 		}
-		return null;
+		return $default;
 	}
 
 	public function isPost()
@@ -35,7 +33,7 @@ class Model_Core_Request{
 		return false;
 	}
 
-	public function getRequest($key = null)
+	public function getRequest($key = null , $default = null)
 	{
 		# code...
 		if(!$key){
@@ -45,7 +43,7 @@ class Model_Core_Request{
 		{
 			return $_REQUEST[$key];
 		}
-		return null;
+		return $default;
 	}
 
 

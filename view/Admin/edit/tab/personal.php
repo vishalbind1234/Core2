@@ -10,7 +10,7 @@
 
 	<tr>
 		<td><label> ID &nbsp </label></td>                                        <!-- readonly , hidden , disable -->
-		<td><input type="number" name=Admin[id] value=<?php echo( $admin->id); ?>  readonly ></td>
+		<td><input type="number" <?php if(!$admin->id){echo "hidden";} ?> readonly name=Admin[id] value=<?php echo( $admin->id); ?>  ></td>
 	</tr>
 	<tr>
 		<td><label> First Name &nbsp </label></td>
@@ -22,12 +22,12 @@
 	</tr>
 	<tr>
 		<td><label> Email &nbsp </label></td>
-		<td><input type="text" name=Admin[email]  value=<?php echo( $admin->email); ?>   ></td>
+		<td><input type="text"  name=Admin[email]  value=<?php echo( $admin->email); ?>   ></td>
 	</tr>
 
 	<tr>
 		<td><label> Password &nbsp </label></td>
-		<td><input type="Password" name=Admin[password] value=<?php echo( $admin->password); ?> ></td>
+		<td><input type="Password"  name=Admin[password] value=<?php echo( $admin->password); ?> ></td>
 	</tr>
 
 
@@ -44,16 +44,15 @@
 	
 	<tr>
 		<td><label> CreatedAt &nbsp </label></td>
-		<td><input type="date" name=Admin[createdAt]  value=<?php echo( $admin->createdAt); ?>   ></td>
+		<td><input type="date" name=Admin[createdAt]  value="<?php echo( $admin->createdAt); ?>"   ></td>
 	</tr>
 	<tr>
 		<td><label> UpdatedAt &nbsp </label></td>
-		<td><input type="date" name=Admin[updatedAt]  value=""  hidden ></td> 
+		<td><input type="date" name=Admin[updatedAt]  value="<?php echo( $admin->updatedAt); ?>" <?php if(!$admin->updatedAt){echo "hidden";} ?> ></td> 
 	</tr>
 
 </table>
 
-<button type="submit" name="submit" value="submit"> Save </button>
-<button> <a href="<?php echo($this->getUrl('grid' , 'Admin')); ?>"> Cancel </a> </button>
+
 
 

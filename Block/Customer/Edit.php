@@ -14,8 +14,6 @@ class Block_Customer_Edit extends Block_Core_Edit{
 
 	public function getTab()
 	{
-		//echo "<pre>";	print_r($_GET);   echo "2.1";
-		# code...
 		if($this->tab)
 		{
 			return $this->tab;
@@ -31,17 +29,8 @@ class Block_Customer_Edit extends Block_Core_Edit{
 		# code...
 		$obj = $this->getTab()->getSelectedTab();
 		$block = Ccc::getBlock($obj['block']);
-		return new $block();
+		return $block;
 	}
-
-	/*public function getCurrentCustomer()
-	{																
-		$modelCustomer = Ccc::getModel('Customer');                
-		$id = $this->id; 
-		$customer = $modelCustomer->load($id);
-		return $customer;
-
-	}*/
 
 
 

@@ -10,7 +10,7 @@ return [
   		"dbname" => "php_practice_db"
 	],
 
-	'baseUrl' => "/opt/lampp/htdocs/Cybercome/Core/"
+	'baseUrl' => "http://localhost/Cybercome/Core2/"
 ];
 
 

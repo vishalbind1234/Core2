@@ -1,26 +1,37 @@
 <?php
 
-Ccc::loadClass('Block_Core_Template');
+Ccc::loadClass('Block_Core_Edit');
+Ccc::loadClass('Block_Salesman_Edit_Tab');
 
-class Block_Salesman_Edit extends Block_Core_Template{
+class Block_Salesman_Edit extends Block_Core_Edit{
 
 	public function __construct()
 	{
 		# code...
-		$this->setTemplate('view/Salesman/editAction.php');
+		parent::__construct();
+		//$this->setTemplate('view/Salesman/editAction.php');
 	}
 
-	public function getCurrentSalesman()
-	{																																
+	public function getTab()
+	{
+		if($this->tab)
+		{
+			return $this->tab;
+		}
+		$tabName = get_class($this) . "_Tab";		
+		$object = new $tabName();
+		$this->tab = $object;						
+		return $object;
+	}
+
+	public function getTabContent()
+	{
 		# code...
-		$modelSalesman = Ccc::getModel('Salesman');											
-		
-		$id = $this->id;
-		//$id = $this->getData('id');
-		$row = $modelSalesman->load($id);
-		return $row;
-
+		$obj = $this->getTab()->getSelectedTab();
+		$block = Ccc::getBlock($obj['block']);
+		return $block;
 	}
+
 
 
 }

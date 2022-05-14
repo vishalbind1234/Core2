@@ -32,11 +32,7 @@ class Block_Customer_Edit_Tab extends Block_Core_Edit_Tab {
 			'url' => $this->getUrl('edit', 'Customer', ['tab' => 'address'])
 		], 'address');
 
-		$this->addTab([
-			'title' => 'ShippingAddress',
-			'block' => 'Customer_Edit_Tab_ShippingAddress',
-			'url' => $this->getUrl('edit', 'Customer', ['tab' => 'shippingAddress'])
-		], 'shippingAddress');
+		
 	
 	}
 

@@ -106,7 +106,7 @@ class Model_Core_View{
 		$param = array_merge($_GET , $param);
 		
 		$url = "";
-		$url = $url . $this->baseUrl() . "index.php?" ;
+		$url = $url . $this->getBaseUrl() . "index.php?" ;
 		foreach ($param as $key => $value) {
 			# code...
 			if($value)
@@ -118,12 +118,16 @@ class Model_Core_View{
 		return substr($url, 0 , -1);
 	}
 
-	public function baseUrl()
-	{
-		# code...
-		return "http://localhost/Cybercome/Core/" ;
-	}
-
+	
+	public static function getBaseUrl($subUrl = null)
+    {
+        $url = Ccc::getBaseUrl();
+        if($subUrl)
+        {
+            $url = $url . $subUrl;
+        }
+        return $url;
+    }
 
 
 	

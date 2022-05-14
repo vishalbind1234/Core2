@@ -4,55 +4,118 @@
 
 class Controller_Product_Media extends Controller_Admin_Action{
 
-	public function redirect( $url )
-	{
-		header("Location:" . $url );
-		exit();
-	}
-
-	public function mediaAction()
+	public function indexAction()
 	{															
 		# code...
 		$id = $this->getRequest()->getRequest('id');
-		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
-		$productMediaBlock = Ccc::getBlock('Product_Media')->setData(['id' => $id]);
+		$modelProduct = Ccc::getModel("Product")->load($id);
+		Ccc::register('product', $modelProduct);
 
-		$this->getLayout()->getContent()->setChild($productMediaBlock);
-		$this->getLayout()->getFooter()->setChild($blockMessage);
+		$productBlock = Ccc::getBlock('Product_Edit_Tab_Media')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $productBlock,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
+
+	}
+
+	public function gridAction()
+	{
+		# code...
+		$blockProductMedia = Ccc::getBlock("Product_Media");
+		$this->getLayout()->getContent()->setChild($blockProductMedia);
 		$this->renderLayout();
 
-		$this->getMessage()->unsetMessages();
 	}
+
+	public function addProductAction()
+	{
+		# code...
+		$blockAddProduct = Ccc::getBlock("Product_AddProduct");
+		$this->getLayout()->getContent()->setChild($blockAddProduct);
+		$this->renderLayout();
+
+	}
+
+	public function editAction()
+	{
+		$id = $this->getRequest()->getRequest('id');
+		$modelProduct = Ccc::getModel("Product")->load($id);
+		Ccc::register('product', $modelProduct);
+
+		$productEdit = Ccc::getBlock('Product_Edit')->toHtml();    
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $productEdit,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
+		
+
+	}
+
+
 
 	public function saveAction()
 	{
 		try 
 		{
+
+			//echo "<pre>"; print_r($GLOBALS); exit(); //---------------------------------------------------------------
+
+			echo "<pre>";
 			$timeStamp = date('Y-m-d_H-i-s');
 
 			$modelProductMedia = Ccc::getModel('Product_Media');
-			$modelProductMedia->productId = $this->getRequest()->getRequest('id');
-			$modelProductMedia->image = $timeStamp . "_" .$_FILES['productImage']['name'] ;
-			$modelProductMedia->save();
-
 			$targetFolder = $modelProductMedia->getImageUrl();
-			$destination = $targetFolder . $timeStamp . "_" .$_FILES['productImage']['name'] ;         
+			$destination = $targetFolder . $timeStamp . "_" . $_FILES['productImage']['name'] ;   
+
+			echo $destination;      
 
 			if(!move_uploaded_file($_FILES['productImage']['tmp_name'], $destination) )
 			{
 				throw new Exception("file not updoaded.");
 			}
-						
-			$url = $this->getUrl('media' , 'Product_Media');
-			$this->redirect( $url );
+
+			$modelProductMedia->productId = $this->getRequest()->getRequest('id');
+			$modelProductMedia->image = $timeStamp . "_" . $_FILES['productImage']['name'] ;
+			$modelProductMedia->save();
+
+			$this->getMessage()->addMessage(" product Image updated successfully ");
+
+			$this->redirect($this->getUrl('grid', 'Product' ));
+			//$this->indexAction();
 			
 		} 
 		catch (Exception $e) 
 		{
 			$msg = $e->getMessage();
 			$this->getMessage()->addMessage($msg);
-			$url = $this->getUrl('media' , 'Product_Media');
-			$this->redirect( $url );
+			$this->gridAction();
 		}
 
 
@@ -121,9 +184,9 @@ class Controller_Product_Media extends Controller_Admin_Action{
 			$productMedia->small = 1 ;
 			$productMedia->save();
 		}
-
-		$url = $this->getUrl('media' , 'Product_Media');
-		$this->redirect( $url );
+		$this->getMessage()->addMessage(" productMedia updated successfully... ");
+		//$this->redirect('edit' , 'Product' , ['tab' => 'media']);
+		$this->editAction();
 	}
 
 

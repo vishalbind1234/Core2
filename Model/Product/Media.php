@@ -4,6 +4,11 @@ Ccc::loadClass('Model_Core_Row');
 
 class Model_Product_Media extends Model_Core_Row {
 
+	const ENABLE = 1;
+	const ENABLE_LBL = 'ENABLE';
+	const DISABLE = 2;
+	const DISABLE_LBL = 'DISABLE';
+	const DEFAULT_LBL = 'undefined';
 	const THUM = 1;
 	const BASE = 1;
 	const SMALL = 1;
@@ -14,16 +19,41 @@ class Model_Product_Media extends Model_Core_Row {
 		$this->setResourceName('Product_Media_Resource');					
 	}
 
-	public function getImageUrl($image = null)
+
+	public function getStatus($key = null)
 	{
 		# code...
-		$url = Ccc::getBaseUrl();
+		$status = [ 
+			self::ENABLE => self::ENABLE_LBL ,
+			self::DISABLE => self::DISABLE_LBL
+		];
+
+		if($key)
+		{
+			if(array_key_exists($key, $status))
+			{
+				return $status[$key];
+			}
+			return self::DEFAULT_LBL;
+		}
+		return $status;
+	}
+
+
+	public function getImageUrl($image = null)
+	{
+		//$url = Ccc::getBaseUrl();
+		$url = "";
+		$url = $url.$this->imagePath;	
 		if($image)
 		{
-			return $this->imagePath.$image;	
+			$url = $url.$image;	
 		}
-		return $this->imagePath; 
-		//return $url.$this->imagePath.$image;  
+		return $url; 
+
+		//return $this->imagePath;
+
+
 	}
 
 	

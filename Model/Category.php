@@ -5,12 +5,14 @@ Ccc::loadClass('Model_Core_Row');
 class Model_Category extends Model_Core_Row {
 
 	protected $category = null;
+	protected $categoryMedia = null;
 	protected $imagePath = "Media/Category/";
 
 	const ENABLE = 1;
 	const ENABLE_LBL = 'ENABLE';
 	const DISABLE = 2;
 	const DISABLE_LBL = 'DISABLE';
+	const DEFAULT_LBL = 'undefined';
 
 	public function __construct()
 	{
@@ -29,12 +31,21 @@ class Model_Category extends Model_Core_Row {
 		//return $url.$this->imagePath.$image;  
 	}
 
-	public function getStatus()
+	public function getStatus($key = null)
 	{
 		$status = [ 
 			self::ENABLE => self::ENABLE_LBL ,
 			self::DISABLE => self::DISABLE_LBL
 		];
+
+		if($key)
+		{
+			if(array_key_exists($key, $status))
+			{
+				return $status[$key];
+			}
+			return self::DEFAULT_LBL;
+		}
 		return $status;
 	}
 
@@ -107,6 +118,31 @@ class Model_Category extends Model_Core_Row {
 	public function setSmall(Model_Category_Media $small)
 	{
 		$this->small = $small;
+		return $this;
+	}
+
+	public function getCategoryMedia()
+	{
+		$modelCategoryMedia = Ccc::getModel('Category_Media');
+		if(!$this->id)
+		{
+			return [];
+		}
+
+		if($this->categoryMedia)
+		{
+			return $this->categoryMedia;
+		}
+
+		$categoryMedia = $modelCategoryMedia->fetchAll("SELECT * FROM Category_Media WHERE categoryId = {$this->id} ");
+		
+		$this->setCategoryMedia($categoryMedia);
+		return $categoryMedia;
+	}
+
+	public function setCategoryMedia(array $categoryMedia)
+	{
+		$this->categoryMedia = $categoryMedia;
 		return $this;
 	}
 

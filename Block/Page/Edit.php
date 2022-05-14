@@ -1,31 +1,38 @@
 
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Edit'); ?>
+<?php Ccc::loadClass('Block_Page_Edit_Tab'); ?>
 
 <?php 
 
-class Block_Page_Edit extends Block_Core_Template{
+class Block_Page_Edit extends Block_Core_Edit{
 
+	
 	public function __construct()
-	{													
-		# code...
-		$this->setTemplate('view/Page/editAction.php');	
+	{
+		parent::__construct();
 	}
 
-	public function getCurrentPage()
+	public function getTab()
+	{
+		if($this->tab)
+		{
+			return $this->tab;
+		}
+		$tabName = get_class($this) . "_Tab";		
+		$object = new $tabName();
+		$this->tab = $object;						
+		return $object;
+	}
+
+	public function getTabContent()
 	{
 		# code...
-		$modelPage = Ccc::getModel('Page');
-		$id = $this->id;
-		//$id = $this->getData('id');
-		if(!isset($id))
-		{
-			$id = -1;
-		}
-		$pages = $modelPage->fetchRow("SELECT * FROM Page where id = {$id}");
-		return $pages;
-
-		
+		$obj = $this->getTab()->getSelectedTab();
+		$block = Ccc::getBlock($obj['block']);
+		return $block;
 	}
+
+	
 
 }
 

@@ -1,19 +1,52 @@
-
+	
 <?php  Ccc::loadClass('Controller_Admin_Action');   ?>
 
 <?php  
 
 class Controller_Category_Media extends Controller_Admin_Action{
 
-	public function mediaAction()
+	public function indexAction()
+	{
+		$id = $this->getRequest()->getRequest('id');
+		$modelCategory = Ccc::getModel("Category")->load($id);
+		Ccc::register('category', $modelCategory);
+
+		$categoryMediaBlock = Ccc::getBlock('Category_Edit_Tab_Media')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $categoryMediaBlock,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);  
+	}
+
+	public function gridAction()
 	{
 		# code...
-		$id = $this->getRequest()->getRequest('id');
-		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
-		$blockCategoryMedia = Ccc::getBlock('Category_Media')->setData(['id' => $id]);
-		$this->getLayout()->getContent()->setChild($blockCategoryMedia);		  
-		$this->getLayout()->getFooter()->setChild($blockMessage);		  
-		$this->renderLayout();		  
+		$blockCategoryMedia = Ccc::getBlock("Category_Media");
+		$this->getLayout()->getContent()->setChild($blockCategoryMedia);
+		$this->renderLayout();
+
+	}
+
+	public function addCategoryAction()
+	{
+		# code...
+		$blockAddCategory = Ccc::getBlock("Category_AddCategory");
+		$this->getLayout()->getContent()->setChild($blockAddCategory);
+		$this->renderLayout();
+
 	}
 
 	public function saveAction()
@@ -21,6 +54,7 @@ class Controller_Category_Media extends Controller_Admin_Action{
 		# code...
 		try 
 		{
+
 			$timeStamp = date('Y-m-d_H-i-s');
 			$id = $this->getRequest()->getRequest('id');      
 			$modelCategoryMedia = Ccc::getModel('Category_Media');     
@@ -35,18 +69,46 @@ class Controller_Category_Media extends Controller_Admin_Action{
 			{
 				throw new Exception("file not uploaded.");
 			}
+			$this->getMessage()->addMessage(" categoryMedia File uploaded successfully ");
+			$this->gridAction();
+			//echo "<pre>"; print_r($GLOBALS); exit();
 
-			$url = $this->getUrl('media' , 'Category_Media' , ['id' => $id] );      
-			$this->redirect($url);
 		} 
 		catch (Exception $e) 
 		{
 			$this->getMessage()->addMessage($e->getMessage());
-			$url = $this->getUrl('media' , 'Category_Media' );      
-			$this->redirect($url);
+			$this->gridAction();
 		}
 		
 	}
+
+	public function editAction()  /*----------------------------------------------editCategory()------------------------------------------*/
+	{
+
+		$id = $this->getRequest()->getRequest('id');
+		$modelCategory = Ccc::getModel("Category")->load($id);
+		Ccc::register('category', $modelCategory); 
+
+		$categoryEdit = Ccc::getBlock('Category_Edit')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $categoryEdit,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
+	}
+
 
 	public function updateAction()
 	{
@@ -131,9 +193,8 @@ class Controller_Category_Media extends Controller_Admin_Action{
 			$categoryMediaModel->save();
 		}
 
-		$id = $this->getRequest()->getRequest('id');								
-		$url = $this->getUrl('media' , 'Category_Media' , ['id' => $id] );				 
-		$this->redirect($url);
+		$this->getMessage()->addMessage(" categoryMedia updated successfully ");
+		$this->editAction();
 
 	}
 

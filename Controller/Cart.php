@@ -4,280 +4,361 @@ Ccc::loadClass("Controller_Admin_Action");
 
 class Controller_Cart extends Controller_Admin_Action{
 
-	public function addNewAction()
+	public function indexAction()
 	{
 		# code...
-		try 
-		{
-			$blockAddNew = Ccc::getBlock("Cart_AddNew");
-			$this->getLayout()->getContent()->setChild($blockAddNew);
-			$this->renderLayout();
-		} 
-		catch (Exception $e) 
-		{
-			echo $msg = $e->getMessage();	exit();
-		}
+		$cartGrid = Ccc::getBlock('Cart_Grid')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $cartGrid,
+					'addClass' => 'bgRed'
+				]
+				
+			]
+		];
+		$this->renderJson($response);
+
 	}
 
 	public function gridAction()
 	{
 		# code...
+		/*$cartGrid = Ccc::getBlock('Cart_Edit')->toHtml();
+		echo $cartGrid;
+*/
+		$currentPage = $this->getRequest()->getRequest('currentPage', 1);
+		$this->getMessage()->addMessage(" On Page " . $currentPage, Model_Core_Message::WARNING);
+
+		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
+		$cartGrid = Ccc::getBlock('Cart_Grid');
+
+		$this->setTitle('Cart_Grid');
+		$this->getLayout()->getContent()->setChild($cartGrid);
+		$this->getLayout()->getFooter()->setChild($blockMessage);			//echo "<pre>"; print_r($this->getLayout()); exit();
+		$this->renderLayout();			
+	}
+
+	public function deleteAction()
+	{
+		$id = $this->getRequest()->getRequest('id');
+		Ccc::getModel("Cart")->delete($id);
+		$this->indexAction();
+
+	}
+
+	public function editAction()
+	{
+		# code...
 		try 
 		{
-			$cartDetails = $this->getMessage()->getMessages("cart");   
-			$blockGrid = Ccc::getBlock("Cart_Grid")->setData(['cart' => $cartDetails]);
-			$this->getLayout()->getContent()->setChild($blockGrid);
-			$this->renderLayout();
+			//echo $id = $this->getRequest()->getRequest('id'); exit();
+		
+			$modelCart = Ccc::getModel("Cart");
+			$id = $this->getRequest()->getRequest('id');
+			if($id)
+			{
+				$modelCart->load($id);    
+
+			}
+			$this->getMessage()->setMessage($modelCart, 'cart');
+			Ccc::register('cart', $modelCart); 
+
+			//echo "<pre>";	print_r($modelCart); exit();
+
+			$cartEdit = Ccc::getBlock("Cart_Edit")->toHtml();
+			$response = [
+				'status' => 'success',
+				'elements' => [
+					[
+						'element' => '#indexContent',
+						'content' => $cartEdit,
+						'addClass' => 'bgRed'
+					]
+					
+				]
+			];
+			$this->renderJson($response);
 		} 
 		catch (Exception $e) 
 		{
-			echo $msg = $e->getMessage();	exit();
+			$msg = $e->getMessage();
+			$this->getMessage()->addMessage($msg);
+			$this->indexAction();	
 		}
 	}
+
 
 	public function createCartAction()
 	{
 		try 
 		{
 			$id = $this->getRequest()->getPost('customerId');
-			$cart = Ccc::getModel('Customer')->load($id)->getCart();			//echo "<pre>";  print_r($cart);  exit();
-			$this->getMessage()->setMessage($cart, "cart");						//echo "<pre>";  print_r($this->getMessage()->getMessages("cart"));  exit();
-			$url = $this->getUrl('grid', 'Cart');
-			$this->redirect($url);
+			$customer = Ccc::getModel('Customer')->load($id);			//echo "<pre>";  print_r($cart);  exit();
+			$cart = $customer->getCart();		
+										 								//echo "<pre>";  print_r($cart);  exit();
+			$this->getMessage()->setMessage($cart, "cart");	
+
+			//$url = $this->getUrl("edit", "Cart", ['id' => $cart->id]);
+			//$this->redirect($url);
+			$this->indexAction();
 		} 
 		catch (Exception $e) 
 		{
-			echo $msg = $e->getMessage();	exit();
+			$msg = $e->getMessage();
+			$this->getMessage()->addMessage($msg);
+			$this->editAction();	
 		}
 	}
 
 	public function saveBillingAction()
 	{
 		$array = $this->getRequest()->getPost();										//echo "<pre>";  print_r($array);   exit();
-		$billing = $array['Cart']['Address'];
-		$cartDetails = $this->getMessage()->getMessages("cart");
-		$modelCartAddress = $cartDetails->getBillingAddress();
-		//$modelCartAddress = Ccc::getModel('Cart')->load($billing['cartId'])->getBillingAddress();
-		if(get_class($modelCartAddress) == get_class(Ccc::getModel('Customer_Address')))
-		{
-			$modelCartAddress = Ccc::getModel('Cart')->getBillingAddress();
-			unset($billing['id']);	
-		}
-		$billing['same'] =  (array_key_exists("same", $billing)) ? 1 : 2 ;
-		unset($billing['customerId']);
-		if(array_key_exists("markAsShipping", $billing))
-		{
-			unset($billing['markAsShipping']);
-		}
-		if(array_key_exists("saveToAddressBook", $billing))
-		{
-			unset($billing['saveToAddressBook']);
-		}
-		$rowId = $modelCartAddress->setData($billing)->save();
-		$modelCartAddress->id = $rowId;
-		$cartDetails->setBillingAddress($modelCartAddress);
-		$cartDetails->save();
-
-		if(array_key_exists("saveToAddressBook", $array['Cart']['Address']))
-		{
-			$address = $array['Cart']['Address'];																			//echo "<pre>";  print_r($address); 
-			$modelCustomerAddress = Ccc::getModel("Customer")->load($address['customerId'])->getBillingAddress();
-			$address['id'] = $modelCustomerAddress->id;
-			unset($address['cartId']);
-			unset($address['firstName']);
-			unset($address['lastName']);
-			unset($address['mobile']);
-			unset($address['email']);
-			unset($address['saveToAddressBook']);
-			if(array_key_exists("markAsShipping", $address))
-			{
-				unset($address['markAsShipping']);
-			}
-			$address['same'] =  (array_key_exists("same", $address)) ? 1 : 2 ;   				//echo "<pre>";  print_r($address);   exit(); 
-			$rowId = $modelCustomerAddress->setData($address)->save();	
-
-			if(array_key_exists("markAsShipping", $array['Cart']['Address']))
-			{
-				$address2 = $array['Cart']['Address'];
-				$modelCustomerAddress = Ccc::getModel("Customer")->load($address2['customerId'])->getShippingAddress();
-				unset($address2['id']);
-				unset($address2['cartId']);
-				unset($address2['firstName']);
-				unset($address2['lastName']);
-				unset($address2['mobile']);
-				unset($address2['email']);
-				unset($address2['saveToAddressBook']);
-				unset($address2['markAsShipping']);
-				$address2['addressType'] =  "shipping";
-				$address2['same'] =  1;															//echo "<pre>";  print_r($address2);   exit(); 
-				$rowId = $modelCustomerAddress->setData($address2)->save();
-			}
-		}
-
-		if(array_key_exists("markAsShipping", $array['Cart']['Address']))
-		{
-			$shipping = $array['Cart']['Address'];
-			$cartDetails = $this->getMessage()->getMessages("cart");
-			$modelCartAddress = $cartDetails->getShippingAddress();
-			if(get_class($modelCartAddress) == get_class(Ccc::getModel('Customer_Address')))
-			{
-				$modelCartAddress = Ccc::getModel('Cart')->getShippingAddress();
-				unset($shipping['id']);	
-			}
-			else
-			{
-				if($modelCartAddress->id)
-				{
-					unset($shipping['id']);
-				}
-			}
-			$shipping['addressType'] =  "shipping";
-			$shipping['same'] =  1;
-			unset($shipping['customerId']);
-			unset($shipping['markAsShipping']);	
-			if(array_key_exists("saveToAddressBook", $shipping))
-			{
-				unset($shipping['saveToAddressBook']);
-			}
-			$rowId = $modelCartAddress->setData($shipping)->save();  
-			$modelCartAddress->id = $rowId;
-			$cartDetails->setShippingAddress($modelCartAddress);
-			$cartDetails->save();
-		}
-
-		$url = $this->getUrl('grid', 'Cart');
-		$this->redirect($url);
+		$billing = $array['Cart']['Billing']['BillingAddress'];
+		$shipping = $array['Cart']['Shipping']['ShippingAddress'];
+		$customerInfo = $array['Cart']['CustomerInfo'];
 		
+		$customerId = $billing['customerId'];						// ---addressId and customerId ------- excluded-----
+		unset($billing['customerId']);
+		$addressId = $billing['addressId'];
+		unset($billing['addressId']);
+
+		$shippingAddressId = $shipping['addressId'];
+		unset($shipping['addressId']);
+
+		$cart = $this->getMessage()->getMessages("cart");
+		
+		$cartBillingAddress = Ccc::getModel("Cart")->getBillingAddress();
+		if(get_class($cart->getBillingAddress()) != get_class(Ccc::getModel('Customer_Address')))
+		{
+			$cartBillingAddress->addressId = $addressId;
+		}
+		$cartBillingAddress->setData($customerInfo);
+		$cartBillingAddress->setData($billing);
+		$cartBillingAddress->same = (isset($billing['same'])) ? 1 : 2 ;
+		$cartBillingAddress->save(); 
+		$cart->setBillingAddress($cartBillingAddress)->save();
+
+
+		if(array_key_exists("markAsShipping", $array['Cart']['Billing']))
+		{
+			$cartShippingAddress = Ccc::getModel("Cart")->getShippingAddress();
+			if(get_class($cart->getShippingAddress()) != get_class(Ccc::getModel('Customer_Address'))) //--------------------------------
+			{
+				$cartShippingAddress->addressId = $shippingAddressId;
+			}
+			$cartShippingAddress->setData($customerInfo);
+			$cartShippingAddress->setData($billing);
+			$cartShippingAddress->same = (isset($billing['same'])) ? 1 : 2 ;
+			$cartShippingAddress->addressType = 'shipping';
+
+			$cartShippingAddress->save(); 
+			//$cart->setShippingAddress($cartBillingAddress)->save();
+		}
+
+		unset($billing['addressId']);
+		if(array_key_exists("saveToAddressBook", $array['Cart']['Billing']))
+		{
+			$customerAddress = $cart->getCustomer()->getBillingAddress();
+			$customerAddress->setData($billing);
+			$customerAddress->save();
+
+			$cart->getCustomer()->getBillingAddress()->setData($billing)->save();
+			if(isset($billing['same']))
+			{
+				$customerAddress = $cart->getCustomer()->getShippingAddress();
+				$customerAddress->setData($billing);
+				$customerAddress->same = 1;
+				$customerAddress->addressType = 'shipping';
+				$customerAddress->save();
+			}
+		}
+
+		$this->editAction();
+
 
 	}
 
 	public function saveShippingAction()
 	{
-		$shipping = $this->getRequest()->getPost();
-		$cartDetails = $this->getMessage()->getMessages("cart");
-		if(array_key_exists('saveToAddressBook', $shipping['Cart']['ShippingAddress']))
-		{
-			$address = $shipping['Cart']["ShippingAddress"];
-			$modelCustomerAddress = Ccc::getModel("Customer")->load($address['customerId'])->getShippingAddress();
-			unset($address['id']);
-			unset($address['cartId']);
-			unset($address['firstName']);
-			unset($address['lastName']);
-			unset($address['mobile']);
-			unset($address['email']);
-			unset($address['saveToAddressBook']);
-			$rowId = $modelCustomerAddress->setData($address)->save();
-		}
+		$array = $this->getRequest()->getPost();										
+		$shipping = $array['Cart']['Shipping']['ShippingAddress'];
+		$customerInfo = $array['Cart']['CustomerInfo'];
+																							//echo "<pre>";  print_r($shipping);   exit();
+		$shippingAddressId = $shipping['addressId'];
+		unset($shipping['addressId']);
 
-		$address2 = $shipping['Cart']["ShippingAddress"];
-		$modelCartAddress = $cartDetails->getShippingAddress();
-		if(get_class($modelCartAddress) == get_class(Ccc::getModel('Customer_Address')))
+		$customerId = $shipping['customerId'];						// ---addressId and customerId ------- excluded-----
+		unset($shipping['customerId']);
+
+		$cart = $this->getMessage()->getMessages("cart");   			 print_r($cart);
+		
+		$cartShippingAddress = Ccc::getModel("Cart")->getShippingAddress();
+		if(get_class($cart->getShippingAddress()) == get_class(Ccc::getModel('Cart_CartAddress')))
 		{
-			$modelCartAddress = Ccc::getModel('Cart')->getShippingAddress();
+			$cartShippingAddress->addressId = $shippingAddressId;
 		}
-		$address2['same'] =  2;
-		unset($address2['customerId']);
-		unset($address2['id']);	
-		if(array_key_exists("saveToAddressBook", $address2))
+		$cartShippingAddress->setData($customerInfo);
+		$cartShippingAddress->setData($shipping);
+		$cartShippingAddress->same = 2;        
+		$cartShippingAddress->save();                                      print_r($cartShippingAddress);  
+		//$cart->setShippingAddress($cartShippingAddress)->save();
+
+		unset($shipping['addressId']);
+		if(array_key_exists("saveToAddressBook", $array['Cart']['Shipping']))
 		{
-			unset($address2['saveToAddressBook']);
+			$customerAddress = $cart->getCustomer()->getShippingAddress();
+			$customerAddress->setData($shipping);
+			$customerAddress->save();
 		}	
-		$rowId = $modelCartAddress->setData($address2)->save(); 
 
-		$url = $this->getUrl('grid', 'Cart');
-		$this->redirect($url);
+		$this->editAction();
 
 	}
 
 	public function savePaymentMethodAction()
 	{
 		# code...
-		$cartDetails = $this->getMessage()->getMessages("cart");
 		$array = $this->getRequest()->getPost();
-		$method = $array['Cart']['paymentMethod']['method'];
-		$cartDetails->paymentMethod = $method;
-		$cartDetails->setPaymentMethod(Ccc::getModel("Cart_PaymentMethod")->load($method))->save();
-		$cartDetails->save();
+		$cart = $this->getMessage()->getMessages("cart");
+		$methodId = $array['Cart']['paymentMethod']['method'];
+		$cart->paymentMethodId = $methodId;
+		$cart->setPaymentMethod(Ccc::getModel("Cart_PaymentMethod")->load($methodId))->save();
 
-		$url = $this->getUrl('grid', 'Cart');
-		$this->redirect($url);
+		Ccc::register('cart', $cart);
+		$payment = Ccc::getBlock("Cart_PaymentMethod")->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#payment',
+					'content' => $payment,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
 	}
 
 	public function saveShippingMethodAction()
 	{
 		# code...
-		$cartDetails = $this->getMessage()->getMessages("cart");
 		$array = $this->getRequest()->getPost();                          //print_r($array);  exit();
+		$cart = $this->getMessage()->getMessages("cart");
 		$method = $array['Cart']['shippingMethod']['method'];
 		$arr = explode("/", $method);           						  //print_r($arr);  exit();
 		
-		$cartDetails->shippingMethod = $arr['0'];
-		$cartDetails->setShippingMethod(Ccc::getModel("Cart_ShippingMethod")->load($arr['0']))->save();
-		$cartDetails->shippingCharge = $arr['1'];
-		$cartDetails->save();
+		$cart->shippingMethodId = $arr['0'];
+		$cart->shippingCharge = $arr['1'];
+		$cart->setShippingMethod(Ccc::getModel("Cart_ShippingMethod")->load($arr['0']));
+		$cart->save();
 
-		$url = $this->getUrl('grid', 'Cart');
-		$this->redirect($url);
+		Ccc::register('cart', $cart);
+		$shipping = Ccc::getBlock("Cart_ShippingMethod")->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$cartSummary = Ccc::getBlock("Cart_CartSummary")->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#shipping',
+					'content' => $shipping,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#cart-summary',
+					'content' => $cartSummary,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
 	}
 
 	public function addProductAction()
 	{
 		# code...
-		$cartDetails = $this->getMessage()->getMessages("cart");			
+		$cart = $this->getMessage()->getMessages("cart");			
 		$array = $this->getRequest()->getPost();
-		$products = $array['Cart']['ProductGrid']['ProductId'];   				 // echo "<pre>";  print_r($products); // exit();
+		$products = $array['Cart']['ProductGrid']['ProductId']; 
+		$newCartItemArray = []; 									 // echo "<pre>";  print_r($products); // exit();
 		foreach($products as $key => $value) 
 		{
 			$product = [];
 			$modelProduct = Ccc::getModel("Product")->load($value);
-			$product['cartId'] = $cartDetails->id;
+			$product['cartId'] = $cart->id;
 			$product['productId'] = $modelProduct->id;
 			$product['productName'] = $modelProduct->name;
 			$product['quantity'] = 1;
 			$product['price'] = $modelProduct->getFinalPrice();
 			$product['taxPercentage'] = $modelProduct->taxPercentage;
 			$product['taxAmount'] = $modelProduct->price * ($modelProduct->taxPercentage/100) ;
+
 			$modelCartItem = Ccc::getModel("Cart_CartItem");
-			$modelCartItem->setData($product)->save(); 
+			$id = $modelCartItem->setData($product)->save(); 
+			array_push($newCartItemArray, $modelCartItem->load($id));
 
-			$cartDetails->setCartItem([]);
-			$cartDetails->save();    						 //echo "<pre>";  print_r($modelCartItem);  exit();    
-
-			$cartDetails->cartTotal = $cartDetails->cartTotal + ($modelCartItem->price * $modelCartItem->quantity  + $modelCartItem->taxAmount);   // echo "<pre>";  print_r($modelCart);  exit();
-			$cartDetails->save();
+			$cart->cartTotal = $cart->cartTotal + ($modelCartItem->price * $modelCartItem->quantity  + $modelCartItem->taxAmount);   
+			$cart->save();
 		}
+		$newCartItemArray = array_merge($cart->getCartItem() , $newCartItemArray);
+		$cart->setCartItem($newCartItemArray);
+		$cart->save();    						 //echo "<pre>";  print_r($modelCartItem);  exit();    
 
-		$url = $this->getUrl('grid', 'Cart');
-		$this->redirect($url);
+		Ccc::register('cart', $cart);
+		$productList = Ccc::getBlock("Cart_ProductList")->toHtml();
+		$cartItemList = Ccc::getBlock("Cart_CartItemList")->toHtml();
+		$cartSummary = Ccc::getBlock("Cart_CartSummary")->toHtml();
 
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#product-list',
+					'content' => $productList,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#cart-item-list',
+					'content' => $cartItemList,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#cart-summary',
+					'content' => $cartSummary,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
+
+		
 	}
 
-	public function deleteItemAction()
-	{
-		# code...
-		$id = $this->getRequest()->getRequest("id"); 
-		$modelCartItem = Ccc::getModel("Cart_CartItem")->load($id);
-		$cartDetails = $this->getMessage()->getMessages("cart");     				//echo "<pre>";  print_r($cartDetails);   exit();
-		$cartDetails->cartTotal = $cartDetails->cartTotal - $modelCartItem->getFinalPrice();
-		$cartDetails->discount = $cartDetails->discount - $modelCartItem->getDiscountAmount();
-		$cartDetails->setCartItem([]);
-		$cartDetails->save();
-
-		$modelCartItem->delete($id);
-		$url = $this->getUrl('grid', 'Cart');    					//echo "<pre>";  print_r($cartDetails);   exit();
-		$this->redirect($url);
-	}
-
+	
 	public function saveProductItemAction()		
 	{
 		# code...
 		$array = $this->getRequest()->getPost(); 					  //echo "<pre>";  print_r($array);  exit();
-		$quantity = $array['Cart']['productItem']['Item']; 					 // echo "<pre>";  print_r($quantity);  exit();
-		$cartDetails = $this->getMessage()->getMessages("cart");
+		$quantity = $array['Cart']['ItemQuantity']; 					 // echo "<pre>";  print_r($quantity);  exit();
+		$cart = $this->getMessage()->getMessages("cart");
 
-		$cartDetails->cartTotal = 0;								//echo "<pre>";  print_r($modelCart);  exit();	
-		$cartDetails->discount = 0;								//echo "<pre>";  print_r($modelCart);  exit();	
-		$cartDetails->save();
+		$cart->cartTotal = 0;								//echo "<pre>";  print_r($modelCart);  exit();	
+		$cart->discount = 0;								//echo "<pre>";  print_r($modelCart);  exit();	
+		$cart->save();
 		$arr = [];									 					//echo "<pre>";  print_r($modelCart);  exit();
 		foreach ($quantity as $key => $value) 
 		{
@@ -289,95 +370,146 @@ class Controller_Cart extends Controller_Admin_Action{
 			$modelCartItem->save();
 			array_push($arr, $modelCartItem);
 
-			$cartDetails->cartTotal = $cartDetails->cartTotal + $modelCartItem->getFinalPrice();
-			$cartDetails->discount = $cartDetails->discount + $modelCartItem->getDiscountAmount();
-			$cartDetails->save();
+			$cart->cartTotal = $cart->cartTotal + $modelCartItem->getFinalPrice();
+			$cart->discount = $cart->discount + $modelCartItem->getDiscountAmount();
+			$cart->save();
 		}
-		$cartDetails->setCartItem($arr)->save();
+		$cart->setCartItem($arr)->save();
 		
-		$url = $this->getUrl('grid', 'Cart');
-		$this->redirect($url);
+		Ccc::register('cart', $cart);
+		$cartItemList = Ccc::getBlock("Cart_CartItemList")->toHtml();
+		$cartSummary = Ccc::getBlock("Cart_CartSummary")->toHtml();
+
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#cart-item-list',
+					'content' => $cartItemList,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#cart-summary',
+					'content' => $cartSummary,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
 	}
+
+
+	public function deleteItemAction()
+	{
+		# code...
+		$id = $this->getRequest()->getRequest("itemId"); 
+		$modelCartItem = Ccc::getModel("Cart_CartItem")->load($id);
+		$cart = $this->getMessage()->getMessages("cart");     				//echo "<pre>";  print_r($cart);   exit();
+		$cart->cartTotal = $cart->cartTotal - $modelCartItem->getFinalPrice();
+		$cart->discount = $cart->discount - $modelCartItem->getDiscountAmount();
+		$cart->setCartItem([]);
+		$cart->save();
+
+		$modelCartItem->delete($id);
+
+
+		Ccc::register('cart', $cart);
+		$productList = Ccc::getBlock("Cart_ProductList")->toHtml();
+		$cartItemList = Ccc::getBlock("Cart_CartItemList")->toHtml();
+		$cartSummary = Ccc::getBlock("Cart_CartSummary")->toHtml();
+
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#product-list',
+					'content' => $productList,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#cart-item-list',
+					'content' => $cartItemList,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#cart-summary',
+					'content' => $cartSummary,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
+	}
+
 
 	public function placeOrderAction()
 	{
-		# code...
-		//echo "<pre>";  print_r($_POST); // exit();
-		//echo "<pre>";  print_r($cartDetails = $this->getMessage()->getMessages("cart"));  exit();
-
+		$cart = $this->getMessage()->getMessages("cart");
 		$array = $this->getRequest()->getPost(); 
-		$addressData = $array['Cart']['Address'];
-		$cartData = $array['Cart']['cartSummary'];
-		$paymentData = $array['Cart']['paymentMethod'];
+
+		$customerInfo = $array['Cart']['CustomerInfo'];
+		$billingData  = $array['Cart']['Billing']['BillingAddress'];
+		$shippingInfo = $array['Cart']['Shipping']['ShippingAddress'];
+		$cartSummary  = $array['Cart']['cartSummary'];
+		$paymentData  = $array['Cart']['paymentMethod'];
 		$shippingData = explode("/", $array['Cart']['shippingMethod']['method']);
 
 		$modelOrder = Ccc::getModel("Order");
-		$modelOrder->customerId = $addressData['customerId'];
-		$modelOrder->firstName = $addressData['firstName'];
-		$modelOrder->lastName = $addressData['lastName'];
-		$modelOrder->email = $addressData['email'];
-		$modelOrder->mobile = $addressData['mobile'];
-		$modelOrder->grandTotal = $cartData['grandTotal'];
-		$modelOrder->discount = $cartData['discount'];
+		
+		unset($customerInfo['cartId']);
+
+		$modelOrder->setData($customerInfo);
+		$modelOrder->customerId = $cart->customerId;
 		$modelOrder->paymentMethodId = $paymentData['method'];
 		$modelOrder->shippingMethodId = $shippingData['0'];
 		$modelOrder->shippingAmount = $shippingData['1'];
+		$modelOrder->grandTotal = $cartSummary['grandTotal'];
+		$modelOrder->discount = $cartSummary['discount'];
+		$modelOrder->createdAt = date('Y-m-d');
 		$orderId = $modelOrder->save();
-		//------------------------------------------------------------------------------------------------
-		$billingData = $array['Cart']['Address'];
+
+
+		$cartItems = $cart->getCartItem();
+		foreach ($cartItems as $item) 
+		{
+			# code...
+			$modelOrderItem = Ccc::getModel("Order_Item");
+			$modelOrderItem->itemId = $item->id;
+			$modelOrderItem->orderId = $orderId;
+			$modelOrderItem->productId = $item->productId;
+			$modelOrderItem->name = $item->productName;
+			$modelOrderItem->sku = Ccc::getModel("Product")->load($item->productId)->sku;
+			$modelOrderItem->cost = $item->price;
+			$modelOrderItem->price = $item->price;
+			$modelOrderItem->discount = $item->discount;
+			$modelOrderItem->quantity = $item->quantity;
+			$modelOrderItem->createdAt = date('Y-m-d');     print_r($modelOrderItem);
+			$modelOrderItem->save();
+
+		}
+
+		$modelOrderAddress = Ccc::getModel("Order_Address");
+
 		unset($billingData['customerId']);
-		unset($billingData['cartId']);
-		if(array_key_exists("markAsShipping", $billingData))
-		{
-			unset($billingData['markAsShipping']);
-		}
-		if(array_key_exists("saveToAddressBook", $billingData))
-		{
-			unset($billingData['saveToAddressBook']);
-		}
-		
-		$billing = $modelOrder->getBillingAddress(); 
-		$billing->orderId = $orderId; 
-		$billing->addressId = $billingData['id'];
-		unset($billingData['id']); 
-		$billing->same = (array_key_exists("same", $billingData)) ? 1 : 2 ;
-		$billing->setData($billingData)->save();
-		//------------------------------------------------------------------------------------------------------
-		$shippingData = $array['Cart']['ShippingAddress'];
-		unset($shippingData['customerId']);
-		unset($shippingData['cartId']);
-		if(array_key_exists("saveToAddressBook", $shippingData))
-		{
-			unset($shippingData['saveToAddressBook']);
-		}
-		
-		$shipping = $modelOrder->getShippingAddress(); 
-		$shipping->orderId = $orderId; 
-		$shipping->addressId = $shippingData['id']; 
-		unset($shippingData['id']);
-		$shipping->same = (array_key_exists("same", $shippingData)) ? 1 : 2 ;
-		$shipping->setData($shippingData)->save();
-
-		//$modelItem = $modelOrder->getOrderItem(); 
-		$cartDetails = $this->getMessage()->getMessages("cart");
-		$array = $cartDetails->getCartItem();
-		foreach ($array as $key => $value) 
-		{
-			$modelItem = Ccc::getModel("Order_Item");
-			$modelItem->itemId = $value->id;	
-			$modelItem->orderId = $orderId;	
-			$modelItem->productId = $value->productId;	
-			$modelItem->name = $value->productName;	
-			$modelItem->cost = $value->price ;	
-			$modelItem->price = $value->getFinalPrice() + $value->getDiscountAmount();	
-			$modelItem->discount = $value->getDiscountAmount();	
-			$modelItem->quantity = $value->quantity;	
-			$modelItem->save();	
-		}
+		$modelOrderAddress->setData($billingData);
+		$modelOrderAddress->setData($customerInfo);
+		$modelOrderAddress->orderId = $orderId;
+		$modelOrderAddress->same = (isset($billingData['same'])) ? 1 : 2 ;   print_r($modelOrderAddress);
+		$modelOrderAddress->save();
 
 
-		$url = $this->getUrl('orderGrid', 'Cart' , ['orderId' => $orderId]);
-		$this->redirect($url);
+
+		$modelOrderAddress = Ccc::getModel("Order_Address");
+
+		unset($shippingInfo['customerId']);
+		$modelOrderAddress->setData($shippingInfo);
+		$modelOrderAddress->setData($customerInfo);
+		$modelOrderAddress->orderId = $orderId;
+		$modelOrderAddress->same = (isset($billingData['same'])) ? 1 : 2 ;   print_r($modelOrderAddress);
+		$modelOrderAddress->save();
+
+
+
 
 	}
 

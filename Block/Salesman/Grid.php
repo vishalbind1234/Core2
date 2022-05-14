@@ -1,78 +1,42 @@
 
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php
 
 
 
-class Block_Salesman_Grid extends Block_Core_Template{
+class Block_Salesman_Grid extends Block_Core_Grid{
 
-	protected $pager = null;
+	protected $perPageCount = null;
+	protected $currentPage = null;
 
 	public function __construct()
 	{													
 		# code...
-		$this->setTemplate('view/Salesman/gridAction.php');					
+		parent::__construct();
+		$this->prepareCollection();
+		$this->prepareColumn();
+		$this->prepareAction();
+		//$this->setTemplate('view/Salesman/gridAction.php');					
 
-	}
-
-
-/*	public function getSalesman()
-	{																																
-		# code...
-		$modelSalesman = Ccc::getModel('Salesman');											
-		$salesmanTable = $modelSalesman->getResource()->getTableName();
-		//$salesmanKey = $modelSalesman->getResource()->getPrimaryKey();
-
-		$row = $modelSalesman->fetchAll(" SELECT * FROM {$salesmanTable}  ");
-		if(!$row)
-		{
-			return null;
-		}
-		return $row;
-
-	}*/
-
-
-	const ENABLE = 1;
-	const ENABLE_LBL = 'ENABLE';
-	const DISABLE = 2;
-	const DISABLE_LBL = 'DISABLE';
-
-	public function getStatus()
-	{
-		# code...
-		$status = [ 
-			self::ENABLE => self::ENABLE_LBL ,
-			self::DISABLE => self::DISABLE_LBL
-		];
-
-		return $status;
-	}
-
-
-	public function getPager()
-	{
-		if(!$this->pager)
-		{
-			$this->setPager();
-		}
-		return $this->pager;
-	}
-	public function setPager()
-	{
-		$this->pager = Ccc::getModel('Core_Pager');
-		return $this;
 	}
 
 	public function getSalesman()
 	{
 	
+		$this->currentPage =  Ccc::getModel("Core_Request")->getRequest('currentPage', 1);
+		$this->perPageCount =  Ccc::getModel("Core_Request")->getRequest('perPageCount', 10);
+		$ppc = Ccc::getModel("Core_Request")->getPost('perPageCount');
+		if($ppc)
+		{
+			$this->perPageCount = $ppc;
+		}
+	
 		$modelSalesman = Ccc::getModel('Salesman');
 		$rowCount = $modelSalesman->fetchOne();
 
-		$modelPager = $this->getPager();
-		$modelPager->execute($rowCount, $modelPager->getCurrent());
+		$modelPager = $this->getPager()->setPerPageCount($this->perPageCount)->setCurrent($this->currentPage);
+		$modelPager->execute($rowCount, $this->currentPage);
 
 		$start = $modelPager->getStartLimit() - 1 ;
 		$offset = $modelPager->getPerPageCount();
@@ -80,6 +44,111 @@ class Block_Salesman_Grid extends Block_Core_Template{
 		return $result;
 
 
+	}
+
+	public function prepareCollection()
+	{
+		# code...
+		$result = $this->getSalesman();
+		$this->setCollection($result);
+		return $this;
+	}
+
+	public function prepareAction()
+	{
+		# code...
+		$this->addAction([
+			'action' => 'edit',
+			'method' => 'getEditUrl'
+		]);
+
+		$this->addAction([
+			'action' => 'delete',
+			'method' => 'getDeleteUrl'
+		]);
+	}
+
+	public function prepareColumn()
+	{
+		# code...
+		$this->addColumn([
+			'title' => 'Salesman_Id',
+			'type' => 'int'
+		], 'id');
+
+		$this->addColumn([
+			'title' => 'First_Name',
+			'type' => 'text'
+		], 'firstName');
+
+		$this->addColumn([
+			'title' => 'Last_Name',
+			'type' => 'text'
+		], 'lastName');
+
+		$this->addColumn([
+			'title' => 'Email',
+			'type' => 'text'
+		], 'email');
+
+		$this->addColumn([
+			'title' => 'Mobile',
+			'type' => 'int'
+		], 'mobile');
+
+		$this->addColumn([
+			'title' => 'Status',
+			'type' => 'int'
+		], 'status');
+
+		$this->addColumn([
+			'title' => 'CreatedAt',
+			'type' => 'date'
+		], 'createdAt');
+
+		$this->addColumn([
+			'title' => 'UpdatedAt',
+			'type' => 'date'
+		], 'updatedAt');
+
+		$this->addColumn([
+			'title' => 'Percentage',
+			'type' => 'Float'
+		], 'percentage');
+
+	}
+
+
+	
+
+
+	public function getEditUrl($id)
+	{
+		# code...
+		return $this->getUrl('edit', 'Salesman', ['id' => $id, 'perPageCount' => $this->perPageCount, 'currentPage' => $this->currentPage]);
+	}
+
+	public function getDeleteUrl($id)
+	{
+		# code...
+		return $this->getUrl('delete', 'Salesman', ['id' => $id, 'perPageCount' => $this->perPageCount, 'currentPage' => $this->currentPage]);
+	}
+
+	public function getAddNewUrl()
+	{
+		# code...
+		return $this->getUrl('edit', 'Salesman', null, true);
+	}
+
+	public function getColumnValue($key,$value,$row)
+	{
+		# code...
+		if($key == 'status')
+		{
+			return Ccc::getModel("Salesman")->getStatus($value);
+		}
+
+		return $value;
 	}
 
 

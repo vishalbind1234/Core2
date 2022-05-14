@@ -5,38 +5,74 @@
 
 class Controller_Config extends Controller_Admin_Action{
 
+	public function indexAction() //----------------------------------------------------gridAction()--------------------------------
+	{															
+
+		$currentPage =  ($this->getRequest()->getRequest('currentPage', 1));
+		$this->getMessage()->addMessage(" On Page " . $currentPage , Model_Core_Message::WARNING);	
+		
+		$configGrid = Ccc::getBlock('Config_Grid')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $configGrid,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
+
+	}
+
 	public function gridAction()
 	{							
-		$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
-		$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
-		$this->getMessage()->addMessage(" On Page " . $currentPage );
+		$currentPage = $this->getRequest()->getRequest('currentPage', 1);
+		$this->getMessage()->addMessage(" On Page " . $currentPage, Model_Core_Message::WARNING);
 
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
 		$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
 		$configGrid = Ccc::getBlock('Config_Grid');
-		$configGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
 
 		$this->setTitle('Config_Grid');
-		$this->getLayout()->getHeader()->setChild($menu);
 		$this->getLayout()->getContent()->setChild($configGrid);
 		$this->getLayout()->getFooter()->setChild($blockMessage);			//echo "<pre>"; print_r($this->getLayout()); exit();
 		$this->renderLayout();											
 
-		$this->getMessage()->unsetMessages();
-
-		//$blockConfig->toHtml();
 	}
 
 	public function editAction()
 	{																	
 		# code...
 		$id = $this->getRequest()->getRequest('id');
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$configEdit = Ccc::getBlock('Config_Edit')->setData(['id' => $id]);					
-		
-		$this->getLayout()->getHeader()->setChild($menu);
-		$this->getLayout()->getContent()->setChild($configEdit);
-		$this->renderLayout();	
+		$modelConfig = Ccc::getModel("Config")->load($id);
+		Ccc::register('config', $modelConfig); 
+
+		$configEdit = Ccc::getBlock('Config_Edit')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $configEdit,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
 		//$blockConfig->toHtml();
 	}
 
@@ -61,8 +97,7 @@ class Controller_Config extends Controller_Admin_Action{
 			{
 				$message = $e->getMessage() ;
 				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
-				$url = $this->getUrl('grid', 'Config');   
-				$this->redirect($url);
+				$this->indexAction(); 
 			}
 
 		}
@@ -77,28 +112,35 @@ class Controller_Config extends Controller_Admin_Action{
 			{
 				$message = $e->getMessage() ;
 				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
-				$url = $this->getUrl('grid', 'Config');   
-				$this->redirect($url);
+				$this->indexAction(); 
 			}
 		}
 
 		$message = "row id " . $rowId . " Saved  " ;
 		$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
-		$url = $this->getUrl('grid' , 'Config');
-		$this->redirect($url);
+		$this->indexAction(); 
 	}
 
 	public function deleteAction()
 	{
 		# code...
-		$id = $this->getRequest()->getRequest('id');
-		$modelConfig = Ccc::getModel('Config');  
-		$deletedId = $modelConfig->delete($id); 
+		try
+		{
+            $id = $this->getRequest()->getRequest('id');
+            $modelConfig = Ccc::getModel('Config');
+            $deletedRowId = $modelConfig->delete($id);
 
-		$message = " row ID" . $deletedId . " deleted. " ;
-		$modelMessage = $this->getMessage()->addMessage($message);
-		$url = $this->getUrl('grid' , 'Config' );
-		$this->redirect($url); 
+            $message = " row ID " . $deletedRowId . " deleted. " ;
+			$this->getMessage()->addMessage($message);
+			$this->indexAction();
+
+        }
+        catch(Exception $e)
+        {
+			$msg = $e->getMessage();
+			$modelMessage = $this->getMessage()->addMessage($msg, Model_Core_Message::ERROR);
+			$this->indexAction();   
+		}	
 	}
 
 

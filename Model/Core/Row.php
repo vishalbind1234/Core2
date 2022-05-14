@@ -92,6 +92,10 @@ class Model_Core_Row {
 	{
 		$adapter = $this->getAdapter();
 		$primaryKey = ($column) ? $column :  $this->getResource()->getPrimaryKey();
+		if(!$id)
+		{
+			return $this;
+		}
 		
 		$tableName = $this->getResource()->getTableName(); 
 		$rowData = $this->fetchRow("SELECT * FROM {$tableName} WHERE {$primaryKey} = {$adapter->getConnect()->quote($id)}");
@@ -105,7 +109,7 @@ class Model_Core_Row {
 
 	public function fetchAll($query)
 	{
-		$adapter  = $this->getAdapter();
+		$adapter  = $this->getAdapter();				//echo($query); exit();
 		$rows = $adapter->fetchAll($query);
 		foreach ($rows as &$row) 
 		{
@@ -147,7 +151,7 @@ class Model_Core_Row {
 		# code...
 		$primaryKey = $this->getResource()->getPrimaryKey();
 
-		if(array_key_exists($primaryKey , $this->data) && $this->data[$primaryKey] != null )
+		if( $this->data[$primaryKey] != null && array_key_exists($primaryKey , $this->data)  )
 		{												
 			//print_r($this->data); exit();	
 			//$id = $this->data[$primaryKey];

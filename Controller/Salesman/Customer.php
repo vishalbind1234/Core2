@@ -5,30 +5,32 @@
 
 class Controller_Salesman_Customer extends Controller_Core_Action{
 
-	public function redirect($url)
-	{
-		header("Location:" . $url );
-	    exit();
-	    
-	}
-
-	public function gridAction() /*---------------------------------------------------------gridAction()-----------------------------------------*/
+	public function indexAction() /*---------------------------------------------------------gridAction()-----------------------------------------*/
 	{																
-	
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
-		$this->getLayout()->getHeader()->setChild($menu);
-
 		$salesmanId = $this->getRequest()->getRequest('id');
-		$percentage = $this->getRequest()->getRequest('percentage');
 
-		$salesmanCustomerGrid = Ccc::getBlock('Salesman_Customer_Grid')->setData(['id' => $salesmanId , 'percentage' => $percentage ]);
-		$this->getLayout()->getContent()->setChild($salesmanCustomerGrid);
-		$this->renderLayout();	
-		//$customerGrid->toHtml();
+		$salesman = Ccc::getModel("Salesman")->load($salesmanId);
+		Ccc::register('salesman', $salesman);
 
-		$message = $this->getRequest()->getRequest('message');
-		$message = ($message) ? $this->getRequest()->getRequest('message') : '123' ;
-		echo($message);
+		$salesmanEdit = Ccc::getBlock('Salesman_Edit')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $salesmanEdit,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
 	}
 
 	public function saveAction() /*-----------------------------------------saveAction()-------------------------------------------------------------*/
@@ -52,9 +54,8 @@ class Controller_Salesman_Customer extends Controller_Core_Action{
 			$modelCustomer->save();
 		}
 
-		$url = $this->getUrl( 'grid' , 'Salesman_Customer' );
-		$this->redirect( $url );
-
+		$this->getMessage()->addMessage(" Salesman Customer data updated successfully ");
+		$this->indexAction();
 
 	}
 	

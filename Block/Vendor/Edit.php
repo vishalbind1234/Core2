@@ -1,24 +1,36 @@
 <?php
 
-Ccc::loadClass('Block_Core_Template');
+Ccc::loadClass('Block_Core_Edit');
+Ccc::loadClass('Block_Vendor_Edit_Tab');
 
-class Block_Vendor_Edit extends Block_Core_Template{
+class Block_Vendor_Edit extends Block_Core_Edit{
 
 	public function __construct()
 	{
 		# code...
-		$this->setTemplate('view/Vendor/editAction.php');
+		parent::__construct();
+		//$this->setTemplate('view/Vendor/editAction.php');
 	}
 
-	public function getCurrentVendor()
-	{																																
-		# code...
-		$modelVendor = Ccc::getModel('Vendor');											
-		$id = $this->id;
-		//$id = $this->getData('id');
-		$row = $modelVendor->fetchRow(" SELECT * FROM Vendor WHERE id = {$id}");
-		return $row;
+	public function getTab()
+	{
+		
+		if($this->tab)
+		{
+			return $this->tab;
+		}
+		$tabName = get_class($this) . "_Tab";		
+		$object = new $tabName();
+		$this->tab = $object;						
+		return $object;
+	}
 
+	public function getTabContent()
+	{
+		# code...
+		$obj = $this->getTab()->getSelectedTab();
+		$block = Ccc::getBlock($obj['block']);
+		return $block;
 	}
 
 

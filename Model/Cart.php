@@ -7,6 +7,7 @@ class Model_Cart extends Model_Core_Row {
 	protected $cartItem = null;
 	protected $cartBillingAddress = null;
 	protected $cartShippingAddress = null;
+	protected $customer = null;
 
 	protected $shippingMethodInfo = null;
 	protected $paymentMethodInfo = null;
@@ -37,7 +38,33 @@ class Model_Cart extends Model_Core_Row {
 		$this->cartItem = $cartItem;
 		return $this;
 	}
+
+	//-----------------------------------------------------------------------------------------------------
+
+	public function getCustomer()
+	{
+		$modelCustomer = Ccc::getModel('Customer');
+		if(!$this->id)
+		{
+			return $modelCustomer;
+		}
+		if($this->customer)
+		{
+			return $this->customer;
+		}
+		$modelCustomer = $modelCustomer->load($this->customerId);   
+		$this->setCustomer($modelCustomer);
+		return $modelCustomer;
+	}
+
+	public function setCustomer(Model_Customer $customer)
+	{
+		$this->customer = $customer;
+		return $this;
+	}
+
 	//--------------------------------------------------------------------------------------------------------------------------
+
 	public function getBillingAddress()
 	{
 		$modelCartAddress = Ccc::getModel('Cart_CartAddress');
@@ -50,18 +77,13 @@ class Model_Cart extends Model_Core_Row {
 			return $this->cartBillingAddress;
 		}
 		$modelCartAddress = $modelCartAddress->fetchRow("SELECT * FROM Cart_Address WHERE cartId = {$this->id} AND addressType = 'billing' ");
-		if(!$modelCartAddress->id)
+		if(!$modelCartAddress->addressId)
 		{
-			$modelCustomer = Ccc::getModel("Customer")->load($this->customerId);
-			$modelCustomerAddress = $modelCustomer->getBillingAddress();
-			$modelCustomerAddress->firstName = $modelCustomer->firstName;
-			$modelCustomerAddress->lastName = $modelCustomer->lastName;
-			$modelCustomerAddress->email = $modelCustomer->email;
-			$modelCustomerAddress->mobile = $modelCustomer->mobile;
-			if($modelCustomerAddress->id)
+			$modelCustomerAddress = $this->getCustomer()->getBillingAddress();
+			if($modelCustomerAddress->addressId)
 			{
-				$this->setBillingAddress($modelCustomerAddress);
 				return $modelCustomerAddress;
+				$this->setBillingAddress($modelCustomerAddress);
 			}
 		}
 		$this->setBillingAddress($modelCartAddress);
@@ -86,18 +108,13 @@ class Model_Cart extends Model_Core_Row {
 			return $this->cartShippingAddress;
 		}
 		$modelCartAddress = $modelCartAddress->fetchRow("SELECT * FROM Cart_Address WHERE cartId = {$this->id} AND addressType = 'shipping' ");
-		if(!$modelCartAddress->id)
+		if(!$modelCartAddress->addressId)
 		{
-			$modelCustomer = Ccc::getModel("Customer")->load($this->customerId);
-			$modelCustomerAddress = $modelCustomer->getShippingAddress();
-			$modelCustomerAddress->firstName = $modelCustomer->firstName;
-			$modelCustomerAddress->lastName = $modelCustomer->lastName;
-			$modelCustomerAddress->email = $modelCustomer->email;
-			$modelCustomerAddress->mobile = $modelCustomer->mobile;
-			if($modelCustomerAddress->id)
+			$modelCustomerAddress = $this->getCustomer()->getShippingAddress();
+			if($modelCustomerAddress->addressId)
 			{
-				$this->setShippingAddress($modelCustomerAddress);
 				return $modelCustomerAddress;
+				$this->setShippingAddress($modelCustomerAddress);
 			}
 		}
 		$this->setShippingAddress($modelCartAddress);
@@ -122,7 +139,7 @@ class Model_Cart extends Model_Core_Row {
 		{
 			return $this->shippingMethodInfo;
 		}
-		$modelShippingMethod = $modelShippingMethod->fetchRow("SELECT * FROM Shipping_Method WHERE id = {$this->shippingMethod}");
+		$modelShippingMethod = $modelShippingMethod->fetchRow("SELECT * FROM Shipping_Method WHERE id = {$this->shippingMethodId}");
 		$this->setShippingMethod($modelShippingMethod);
 		return $modelShippingMethod;
 	}
@@ -144,7 +161,7 @@ class Model_Cart extends Model_Core_Row {
 		{
 			return $this->paymentMethodInfo;
 		}
-		$modelPaymentMethod = $modelPaymentMethod->fetchRow("SELECT * FROM Payment_Method  WHERE id = {$this->paymentMethod}");
+		$modelPaymentMethod = $modelPaymentMethod->fetchRow("SELECT * FROM Payment_Method  WHERE id = {$this->paymentMethodId}");
 		$this->setPaymentMethod($modelPaymentMethod);
 		return $modelPaymentMethod;
 	}

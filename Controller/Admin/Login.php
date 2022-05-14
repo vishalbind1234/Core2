@@ -8,7 +8,7 @@ class Controller_Admin_Login extends Controller_Core_Action {
 	{
 		# code...
 		$blockAdminLogin = Ccc::getBlock('Admin_Login');
-		$this->getLayout()->getHeader()->setChild($blockAdminLogin);
+		$this->getLayout()->getContent()->setChild($blockAdminLogin);
 		$this->renderLayout();
 	}
 

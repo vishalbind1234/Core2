@@ -13,18 +13,28 @@ class Model_Customer extends Model_Core_Row {
 	const ENABLE_LBL = 'ENABLE';
 	const DISABLE = 2;
 	const DISABLE_LBL = 'DISABLE';
+	const DEFAULT_LBL = 'undefined';
 	
 	public function __construct()
 	{
 		$this->setResourceName('Customer_Resource');
 	}
 
-	public function getStatus()
+	public function getStatus($key = null)
 	{
 		$status = [ 
 			self::ENABLE => self::ENABLE_LBL ,
 			self::DISABLE => self::DISABLE_LBL
 		];
+
+		if($key)
+		{
+			if(array_key_exists($key, $status))
+			{
+				return $status[$key];
+			}
+			return self::DEFAULT_LBL;
+		}
 		return $status;
 	}
 
@@ -41,8 +51,8 @@ class Model_Customer extends Model_Core_Row {
 			return $this->billingAddress;
 		}
 		$adapter = $this->getAdapter();
-		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address WHERE customerId = {$this->id} AND addressType = {$adapter->getConnect()->quote(Model_Customer_Address::BILLING)} ");
-		if(!$address->id)
+		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address  WHERE  customerId = {$this->id} AND addressType = {$adapter->getConnect()->quote(Model_Customer_Address::BILLING)} ");
+		if(!$address->addressId)
 		{
 			$modelAddress->customerId = $this->id;
 			$modelAddress->addressType = Model_Customer_Address::BILLING;
@@ -73,7 +83,7 @@ class Model_Customer extends Model_Core_Row {
 		}
 		$adapter = $this->getAdapter();
 		$address = $modelAddress->fetchRow("SELECT * FROM Customer_Address WHERE customerId = {$this->id} AND addressType = {$adapter->getConnect()->quote(Model_Customer_Address::SHIPPING)} ");
-		if(!$address->id)
+		if(!$address->addressId)
 		{
 			$modelAddress->customerId = $this->id;
 			$modelAddress->addressType = Model_Customer_Address::SHIPPING;
@@ -126,22 +136,22 @@ class Model_Customer extends Model_Core_Row {
 		{
 			return $modelCart;
 		}
-		if($this->cart)
+		/*if($this->cart)
 		{
 			return $cart;
-		}
+		}*/
 
-		$cart = $modelCart->load($this->id, "customerId");  //echo "<pre>";    print_r($cart);  exit();
+		$cart = $modelCart->load($this->id, "customerId");  
 		if(!$cart->id)
 		{
 			$cart->customerId = $this->id;
-			$cart->save();
+			$cartId = $cart->save();
+			$cart->load($cartId);					
+
+												//echo "<pre>";    print_r($cart);  exit();
 		}
-		/*$modelCart->customerId = $this->id;
-		$modelCart->save();*/
-		$modelCart = $cart->fetchRow("SELECT * FROM Cart WHERE customerId = {$this->id}");    //echo "<pre>";    print_r($modelCart);  exit();
-		$this->setCart($modelCart);
-		return $modelCart;
+		$this->setCart($cart);
+		return $cart;
 	}
 
 	public function setCart(Model_Cart $cart)

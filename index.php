@@ -8,6 +8,7 @@
      	Ccc::loadClass('Model_Cart_ShippingMethod');
      	Ccc::loadClass('Model_Cart_PaymentMethod');
      	Ccc::loadClass('Model_Customer_Address');
+     	Ccc::loadClass('Model_Customer');
      	Ccc::loadClass('Model_Admin');
         $adapter = new Model_Core_Adapter();           ?>
 
@@ -120,7 +121,7 @@ class Ccc{
 		return $path;
 	}
 
-	public static function getBaseUrl($subUrl = null)
+	/*public static function getBaseUrl($subUrl = null)
 	{
 		# code...
 		$url = self::getConfig("baseUrl");
@@ -129,7 +130,23 @@ class Ccc{
 			$url = $url.$subUrl;
 		}
 		return $url;
-	}
+	}*/
+
+
+
+
+
+	public static function getBaseUrl($subUrl = null)
+    {
+        $url = self::getConfig('baseUrl');
+        if($subUrl)
+        {
+            $url = $url . $subUrl;
+        }
+        return $url;
+    }
+
+
 
 	public static function init()
 	{

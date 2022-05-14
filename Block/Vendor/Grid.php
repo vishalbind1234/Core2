@@ -1,80 +1,185 @@
 
-<?php Ccc::loadClass('Block_Core_Template'); ?>
+<?php Ccc::loadClass('Block_Core_Grid'); ?>
 
 <?php
 
+class Block_Vendor_Grid extends Block_Core_Grid{
 
-
-class Block_Vendor_Grid extends Block_Core_Template{
-
-	protected $pager = null;
-
-	const ENABLE = 1;
-	const ENABLE_LBL = 'ENABLE';
-	const DISABLE = 2;
-	const DISABLE_LBL = 'DISABLE';
+	protected $perPageCount = null;
+	protected $currentPage = null;
 
 	public function __construct()
 	{													
-		# code...
-		$this->setTemplate('view/Vendor/gridAction.php');					
+		# code...p
+		parent::__construct();
+		$this->prepareCollection();
+		$this->prepareColumn();
+		$this->prepareAction();
+		//$this->setTemplate('view/Vendor/gridAction.php');					
 
 	}
 
-
-	/*public function getVendor()
-	{																																
-		# code...
-		$modelVendor = Ccc::getModel('Vendor');											
-		$vendorTable = $modelVendor->getResource()->getTableName();
-		$row = $modelVendor->fetchAll(" SELECT * FROM {$vendorTable} ");
-		return $row;
-	
-	}*/
-
-
-	public function getStatus()
-	{
-		# code...
-		$status = [ 
-			self::ENABLE => self::ENABLE_LBL ,
-			self::DISABLE => self::DISABLE_LBL
-		];
-		return $status;
-	}
-
-
-	public function getPager()
-	{
-		if(!$this->pager)
-		{
-			$this->setPager();
-		}
-		return $this->pager;
-	}
-	public function setPager()
-	{
-		$this->pager = Ccc::getModel('Core_Pager');
-		return $this;
-	}
 
 	public function getVendor()
 	{
 	
+		$this->currentPage =  Ccc::getModel("Core_Request")->getRequest('currentPage', 1);
+		$this->perPageCount =  Ccc::getModel("Core_Request")->getRequest('perPageCount', 10);
+		$ppc = Ccc::getModel("Core_Request")->getPost('perPageCount');
+		if($ppc)
+		{
+			$this->perPageCount = $ppc;
+		}
+	
 		$modelVendor = Ccc::getModel('Vendor');
 		$rowCount = $modelVendor->fetchOne();
 
-		$modelPager = $this->getPager();
-		$modelPager->execute($rowCount, $modelPager->getCurrent());
+		$modelPager = $this->getPager()->setPerPageCount($this->perPageCount)->setCurrent($this->currentPage);
+		$modelPager->execute($rowCount, $this->currentPage);
 
-		$start = $modelPager->getStartLimit() - 1 ;
+		$start = $modelPager->getStartLimit() - 1;
 		$offset = $modelPager->getPerPageCount();
 		$result = $modelVendor->fetchAll("SELECT * FROM Vendor LIMIT {$start} , {$offset}");
 		return $result;
 
+	}
+
+	public function prepareCollection()
+	{
+		# code...
+		$vendors = $this->getVendor();
+		foreach ($vendors as &$vendor) 
+		{
+			$addressData = $vendor->getAddress()->getData();
+			$vendor->setData($addressData);
+		}
+		$this->setCollection($vendors);
+		return $this;
+	}
+
+	public function prepareAction()
+	{
+		# code...
+		$this->addAction([
+			'action' => 'edit',
+			'method' => 'getEditUrl'
+		]);
+
+		$this->addAction([
+			'action' => 'delete',
+			'method' => 'getDeleteUrl'
+		]);
+	}
+
+	public function prepareColumn()
+	{
+		# code...
+		$this->addColumn([
+			'title' => 'Vendor_Id',
+			'type' => 'int'
+		], 'id');
+
+		$this->addColumn([
+			'title' => 'First_Name',
+			'type' => 'text'
+		], 'firstName');
+
+		$this->addColumn([
+			'title' => 'Last_Name',
+			'type' => 'text'
+		], 'lastName');
+
+		$this->addColumn([
+			'title' => 'Email',
+			'type' => 'text'
+		], 'email');
+
+		$this->addColumn([
+			'title' => 'Mobile',
+			'type' => 'int'
+		], 'mobile');
+
+		$this->addColumn([
+			'title' => 'Status',
+			'type' => 'int'
+		], 'status');
+
+		$this->addColumn([
+			'title' => 'CreatedAt',
+			'type' => 'date'
+		], 'createdAt');
+
+		$this->addColumn([
+			'title' => 'UpdatedAt',
+			'type' => 'date'
+		], 'updatedAt');
+
+		$this->addColumn([
+			'title' => 'Address_Id',
+			'type' => 'int'
+		], 'addressId');       //-------------------------------------------matching name (id) ----------------
+
+		$this->addColumn([
+			'title' => 'Vendor_Id',
+			'type' => 'int'
+		], 'vendorId');
+
+		$this->addColumn([
+			'title' => 'Country',
+			'type' => 'text'
+		], 'country');
+		
+		$this->addColumn([
+			'title' => 'State',
+			'type' => 'text'
+		], 'state');
+
+		$this->addColumn([
+			'title' => 'City',
+			'type' => 'text'
+		], 'city');
+
+		$this->addColumn([
+			'title' => 'Pincode',
+			'type' => 'int'
+		], 'pincode');
+
+
 
 	}
 
+
+	
+
+
+	public function getEditUrl($id)
+	{
+		# code...
+		return $this->getUrl('edit', 'Vendor', ['id' => $id, 'perPageCount' => $this->perPageCount, 'currentPage' => $this->currentPage]);
+	}
+
+	public function getDeleteUrl($id)
+	{
+		# code...
+		return $this->getUrl('delete', 'Vendor', ['id' => $id, 'perPageCount' => $this->perPageCount, 'currentPage' => $this->currentPage]);
+	}
+
+	public function getAddNewUrl()
+	{
+		# code...
+		return $this->getUrl('edit', 'Vendor', null, true);
+	}
+
+	public function getColumnValue($key,$value)
+	{
+		# code...
+		if($key == 'status')
+		{
+			return Ccc::getModel("Vendor")->getStatus($value);
+		}
+		return $value;
+
+	}
 
 
 }

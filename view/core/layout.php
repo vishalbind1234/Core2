@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 
+
+
 <?php echo $this->getHead()->toHtml(); ?>
 
-<body>
-
+<body class="hold-transition sidebar-mini sidebar-collapse" >
+ 
 	<table class="table">
 		<tr>
 			<td> <?php  echo $this->getHeader()->toHtml();  ?> </td>	

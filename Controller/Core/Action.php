@@ -67,14 +67,20 @@ class Controller_Core_Action{
 
 	public function renderLayout()
 	{
-		if(!$this->layout)
-		{
-			echo('No Layout Selected.');
-			exit();
-		}
+		
 		$this->getResponse()
-					->setHeader('content-type' , 'text/html')
-				    ->render($this->layout->toHtml());
+					->setHeader('Content-type', 'text/html')
+				    ->render($this->getLayout()->toHtml());
+		
+	}
+
+	public function renderJson($content)
+	{
+		
+		$this->getResponse()
+					->setHeader('Content-type', 'application/json')
+				    ->render(json_encode($content));
+		
 	}
 	
 
@@ -123,7 +129,7 @@ class Controller_Core_Action{
 		$param = array_merge($_GET , $param);
 		
 		$url = "";
-		$url = $url . $this->baseUrl() . "index.php?" ;
+		$url = $url . $this->getBaseUrl() . "index.php?" ;
 		foreach ($param as $key => $value) {
 			# code...
 			if($value)
@@ -135,35 +141,18 @@ class Controller_Core_Action{
 		return substr($url, 0 , -1);
 	}
 
-	public function baseUrl()
-	{
-		# code...
-		return "http://localhost/Cybercome/Core/" ;
-	}
+	public static function getBaseUrl($subUrl = null)
+    {
+        $url = Ccc::getBaseUrl();
+        if($subUrl)
+        {
+            $url = $url . $subUrl;
+        }
+        return $url;
+    }
 
 
 }
 
 ?>
 
-<!-- 
-hello sir
-
-when we set message for admin we use Model_Admin_Message class
-
-and the message will be set in 
-
-$_SESSION[
-
-			Admin => [
-						message => [
-										name => XXXXXX
-									]
-
-				     ]	
-
-		 ]
-
-but when we retrive message, we use Block_Core_Layout_Header_Message.php  which uses  Model_Core_Admin class and  odel_Core_Admin class is common for all 
-
-So , what we should do to retrive messages  -->

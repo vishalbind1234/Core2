@@ -5,36 +5,40 @@
 
 class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 
-	public function redirect($url)
-	{
-		header("Location:" . $url );
-	    exit();
-	    
-	}
-
-	public function gridAction()  //---------------------------------------------------------gridAction()----------------------------------------
+	public function indexAction()  //---------------------------------------------------------gridAction()----------------------------------------
 	{																
-	
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					
-		$this->getLayout()->getHeader()->setChild($menu);
+		$salesmanId = $this->getRequest()->getRequest('id');
 
-		$customerId = $this->getRequest()->getRequest('customerId');
-		$percentage = $this->getRequest()->getRequest('percentage');
+		$salesman = Ccc::getModel("Salesman")->load($salesmanId);
+		Ccc::register('salesman', $salesman);
 
-		$salesmanCustomerProductGrid = Ccc::getBlock('Salesman_Customer_Product_Grid')->setData(['customerId' => $customerId , 'percentage' => $percentage]);
-		$this->getLayout()->getContent()->setChild($salesmanCustomerProductGrid);
-		$this->renderLayout();	
+		$salesmanEdit = Ccc::getBlock('Salesman_Edit')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
 
-		$message = $this->getRequest()->getRequest('message');
-		$message = ($message) ? $this->getRequest()->getRequest('message') : '123' ;
-		echo($message);
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $salesmanEdit,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
+
 	}
 
 	public function saveAction() //--------------------------------------------------saveAction()-------------------------------------------------------------
 	{     
 		$array = $this->getRequest()->getPost('Product');  							  
-		$id = $this->getRequest()->getRequest('customerId');   
-		$modelCustomer = Ccc::getModel('Customer')->load($id);
+		$customerId = $this->getRequest()->getRequest('customerId');   
+		$modelCustomer = Ccc::getModel('Customer')->load($customerId);
 		$salesmanId = $modelCustomer->salesmanId;
 
 
@@ -52,7 +56,7 @@ class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 				$modelProduct = Ccc::getModel("Salesman_Customer_Product");
 				$modelProduct->productId = $key;
 				$modelProduct->salesmanId = $salesmanId;
-				$modelProduct->customerId = $modelCustomer->id;
+				$modelProduct->customerId = $customerId;
 				$modelProduct->customerPrice = $value;
 				$modelProduct->salesmanPrice = $array['salesmanPrice'][$key];
 				$modelProduct->productPrice = $array['productPrice'][$key];
@@ -60,9 +64,13 @@ class Controller_Salesman_Customer_Product extends Controller_Core_Action{
 			}
 		}
 
-		$url = $this->getUrl( 'grid' , 'Salesman' );
-		$this->redirect($url);
+		$this->getMessage()->addMessage(" Salesman Customer Prices updated successfully ");
+		$this->indexAction();
 
+
+		/*$url = $this->getUrl( 'grid' , 'Salesman' );
+		$this->redirect($url);
+*/
 	}
 	
 

@@ -4,7 +4,17 @@ Ccc::loadClass('Model_Core_Row');
 
 class Model_Order extends Model_Core_Row {
 
+	const PENDING_LBL = 'pending';
+	const PROCESSING_LBL = 'processing';
+	const DISPATCHED_LBL = 'dispatched';
+	const DILIVERED_LBL = 'delivered';
+	const DEFAULT_LBL = 'undefined';
+
+	const ACTIVE_LBL = 'active';
+	const INACTIVE_LBL = 'inactive';
+
 	protected $orderItem = null;
+	protected $orderComment = null;
 	protected $orderBillingAddress = null;
 	protected $orderShippingAddress = null;
 
@@ -13,6 +23,31 @@ class Model_Order extends Model_Core_Row {
 		$this->setResourceName('Order_Resource');					
 	}
 	//---------------------------------------------------------------------------------------------------------------------------
+
+	public function getStatus($key = null)
+	{
+		$status = [ 
+			self::PENDING_LBL    ,
+			self::PROCESSING_LBL ,
+			self::DISPATCHED_LBL ,
+			self::DILIVERED_LBL  ,
+			self::DEFAULT_LBL 
+		];
+
+		return $status;
+	}
+
+	public function getState($key = null)
+	{
+		$state = [ 
+			self::ACTIVE_LBL    ,
+			self::INACTIVE_LBL 
+		];
+
+		return $state;
+	}
+
+
 	public function getOrderItem()
 	{
 		$modelOrderItem = Ccc::getModel('Order_Item');
@@ -32,6 +67,28 @@ class Model_Order extends Model_Core_Row {
 	public function setOrderItem(array $orderItem)
 	{
 		$this->orderItem = $orderItem;
+		return $this;
+	}
+
+	public function getOrderComment()
+	{
+		$modelOrderComment = Ccc::getModel('Order_Comment');
+		if(!$this->id)
+		{
+			return [];
+		}
+		if($this->orderComment)
+		{
+			return $this->orderComment;
+		}
+		$modelOrderComment = $modelOrderComment->fetchAll("SELECT * FROM Order_Comment WHERE orderId = {$this->id}");   
+		$this->setOrderComment($modelOrderComment);
+		return $modelOrderComment;
+	}
+
+	public function setOrderComment(array $orderComment)
+	{
+		$this->orderComment = $orderComment;
 		return $this;
 	}
 

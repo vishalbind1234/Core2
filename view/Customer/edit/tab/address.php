@@ -35,7 +35,7 @@
 	</tr>
 	<tr>
 		<td><label > A_ID &nbsp </label></td>
-		<td><input type="number" name=Address[id] value="<?php echo( $billing->id ); ?>"  readonly ></td>
+		<td><input type="number" name=Address[addressId] value="<?php echo( $billing->addressId ); ?>"  readonly ></td>
 	</tr>
 	<tr>
 		<td><label > Customer ID &nbsp </label></td>
@@ -76,7 +76,7 @@
 	</tr>
 	<tr class="shipping">
 		<td><label > A_ID &nbsp </label></td>
-		<td><input type="number" name=ShippingAddress[id] value="<?php echo( $shipping->id ); ?>"  readonly ></td>
+		<td><input type="number" name=ShippingAddress[addressId] value="<?php echo( $shipping->addressId ); ?>"  readonly ></td>
 	</tr>
 	<tr class="shipping">
 		<td><label > Customer ID &nbsp </label></td>
@@ -108,15 +108,38 @@
 		<td><input type="text" readonly name=ShippingAddress[addressType] value="shipping" ></td>                                           
 	</tr>
 	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+
 	<tr>
-		<td> <button type="submit"> Save & Continue </button> </td>
+		<td><button type="button" id="submit-button" value="<?php echo $this->getUrl('save','Customer'); ?>"> Save </button></td>
+		<td><button type="button" id="cancel-button" value="<?php echo $this->getUrl('index','Customer'); ?>" > Cancel </button></td>
 	</tr>
-	<tr>
-		<td> <a href="<?php echo $this->getUrl('grid', 'Customer'); ?>"><button type="button"> Back To Grid </button></a> </td>
-	</tr>
+
+	
 
 </table>
 
 
 	
 	
+	
+<script type="text/javascript">
+	
+	jQuery("#cancel-button").click(function(){
+
+		var url = jQuery(this).val();
+		admin.setUrl(url).load();
+
+	});
+
+	jQuery("#submit-button").click(function(){
+
+		admin.setUrl(jQuery(this).val());
+		admin.setData(jQuery("#edit-form").serializeArray());
+		admin.load();
+
+	});
+
+
+	
+	
+</script>

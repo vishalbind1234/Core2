@@ -8,81 +8,98 @@
 
 class Controller_Category extends Controller_Admin_Action{
 
-	public function testAction()
-	{																										
-		$model = Ccc::getModel('Category');
-		$model->getTableName() ; 
+	public function indexAction() //----------------------------------------------------gridAction()--------------------------------
+	{															
+
+		$currentPage =  ($this->getRequest()->getRequest('currentPage', 1));
+		$this->getMessage()->addMessage(" On Page " . $currentPage , Model_Core_Message::WARNING);	
+		
+		$categoryGrid = Ccc::getBlock('Category_Grid')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $categoryGrid,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
+
+		$this->getMessage()->unsetMessages("cart");
 	}
 
 	public function gridAction() /*------------------------------------------gridCategory()----------------------------------------------*/
 	{										
-		try
-		{	
-			 //code...
-			$currentPage =  ($this->getRequest()->getRequest('currentPage')) ? $this->getRequest()->getRequest('currentPage') : 1 ;
-			$perPageCount =  ($this->getRequest()->getRequest('perPageCount')) ? $this->getRequest()->getRequest('perPageCount') : 10 ;
-			$this->getMessage()->addMessage(" On Page " . $currentPage );
+	
+		$currentPage = $this->getRequest()->getRequest('currentPage', 1);
+		$this->getMessage()->addMessage(" On Page " . $currentPage, Model_Core_Message::WARNING);
 
-			$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-			$blockMessage = Ccc::getBlock('Core_Layout_Header_Message');
-			$categoryGrid = Ccc::getBlock('Category_Grid');
-			$categoryGrid->getPager()->setPerPageCount($perPageCount)->setCurrent($currentPage);
+		$categoryGrid = Ccc::getBlock('Category_Grid');
 
-			$this->setTitle('Category_Grid');
-			$this->getLayout()->getContent()->setChild($categoryGrid);
-			$this->getLayout()->getHeader()->setChild($menu);
-			$this->getLayout()->getFooter()->setChild($blockMessage);
-			$this->renderLayout();	
+		$this->setTitle('Category_Grid');
+		$this->getLayout()->getContent()->setChild($categoryGrid);
+		$this->renderLayout();	
 
-			$this->getMessage()->unsetMessages();
-
-		}
-		catch(Exception $e)
-		{
-			echo($e->getMessage() );
-			exit();
-		}	
 	}
 
 
 	public function editAction()  /*----------------------------------------------editCategory()------------------------------------------*/
 	{
 
+		$id = $this->getRequest()->getRequest('id');
+		$modelCategory = Ccc::getModel("Category")->load($id);
+		Ccc::register('category', $modelCategory); 
 
-		$id = $this->getRequest()->getRequest('id');																		
-
-		$menu = Ccc::getBlock('Core_Layout_Header_Menu');					//-------------------------------
-		$categoryEdit = Ccc::getBlock('Category_Edit')->setData(['id' => $id]);
-		$this->getLayout()->getHeader()->setChild($menu);
-		$this->getLayout()->getContent()->setChild($categoryEdit);
-		$this->renderLayout();	     
-		//$categoriesEdit->toHtml();
+		$categoryEdit = Ccc::getBlock('Category_Edit')->toHtml();
+		$messageBlock = Ccc::getBlock('Core_Layout_Header_Message')->toHtml();
+		$response = [
+			'status' => 'success',
+			'elements' => [
+				[
+					'element' => '#indexContent',
+					'content' => $categoryEdit,
+					'addClass' => 'bgRed'
+				],
+				[
+					'element' => '#messageContent',
+					'content' => $messageBlock,
+					'addClass' => 'bgRed'
+				]
+			]
+		];
+		$this->renderJson($response);
 	}
 
 	public function deleteAction() /*-------------------------------------------------deleteCategory()-------------------------------------*/
 	{
 		try
 		{
-			
-			$modelCategory = Ccc::getModel('Category');
-			$id = $this->getRequest()->getRequest('id');			
-			$deletedRow =  $modelCategory->delete($id);
-				
-      	}
+            $id = $this->getRequest()->getRequest('id');
+            $modelCategory = Ccc::getModel('Category');
+            $deletedRowId = $modelCategory->delete($id);
+
+            $message = " row ID " . $deletedRowId . " deleted. " ;
+			$this->getMessage()->addMessage($message);
+
+			$this->indexAction();
+
+        }
         catch(Exception $e)
         {
-        	$msg = $e->getMessage();
-			$modelMessage = $this->getMessage();
-            $modelMessage->addMessage($msg);
-		    $url = $this->getUrl('grid' , 'Category');
-			$this->redirect($url);
-        	
-        }
-        $message = " rows id " . $deletedRow .  " deleted" ;
-        $modelMessage = $this->getMessage();
-        $modelMessage->addMessage($message);
-        $url = $this->getUrl('grid' , 'Category');
-		$this->redirect($url);
+			$msg = $e->getMessage();
+			$modelMessage = $this->getMessage()->addMessage($msg, Model_Core_Message::ERROR);
+
+			$this->indexAction();  
+		}	
 
 	}
 
@@ -93,7 +110,6 @@ class Controller_Category extends Controller_Admin_Action{
 
 		if(array_key_exists( 'id' , $array )  && $array['id'] != null )
 		{   
-
 	       	try
 	       	{
 				if(!(int)$array['id'] )
@@ -125,8 +141,7 @@ class Controller_Category extends Controller_Admin_Action{
 			{
 				$message = $e->getMessage() ;
 				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
-				$url = $this->getUrl( 'grid' , 'Category' );
-        		$this->redirect( $url );
+				$this->editAction(); 
 			}	
 			
 		}	
@@ -163,16 +178,14 @@ class Controller_Category extends Controller_Admin_Action{
 			{
 				$message = $e->getMessage() ;
 				$this->getMessage()->addMessage($message , Model_Core_Message::ERROR);
-				$url = $this->getUrl( 'grid' , 'Category');
-				$this->redirect($url);
+				$this->editAction();
 			}
 		
 		}
 
 		$message = "row id " . $rowId . " Saved  " ;
 		$this->getMessage()->addMessage($message , Model_Core_Message::SUCCESS);
-		$url = $this->getUrl( 'grid' , 'Category' );
-		$this->redirect( $url );
+		$this->editAction();
 
 	}
 

@@ -7,16 +7,16 @@ class Model_Product extends Model_Core_Row {
 	protected $thum = null;
 	protected $small = null;
 	protected $base = null;
+	protected $productMedia = null;
+	
 	protected $categoryProduct = null;
 	protected $imagePath = "Media/Product/";
-
-	//protected $categoryProduct = null;
-	//protected $productMedia = null;
 
 	const ENABLE = 1;
 	const ENABLE_LBL = 'ENABLE';
 	const DISABLE = 2;
 	const DISABLE_LBL = 'DISABLE';
+	const DEFAULT_LBL = 'undefined';
 
 	public function __construct()
 	{
@@ -35,12 +35,21 @@ class Model_Product extends Model_Core_Row {
 		//return $url.$this->imagePath.$image;  
 	}
 	
-	public function getStatus()
+	public function getStatus($key = null)
 	{
 		$status = [ 
 			self::ENABLE => self::ENABLE_LBL ,
 			self::DISABLE => self::DISABLE_LBL
 		];
+
+		if($key)
+		{
+			if(array_key_exists($key, $status))
+			{
+				return $status[$key];
+			}
+			return self::DEFAULT_LBL;
+		}
 		return $status;
 	}
 
@@ -156,6 +165,32 @@ class Model_Product extends Model_Core_Row {
 		$price = $modelProduct->price - $modelProduct->discount;
 		return $price;
 	}
+
+	public function getProductMedia()
+	{
+		$modelProductMedia = Ccc::getModel('Product_Media');
+		if(!$this->id)
+		{
+			return [];
+		}
+
+		if($this->productMedia)
+		{
+			return $this->productMedia;
+		}
+
+		$productMedia = $modelProductMedia->fetchAll("SELECT * FROM Product_Media WHERE productId = {$this->id} ");
+		
+		$this->setProductMedia($productMedia);
+		return $productMedia;
+	}
+
+	public function setProductMedia(array $productMedia)
+	{
+		$this->productMedia = $productMedia;
+		return $this;
+	}
+
 
 
 

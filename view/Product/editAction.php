@@ -13,7 +13,7 @@
 
 					<tr>
 					<td><label for="id">Product Id  &nbsp</label></td>
-					<td><input type="number" id="id" name="Product[id]" placeholder="enter id" value=<?php echo ($product->id); ?>   readonly ></td>
+					<td><input type="number" id="id" name="Product[id]" readonly placeholder="enter id" value="<?php echo $product->id; ?>" <?php if(!$product->id){echo "hidden";} ?> ></td>
 					</tr>
 
 					
@@ -83,9 +83,9 @@
 						<input type="checkbox" name="Product[reference][<?php echo($value->entityId); ?>]"  hidden value="<?php echo($value->categoryId); ?>" checked >  
 					<?php endforeach ; ?>
 
-					<?php foreach( $allCategories as $key => $value) : ?>
+					<?php foreach( $allCategories as $key => $category) : ?>
 						<tr>
-							<td> <input type="checkbox" name="Product[category][]" <?php if(in_array($value->id, $array)){echo('checked');} ?>  value="<?php echo($value->id) ; ?>" > <?php echo($this->wholePathName(($value->id))); ?> </td>
+							<td> <input type="checkbox" name="Product[category][]" <?php if(in_array($category->id, $array)){echo('checked');} ?>  value="<?php echo($category->id) ; ?>" > <?php echo $this->wholePathName($category->id); ?> </td>
 						</tr>
 					<?php endforeach ; ?>
 				</table>
